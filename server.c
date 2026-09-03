@@ -2,15 +2,17 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <fcntl.h>
 #include <time.h>
 #include <stdint.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#define BUFFER_SIZE 1400
-#define FILE_SIZE_BYTES (1024ULL * 1024 * 1024)
-#define REPORT_INTERVAL (10ULL * 1024 * 1024)
+#include "common.h"
+
+#define PROGRESS_INTERVAL (10ULL * 1024 * 1024)
 
 void error(const char *msg)
 {
@@ -18,24 +20,89 @@ void error(const char *msg)
     exit(1);
 }
 
+static long timespec_diff_ms(const struct timespec *a, const struct timespec *b)
+{
+    return (a->tv_sec - b->tv_sec) * 1000L + (a->tv_nsec - b->tv_nsec) / 1000000L;
+}
+
+static void send_ctrl(int sockfd, struct sockaddr_in *addr, socklen_t len,
+                       uint16_t flags, uint32_t seq)
+{
+    packet_t pkt;
+
+    pkt.header.seq_num = seq;
+    pkt.header.ack_num = 0;
+    pkt.header.flags = flags;
+    pkt.header.data_len = 0;
+    packet_set_checksum(&pkt);
+
+    sendto(sockfd, &pkt, sizeof(packet_header_t), 0, (struct sockaddr *)addr, len);
+}
+
+/* Nudges the sender for any gap currently inside the receive window,
+ * so loss is caught faster than waiting for the sender's own RTO.
+ * Globally throttled (not per-seq) since one sweep covers every gap
+ * in the window at once. */
+static void nack_window_gaps(int sockfd, struct sockaddr_in *addr, socklen_t len,
+                              const uint8_t *received, uint32_t rcv_base,
+                              uint32_t window_end, struct timespec *last_sweep)
+{
+    struct timespec now;
+    uint32_t seq;
+
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    if (timespec_diff_ms(&now, last_sweep) < NACK_THROTTLE_MS)
+        return;
+
+    for (seq = rcv_base; seq < window_end; seq++) {
+        if (!received[seq % WINDOW_SIZE])
+            send_ctrl(sockfd, addr, len, FLAG_NACK, seq);
+    }
+
+    *last_sweep = now;
+}
+
 int main(int argc, char *argv[])
 {
-    int sockfd, portno;
+    int sockfd, portno, outfd;
     ssize_t n;
-    struct sockaddr_in serv_addr, client_addr;
-    socklen_t client_len;
-    char buffer[BUFFER_SIZE];
-    struct timespec start_time, end_time;
+    struct sockaddr_in serv_addr, sender_addr;
+    socklen_t sender_len;
+    packet_t pkt;
+    struct timespec start_time, end_time, finish_realtime;
+    struct timespec last_sweep = {0, 0};
     uint64_t bytes_received = 0;
     uint64_t last_reported = 0;
     int timer_started = 0;
+    size_t payload_size;
 
-    if (argc < 2) {
-        fprintf(stderr, "usage: %s port\n", argv[0]);
+    uint8_t *received; /* WINDOW_SIZE slots, indexed by seq % WINDOW_SIZE */
+    uint32_t rcv_base = 0;
+    uint32_t eof_seq = 0;
+    int eof_received = 0;
+    int retries = 0;
+    struct timeval tv;
+
+    if (argc < 3) {
+        fprintf(stderr, "usage: %s port output_file [chunk_size]\n", argv[0]);
         exit(1);
     }
 
     portno = atoi(argv[1]);
+    payload_size = (argc >= 4) ? (size_t)atoi(argv[3]) : DEFAULT_PAYLOAD;
+
+    if (payload_size == 0 || payload_size > MAX_PAYLOAD) {
+        fprintf(stderr, "ERROR: chunk_size must be between 1 and %d\n", MAX_PAYLOAD);
+        exit(1);
+    }
+
+    outfd = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (outfd < 0)
+        error("ERROR opening output file");
+
+    received = calloc(WINDOW_SIZE, 1);
+    if (!received)
+        error("ERROR allocating window tracking table");
 
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
     if (sockfd < 0)
@@ -49,41 +116,94 @@ int main(int argc, char *argv[])
     if (bind(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
         error("ERROR binding UDP socket");
 
-    printf("UDP server listening on port %d\n", portno);
-    printf("Waiting for file data from client...\n");
+    printf("UDP receiver listening on port %d, saving to %s (chunk_size=%zu, window=%d)\n",
+           portno, argv[2], payload_size, WINDOW_SIZE);
+    printf("Waiting for file data from sender...\n");
 
-    client_len = sizeof(client_addr);
+    sender_len = sizeof(sender_addr);
 
-    while (1) {
-        n = recvfrom(sockfd,
-                     buffer,
-                     sizeof(buffer),
-                     0,
-                     (struct sockaddr *)&client_addr,
-                     &client_len);
+    tv.tv_sec = TAIL_TIMEOUT_MS / 1000;
+    tv.tv_usec = (TAIL_TIMEOUT_MS % 1000) * 1000;
+    if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0)
+        error("ERROR setting receive timeout");
 
-        if (n < 0)
+    while (!(eof_received && rcv_base >= eof_seq) && retries < TAIL_MAX_RETRIES) {
+        n = recvfrom(sockfd, &pkt, sizeof(pkt), 0,
+                     (struct sockaddr *)&sender_addr, &sender_len);
+
+        if (n < 0) {
+            if (errno == EWOULDBLOCK || errno == EAGAIN) {
+                retries++;
+                if (eof_received)
+                    send_ctrl(sockfd, &sender_addr, sender_len, FLAG_ACK, eof_seq);
+                nack_window_gaps(sockfd, &sender_addr, sender_len, received, rcv_base,
+                                  eof_received ? eof_seq : rcv_base + WINDOW_SIZE,
+                                  &last_sweep);
+                continue;
+            }
             error("ERROR receiving UDP data");
+        }
 
-        if (n == 3 && memcmp(buffer, "EOF", 3) == 0)
-            break;
+        retries = 0;
+
+        if (!packet_verify_checksum(&pkt, (size_t)n))
+            continue;
 
         if (!timer_started) {
             clock_gettime(CLOCK_MONOTONIC, &start_time);
             timer_started = 1;
         }
 
-        bytes_received += (uint64_t)n;
+        if (pkt.header.flags == FLAG_EOF) {
+            eof_received = 1;
+            eof_seq = pkt.header.seq_num;
+            send_ctrl(sockfd, &sender_addr, sender_len, FLAG_ACK, eof_seq);
+            continue;
+        }
 
-        if (bytes_received - last_reported >= REPORT_INTERVAL) {
-            double mib = bytes_received / (1024.0 * 1024.0);
-            double percent = (bytes_received * 100.0) / FILE_SIZE_BYTES;
+        {
+            uint32_t seq = pkt.header.seq_num;
 
-            printf("Progress: %.2f MiB received (%.2f%%)\n", mib, percent);
+            if (seq < rcv_base) {
+                /* Already delivered; the ACK for it must have been
+                 * lost, so re-ACK to stop the sender retransmitting it
+                 * forever. */
+                send_ctrl(sockfd, &sender_addr, sender_len, FLAG_ACK, seq);
+            } else if (seq < rcv_base + WINDOW_SIZE) {
+                uint32_t slot = seq % WINDOW_SIZE;
+
+                if (!received[slot]) {
+                    if (pwrite(outfd, pkt.data, pkt.header.data_len,
+                               (off_t)seq * payload_size) < 0)
+                        error("ERROR writing received data to output file");
+
+                    received[slot] = 1;
+                    bytes_received += pkt.header.data_len;
+                }
+
+                send_ctrl(sockfd, &sender_addr, sender_len, FLAG_ACK, seq);
+
+                while (received[rcv_base % WINDOW_SIZE]) {
+                    received[rcv_base % WINDOW_SIZE] = 0;
+                    rcv_base++;
+                }
+            }
+            /* seq >= rcv_base + WINDOW_SIZE would mean the sender sent
+             * ahead of the agreed window - shouldn't happen since it
+             * respects WINDOW_SIZE too, so just drop it defensively. */
+        }
+
+        nack_window_gaps(sockfd, &sender_addr, sender_len, received, rcv_base,
+                          eof_received ? eof_seq : rcv_base + WINDOW_SIZE, &last_sweep);
+
+        if (bytes_received - last_reported >= PROGRESS_INTERVAL) {
+            printf("Progress: %.2f MiB received\n", bytes_received / (1024.0 * 1024.0));
             fflush(stdout);
             last_reported = bytes_received;
         }
     }
+
+    clock_gettime(CLOCK_REALTIME, &finish_realtime);
 
     if (timer_started) {
         double elapsed;
@@ -103,10 +223,19 @@ int main(int argc, char *argv[])
                (unsigned long long)bytes_received);
         printf("Elapsed time: %.3f seconds\n", elapsed);
         printf("Receive throughput: %.2f Mbit/s\n", throughput_mbps);
+        printf("Receiver finish timestamp (epoch): %lld.%09ld\n",
+               (long long)finish_realtime.tv_sec, finish_realtime.tv_nsec);
+
+        if (!(eof_received && rcv_base >= eof_seq))
+            printf("WARNING: gave up with %u packet(s) still missing (first missing seq=%u)\n",
+                   eof_seq - rcv_base, rcv_base);
     } else {
         printf("No file data was received.\n");
     }
 
+    fsync(outfd);
+    close(outfd);
+    free(received);
     close(sockfd);
     return 0;
 }
