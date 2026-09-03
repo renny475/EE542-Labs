@@ -13,11 +13,8 @@
 
 #include "common.h"
 
-/* client.c is the SENDER, implementing the sending side of a Selective
- * Repeat sliding window: up to WINDOW_SIZE packets may be unacknowledged
- * "in flight" at once, each held in an in-memory buffer (window_buf) so
- * a retransmit (via NACK or RTO timeout) resends the buffered copy
- * instead of re-reading the file. */
+/* client.c is the SENDER: it reads a local file and streams it to the
+ * receiver (server.c). */
 
 void error(const char *msg)
 {
@@ -30,42 +27,34 @@ static uint32_t total_packets_for_size(off_t total_size, size_t payload_size)
     return (uint32_t)((total_size + payload_size - 1) / payload_size);
 }
 
-static long timespec_diff_ms(const struct timespec *a, const struct timespec *b)
+/* Sends (or resends) the packet for `seq`, always re-reading the data
+ * from disk via pread() at seq*payload_size. This means retransmission
+ * needs no in-memory buffer of previously sent packets. */
+static void send_data_packet(int sockfd, struct sockaddr_in *addr, int filefd,
+                              uint32_t seq, off_t total_size, size_t payload_size)
 {
-    return (a->tv_sec - b->tv_sec) * 1000L + (a->tv_nsec - b->tv_nsec) / 1000000L;
-}
-
-/* Reads packet `seq`'s data from disk into buf and sends it. Only used
- * the first time a packet enters the window - retransmits reuse the
- * already-buffered copy (see resend_buffered) instead of touching disk. */
-static void load_and_send(int sockfd, struct sockaddr_in *addr, int filefd,
-                           packet_t *buf, uint32_t seq, off_t total_size,
-                           size_t payload_size)
-{
+    packet_t pkt;
     off_t offset = (off_t)seq * payload_size;
     off_t remaining = total_size - offset;
     ssize_t data_len = (size_t)remaining < payload_size ? remaining : (ssize_t)payload_size;
     ssize_t n;
 
-    n = pread(filefd, buf->data, (size_t)data_len, offset);
+    if (data_len <= 0)
+        return;
+
+    n = pread(filefd, pkt.data, (size_t)data_len, offset);
     if (n < 0)
-        error("ERROR reading input file");
+        error("ERROR reading input file for (re)transmit");
 
-    buf->header.seq_num = seq;
-    buf->header.ack_num = 0;
-    buf->header.flags = FLAG_DATA;
-    buf->header.data_len = (uint16_t)n;
-    packet_set_checksum(buf);
+    pkt.header.seq_num = seq;
+    pkt.header.ack_num = 0;
+    pkt.header.flags = FLAG_DATA;
+    pkt.header.data_len = (uint16_t)n;
+    packet_set_checksum(&pkt);
 
-    if (sendto(sockfd, buf, sizeof(packet_header_t) + n, 0,
+    if (sendto(sockfd, &pkt, sizeof(packet_header_t) + n, 0,
                (struct sockaddr *)addr, sizeof(*addr)) < 0)
         error("ERROR sending UDP packet");
-}
-
-static void resend_buffered(int sockfd, struct sockaddr_in *addr, const packet_t *buf)
-{
-    sendto(sockfd, buf, sizeof(packet_header_t) + buf->header.data_len, 0,
-           (struct sockaddr *)addr, sizeof(*addr));
 }
 
 static void send_eof(int sockfd, struct sockaddr_in *addr, uint32_t total_packets)
@@ -78,7 +67,35 @@ static void send_eof(int sockfd, struct sockaddr_in *addr, uint32_t total_packet
     pkt.header.data_len = 0;
     packet_set_checksum(&pkt);
 
-    sendto(sockfd, &pkt, sizeof(packet_header_t), 0, (struct sockaddr *)addr, sizeof(*addr));
+    if (sendto(sockfd, &pkt, sizeof(packet_header_t), 0,
+               (struct sockaddr *)addr, sizeof(*addr)) < 0)
+        error("ERROR sending EOF packet");
+}
+
+/* Drains any NACKs that have already arrived without blocking the
+ * send loop, immediately resending the requested packet for each. */
+static void drain_pending_nacks(int sockfd, struct sockaddr_in *addr, int filefd,
+                                 off_t total_size, size_t payload_size)
+{
+    packet_t pkt;
+    ssize_t n;
+
+    while (1) {
+        n = recvfrom(sockfd, &pkt, sizeof(pkt), MSG_DONTWAIT, NULL, NULL);
+        if (n < 0) {
+            if (errno == EWOULDBLOCK || errno == EAGAIN)
+                break;
+            error("ERROR receiving NACK");
+        }
+
+        if (!packet_verify_checksum(&pkt, (size_t)n))
+            continue;
+
+        if (pkt.header.flags == FLAG_NACK) {
+            printf("Resending packet %u due to NACK\n", pkt.header.seq_num);
+            send_data_packet(sockfd, addr, filefd, pkt.header.seq_num, total_size, payload_size);
+        }
+    }
 }
 
 int main(int argc, char *argv[])
@@ -89,14 +106,10 @@ int main(int argc, char *argv[])
     struct stat st;
     off_t total_size;
     size_t payload_size;
-    uint32_t total_packets;
-    uint32_t send_base = 0, next_seq = 0;
-    packet_t *window_buf;
-    uint8_t *acked;
-    struct timespec *last_sent;
-    struct timespec send_start, now;
+    uint32_t total_packets, seq;
     struct timeval tv;
     int retries;
+    struct timespec send_start;
 
     if (argc < 4) {
         fprintf(stderr, "usage: %s receiver_host port file_to_send [chunk_size]\n", argv[0]);
@@ -121,12 +134,6 @@ int main(int argc, char *argv[])
     total_size = st.st_size;
     total_packets = total_packets_for_size(total_size, payload_size);
 
-    window_buf = calloc(WINDOW_SIZE, sizeof(packet_t));
-    acked = calloc(WINDOW_SIZE, 1);
-    last_sent = calloc(WINDOW_SIZE, sizeof(struct timespec));
-    if (!window_buf || !acked || !last_sent)
-        error("ERROR allocating sliding-window buffers");
-
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
     if (sockfd < 0)
         error("ERROR opening UDP socket");
@@ -148,98 +155,51 @@ int main(int argc, char *argv[])
 
     serv_addr.sin_port = htons(portno);
 
-    /* A short receive timeout paces the main loop: it services
-     * incoming ACK/NACKs and gives a regular tick to check per-slot
-     * RTO timeouts, without busy-spinning the CPU. */
-    tv.tv_sec = 0;
-    tv.tv_usec = 20000; /* 20ms */
-    if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0)
-        error("ERROR setting receive timeout");
-
     clock_gettime(CLOCK_REALTIME, &send_start);
     printf("Sender start timestamp (epoch): %lld.%09ld\n",
            (long long)send_start.tv_sec, send_start.tv_nsec);
-    printf("Sending %s (%lld bytes, chunk_size=%zu, %u packets, window=%d)\n",
-           argv[3], (long long)total_size, payload_size, total_packets, WINDOW_SIZE);
+    printf("Sending %s (%lld bytes, chunk_size=%zu, %u packets)\n",
+           argv[3], (long long)total_size, payload_size, total_packets);
 
-    while (send_base < total_packets) {
-        /* Fill the window with new packets up to its limit. */
-        while (next_seq < send_base + WINDOW_SIZE && next_seq < total_packets) {
-            uint32_t slot = next_seq % WINDOW_SIZE;
-
-            load_and_send(sockfd, &serv_addr, filefd, &window_buf[slot], next_seq,
-                          total_size, payload_size);
-            clock_gettime(CLOCK_MONOTONIC, &last_sent[slot]);
-            acked[slot] = 0;
-            next_seq++;
-        }
-
-        /* Service one incoming ACK/NACK (the 20ms timeout paces us). */
-        {
-            packet_t pkt;
-            ssize_t n = recvfrom(sockfd, &pkt, sizeof(pkt), 0, NULL, NULL);
-
-            if (n >= 0) {
-                if (packet_verify_checksum(&pkt, (size_t)n)) {
-                    uint32_t seq = pkt.header.seq_num;
-
-                    if (seq >= send_base && seq < next_seq) {
-                        uint32_t slot = seq % WINDOW_SIZE;
-
-                        if (pkt.header.flags == FLAG_ACK) {
-                            acked[slot] = 1;
-                        } else if (pkt.header.flags == FLAG_NACK) {
-                            resend_buffered(sockfd, &serv_addr, &window_buf[slot]);
-                            clock_gettime(CLOCK_MONOTONIC, &last_sent[slot]);
-                        }
-                    }
-                }
-            } else if (errno != EWOULDBLOCK && errno != EAGAIN) {
-                error("ERROR receiving ACK/NACK");
-            }
-        }
-
-        /* Slide the window forward over contiguously-acked slots. */
-        while (send_base < next_seq && acked[send_base % WINDOW_SIZE])
-            send_base++;
-
-        /* RTO fallback: resend anything unacknowledged for too long,
-         * in case both the original packet and any NACK for it were
-         * lost. */
-        clock_gettime(CLOCK_MONOTONIC, &now);
-        {
-            uint32_t seq;
-
-            for (seq = send_base; seq < next_seq; seq++) {
-                uint32_t slot = seq % WINDOW_SIZE;
-
-                if (!acked[slot] && timespec_diff_ms(&now, &last_sent[slot]) >= RTO_MS) {
-                    resend_buffered(sockfd, &serv_addr, &window_buf[slot]);
-                    last_sent[slot] = now;
-                }
-            }
-        }
+    for (seq = 0; seq < total_packets; seq++) {
+        send_data_packet(sockfd, &serv_addr, filefd, seq, total_size, payload_size);
+        drain_pending_nacks(sockfd, &serv_addr, filefd, total_size, payload_size);
+        usleep(25);
     }
 
-    /* All data has been acknowledged. Send EOF and wait for it to be
-     * acked too, retrying on timeout until confirmed or we give up. */
+    send_eof(sockfd, &serv_addr, total_packets);
+
+    /* Tail-wait phase: keep servicing NACKs (and keep re-sending EOF in
+     * case it was itself dropped) until the receiver has gone quiet for
+     * TAIL_MAX_RETRIES consecutive timeouts. */
+    tv.tv_sec = TAIL_TIMEOUT_MS / 1000;
+    tv.tv_usec = (TAIL_TIMEOUT_MS % 1000) * 1000;
+    if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0)
+        error("ERROR setting receive timeout");
+
     retries = 0;
     while (retries < TAIL_MAX_RETRIES) {
         packet_t pkt;
-        ssize_t n;
+        ssize_t n = recvfrom(sockfd, &pkt, sizeof(pkt), 0, NULL, NULL);
 
-        send_eof(sockfd, &serv_addr, total_packets);
-
-        tv.tv_sec = TAIL_TIMEOUT_MS / 1000;
-        tv.tv_usec = (TAIL_TIMEOUT_MS % 1000) * 1000;
-        setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
-
-        n = recvfrom(sockfd, &pkt, sizeof(pkt), 0, NULL, NULL);
-        if (n >= 0 && packet_verify_checksum(&pkt, (size_t)n) &&
-            pkt.header.flags == FLAG_ACK && pkt.header.seq_num == total_packets) {
-            break;
+        if (n < 0) {
+            if (errno == EWOULDBLOCK || errno == EAGAIN) {
+                retries++;
+                send_eof(sockfd, &serv_addr, total_packets);
+                continue;
+            }
+            error("ERROR receiving NACK during tail wait");
         }
-        retries++;
+
+        retries = 0;
+
+        if (!packet_verify_checksum(&pkt, (size_t)n))
+            continue;
+
+        if (pkt.header.flags == FLAG_NACK) {
+            printf("Resending packet %u due to NACK (tail)\n", pkt.header.seq_num);
+            send_data_packet(sockfd, &serv_addr, filefd, pkt.header.seq_num, total_size, payload_size);
+        }
     }
 
     {
@@ -257,9 +217,6 @@ int main(int argc, char *argv[])
 
     printf("UDP file send completed.\n");
 
-    free(window_buf);
-    free(acked);
-    free(last_sent);
     close(filefd);
     close(sockfd);
 

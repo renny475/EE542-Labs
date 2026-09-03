@@ -16,29 +16,21 @@
 #define FLAG_DATA 0x0
 #define FLAG_EOF  0x1
 #define FLAG_NACK 0x2
-#define FLAG_ACK  0x3
 
-/* Selective Repeat sliding window size (packets), shared by sender and
- * receiver. Sized to comfortably cover bandwidth-delay product across
- * all three lab cases (worst case ~100Mbit * 200ms RTT), so the window
- * doesn't stall waiting for ACKs before it needs to. */
-#define WINDOW_SIZE 1024
-
-/* Sender-side per-packet retransmit timeout (fallback for when a NACK
- * doesn't catch the loss first): comfortably above the largest RTT we
- * test (200ms) so it doesn't fire spuriously ahead of a normal ACK. */
-#define RTO_MS 800
-
-/* After EOF, how long/how many times to keep polling for outstanding
- * ACKs/NACKs before giving up. Also used as the receiver's main-loop
- * poll timeout throughout (not just at the tail). */
+/* Tail-wait phase: after EOF, how long/how many times to keep polling
+ * for outstanding NACKs/retransmits before giving up. */
 #define TAIL_TIMEOUT_MS 500
 #define TAIL_MAX_RETRIES 120
 
-/* Minimum interval between two gap-repair sweeps (see
- * nack_window_gaps in server.c) - global, not per-seq, since a sweep
- * covers every gap currently in the window at once. */
+/* Minimum interval between two gap-repair sweeps (see periodic_nack_sweep
+ * in server.c) - not per-seq, global, since a sweep now covers many gaps
+ * at once instead of chasing a single lowest gap. */
 #define NACK_THROTTLE_MS 200
+
+/* Max number of NACKs sent in a single sweep. Kept well under the tbf
+ * burst allowance (9015 bytes / 16-byte NACKs) so a sweep can't flood
+ * past the router's token bucket and self-inflict extra loss. */
+#define NACK_SWEEP_CAP 512
 
 typedef struct
 {
