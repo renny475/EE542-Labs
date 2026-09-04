@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <time.h>
+#include <stdint.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -16,112 +17,246 @@
 /* client.c is the SENDER: it reads a local file and streams it to the
  * receiver (server.c). */
 
+#define SOCKET_BUFFER_BYTES (64 * 1024 * 1024)
+#define INITIAL_SEND_DELAY_US 40
+
+static uint64_t retransmissions = 0;
+static uint64_t nack_requests_received = 0;
+
 void error(const char *msg)
 {
     perror(msg);
-    exit(1);
+    exit(EXIT_FAILURE);
 }
 
-static uint32_t total_packets_for_size(off_t total_size, size_t payload_size)
+static uint32_t total_packets_for_size(off_t total_size,
+                                       size_t payload_size)
 {
     return (uint32_t)((total_size + payload_size - 1) / payload_size);
 }
 
-/* Sends (or resends) the packet for `seq`, always re-reading the data
- * from disk via pread() at seq*payload_size. This means retransmission
- * needs no in-memory buffer of previously sent packets. */
-static void send_data_packet(int sockfd, struct sockaddr_in *addr, int filefd,
-                              uint32_t seq, off_t total_size, size_t payload_size)
+/*
+ * Request larger UDP queues. The Linux sysctl limits must also permit
+ * these requested sizes:
+ *
+ * sudo sysctl -w net.core.wmem_max=67108864
+ * sudo sysctl -w net.core.rmem_max=67108864
+ */
+static void configure_socket_buffers(int sockfd)
+{
+    int buffer_size = SOCKET_BUFFER_BYTES;
+
+    if (setsockopt(sockfd,
+                   SOL_SOCKET,
+                   SO_SNDBUF,
+                   &buffer_size,
+                   sizeof(buffer_size)) < 0) {
+        perror("WARNING: setsockopt(SO_SNDBUF)");
+    }
+
+    if (setsockopt(sockfd,
+                   SOL_SOCKET,
+                   SO_RCVBUF,
+                   &buffer_size,
+                   sizeof(buffer_size)) < 0) {
+        perror("WARNING: setsockopt(SO_RCVBUF)");
+    }
+}
+
+/*
+ * Sends or retransmits the packet identified by seq.
+ *
+ * The packet data is read from disk every time using pread(), so no
+ * memory buffer is needed for retransmission history.
+ */
+static void send_data_packet(int sockfd,
+                             struct sockaddr_in *addr,
+                             int filefd,
+                             uint32_t seq,
+                             off_t total_size,
+                             size_t payload_size)
 {
     packet_t pkt;
-    off_t offset = (off_t)seq * payload_size;
+    off_t offset = (off_t)seq * (off_t)payload_size;
     off_t remaining = total_size - offset;
-    ssize_t data_len = (size_t)remaining < payload_size ? remaining : (ssize_t)payload_size;
-    ssize_t n;
+    ssize_t data_len;
+    ssize_t bytes_read;
+    ssize_t bytes_sent;
 
-    if (data_len <= 0)
+    if (remaining <= 0)
         return;
 
-    n = pread(filefd, pkt.data, (size_t)data_len, offset);
-    if (n < 0)
+    data_len = ((size_t)remaining < payload_size)
+        ? (ssize_t)remaining
+        : (ssize_t)payload_size;
+
+    memset(&pkt, 0, sizeof(pkt));
+
+    bytes_read = pread(filefd,
+                       pkt.data,
+                       (size_t)data_len,
+                       offset);
+
+    if (bytes_read < 0)
         error("ERROR reading input file for (re)transmit");
+
+    if (bytes_read != data_len) {
+        fprintf(stderr,
+                "ERROR: short read for packet %u "
+                "(read %zd of %zd bytes)\n",
+                seq,
+                bytes_read,
+                data_len);
+        exit(EXIT_FAILURE);
+    }
 
     pkt.header.seq_num = seq;
     pkt.header.ack_num = 0;
     pkt.header.flags = FLAG_DATA;
-    pkt.header.data_len = (uint16_t)n;
+    pkt.header.data_len = (uint16_t)bytes_read;
+
     packet_set_checksum(&pkt);
 
-    if (sendto(sockfd, &pkt, sizeof(packet_header_t) + n, 0,
-               (struct sockaddr *)addr, sizeof(*addr)) < 0)
+    bytes_sent = sendto(sockfd,
+                        &pkt,
+                        sizeof(packet_header_t) + bytes_read,
+                        0,
+                        (struct sockaddr *)addr,
+                        sizeof(*addr));
+
+    if (bytes_sent < 0)
         error("ERROR sending UDP packet");
+
+    if ((size_t)bytes_sent !=
+        sizeof(packet_header_t) + (size_t)bytes_read) {
+        fprintf(stderr,
+                "ERROR: incomplete UDP send for packet %u "
+                "(sent %zd of %zu bytes)\n",
+                seq,
+                bytes_sent,
+                sizeof(packet_header_t) + (size_t)bytes_read);
+        exit(EXIT_FAILURE);
+    }
 }
 
-static void send_eof(int sockfd, struct sockaddr_in *addr, uint32_t total_packets)
+/*
+ * Send the EOF marker. Its seq_num contains the number of data packets
+ * in the full input file; valid DATA sequence numbers are 0 to
+ * total_packets - 1.
+ */
+static void send_eof(int sockfd,
+                     struct sockaddr_in *addr,
+                     uint32_t total_packets)
 {
     packet_t pkt;
+    ssize_t bytes_sent;
+
+    memset(&pkt, 0, sizeof(pkt));
 
     pkt.header.seq_num = total_packets;
     pkt.header.ack_num = 0;
     pkt.header.flags = FLAG_EOF;
     pkt.header.data_len = 0;
+
     packet_set_checksum(&pkt);
 
-    if (sendto(sockfd, &pkt, sizeof(packet_header_t), 0,
-               (struct sockaddr *)addr, sizeof(*addr)) < 0)
+    bytes_sent = sendto(sockfd,
+                        &pkt,
+                        sizeof(packet_header_t),
+                        0,
+                        (struct sockaddr *)addr,
+                        sizeof(*addr));
+
+    if (bytes_sent < 0)
         error("ERROR sending EOF packet");
+
+    if ((size_t)bytes_sent != sizeof(packet_header_t)) {
+        fprintf(stderr,
+                "ERROR: incomplete UDP send for EOF packet\n");
+        exit(EXIT_FAILURE);
+    }
 }
 
-/* Drains any NACKs that have already arrived without blocking the
- * send loop, immediately resending the requested packet for each. */
-static void drain_pending_nacks(int sockfd, struct sockaddr_in *addr, int filefd,
-                                 off_t total_size, size_t payload_size)
+/*
+ * Drain NACK packets that are already queued for this sender socket.
+ * MSG_DONTWAIT makes this non-blocking, so the normal initial DATA
+ * send loop does not pause while waiting for a NACK.
+ */
+static void drain_pending_nacks(int sockfd,
+                                struct sockaddr_in *addr,
+                                int filefd,
+                                off_t total_size,
+                                size_t payload_size)
 {
     packet_t pkt;
-    ssize_t n;
+    ssize_t bytes_received;
 
     while (1) {
-        n = recvfrom(sockfd, &pkt, sizeof(pkt), MSG_DONTWAIT, NULL, NULL);
-        if (n < 0) {
+        bytes_received = recvfrom(sockfd,
+                                  &pkt,
+                                  sizeof(pkt),
+                                  MSG_DONTWAIT,
+                                  NULL,
+                                  NULL);
+
+        if (bytes_received < 0) {
             if (errno == EWOULDBLOCK || errno == EAGAIN)
                 break;
+
             error("ERROR receiving NACK");
         }
 
-        if (!packet_verify_checksum(&pkt, (size_t)n))
+        if (!packet_verify_checksum(&pkt, (size_t)bytes_received))
             continue;
 
         if (pkt.header.flags == FLAG_NACK) {
-            printf("Resending packet %u due to NACK\n", pkt.header.seq_num);
-            send_data_packet(sockfd, addr, filefd, pkt.header.seq_num, total_size, payload_size);
+            nack_requests_received++;
+            retransmissions++;
+
+            send_data_packet(sockfd,
+                             addr,
+                             filefd,
+                             pkt.header.seq_num,
+                             total_size,
+                             payload_size);
         }
     }
 }
 
 int main(int argc, char *argv[])
 {
-    int sockfd, portno, filefd;
+    int sockfd;
+    int portno;
+    int filefd;
     struct sockaddr_in serv_addr;
     struct hostent *server;
     struct stat st;
     off_t total_size;
     size_t payload_size;
-    uint32_t total_packets, seq;
+    uint32_t total_packets;
+    uint32_t seq;
     struct timeval tv;
     int retries;
     struct timespec send_start;
 
     if (argc < 4) {
-        fprintf(stderr, "usage: %s receiver_host port file_to_send [chunk_size]\n", argv[0]);
-        exit(1);
+        fprintf(stderr,
+                "usage: %s receiver_host port file_to_send [chunk_size]\n",
+                argv[0]);
+        exit(EXIT_FAILURE);
     }
 
     portno = atoi(argv[2]);
-    payload_size = (argc >= 5) ? (size_t)atoi(argv[4]) : DEFAULT_PAYLOAD;
+
+    payload_size = (argc >= 5)
+        ? (size_t)atoi(argv[4])
+        : DEFAULT_PAYLOAD;
 
     if (payload_size == 0 || payload_size > MAX_PAYLOAD) {
-        fprintf(stderr, "ERROR: chunk_size must be between 1 and %d\n", MAX_PAYLOAD);
-        exit(1);
+        fprintf(stderr,
+                "ERROR: chunk_size must be between 1 and %d\n",
+                MAX_PAYLOAD);
+        exit(EXIT_FAILURE);
     }
 
     filefd = open(argv[3], O_RDONLY);
@@ -132,73 +267,137 @@ int main(int argc, char *argv[])
         error("ERROR getting input file size");
 
     total_size = st.st_size;
+
+    if (total_size <= 0) {
+        fprintf(stderr, "ERROR: input file must not be empty\n");
+        close(filefd);
+        exit(EXIT_FAILURE);
+    }
+
     total_packets = total_packets_for_size(total_size, payload_size);
 
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
     if (sockfd < 0)
         error("ERROR opening UDP socket");
 
+    configure_socket_buffers(sockfd);
+
     server = gethostbyname(argv[1]);
     if (server == NULL) {
-        fprintf(stderr, "ERROR, no such host\n");
+        fprintf(stderr, "ERROR: no such host: %s\n", argv[1]);
         close(filefd);
         close(sockfd);
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
-    bzero((char *)&serv_addr, sizeof(serv_addr));
+    memset(&serv_addr, 0, sizeof(serv_addr));
+
     serv_addr.sin_family = AF_INET;
 
-    bcopy((char *)server->h_addr,
-          (char *)&serv_addr.sin_addr.s_addr,
-          server->h_length);
+    memcpy(&serv_addr.sin_addr.s_addr,
+           server->h_addr,
+           (size_t)server->h_length);
 
-    serv_addr.sin_port = htons(portno);
+    serv_addr.sin_port = htons((uint16_t)portno);
 
     clock_gettime(CLOCK_REALTIME, &send_start);
-    printf("Sender start timestamp (epoch): %lld.%09ld\n",
-           (long long)send_start.tv_sec, send_start.tv_nsec);
-    printf("Sending %s (%lld bytes, chunk_size=%zu, %u packets)\n",
-           argv[3], (long long)total_size, payload_size, total_packets);
 
+    printf("Sender start timestamp (epoch): %lld.%09ld\n",
+           (long long)send_start.tv_sec,
+           send_start.tv_nsec);
+
+    printf("Sending %s (%lld bytes, chunk_size=%zu, %u packets)\n",
+           argv[3],
+           (long long)total_size,
+           payload_size,
+           total_packets);
+
+    printf("Initial send pacing delay: %d microseconds\n",
+           INITIAL_SEND_DELAY_US);
+
+    printf("Requested UDP socket buffers: %d MiB\n",
+           SOCKET_BUFFER_BYTES / (1024 * 1024));
+
+    /*
+     * Initial transmission phase.
+     *
+     * Drain already-arrived NACKs after each packet, but do not print
+     * every retransmission. Per-packet terminal output slows recovery.
+     */
     for (seq = 0; seq < total_packets; seq++) {
-        send_data_packet(sockfd, &serv_addr, filefd, seq, total_size, payload_size);
-        drain_pending_nacks(sockfd, &serv_addr, filefd, total_size, payload_size);
-        usleep(25);
+        send_data_packet(sockfd,
+                         &serv_addr,
+                         filefd,
+                         seq,
+                         total_size,
+                         payload_size);
+
+        drain_pending_nacks(sockfd,
+                            &serv_addr,
+                            filefd,
+                            total_size,
+                            payload_size);
+
+        usleep(INITIAL_SEND_DELAY_US);
     }
 
     send_eof(sockfd, &serv_addr, total_packets);
 
-    /* Tail-wait phase: keep servicing NACKs (and keep re-sending EOF in
-     * case it was itself dropped) until the receiver has gone quiet for
-     * TAIL_MAX_RETRIES consecutive timeouts. */
+    /*
+     * Tail phase:
+     * Continue receiving NACKs and retransmitting requested data.
+     * Re-send EOF after each receive timeout because EOF itself may
+     * have been dropped.
+     */
     tv.tv_sec = TAIL_TIMEOUT_MS / 1000;
     tv.tv_usec = (TAIL_TIMEOUT_MS % 1000) * 1000;
-    if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0)
+
+    if (setsockopt(sockfd,
+                   SOL_SOCKET,
+                   SO_RCVTIMEO,
+                   &tv,
+                   sizeof(tv)) < 0) {
         error("ERROR setting receive timeout");
+    }
 
     retries = 0;
+
     while (retries < TAIL_MAX_RETRIES) {
         packet_t pkt;
-        ssize_t n = recvfrom(sockfd, &pkt, sizeof(pkt), 0, NULL, NULL);
+        ssize_t bytes_received;
 
-        if (n < 0) {
+        bytes_received = recvfrom(sockfd,
+                                  &pkt,
+                                  sizeof(pkt),
+                                  0,
+                                  NULL,
+                                  NULL);
+
+        if (bytes_received < 0) {
             if (errno == EWOULDBLOCK || errno == EAGAIN) {
                 retries++;
                 send_eof(sockfd, &serv_addr, total_packets);
                 continue;
             }
+
             error("ERROR receiving NACK during tail wait");
         }
 
         retries = 0;
 
-        if (!packet_verify_checksum(&pkt, (size_t)n))
+        if (!packet_verify_checksum(&pkt, (size_t)bytes_received))
             continue;
 
         if (pkt.header.flags == FLAG_NACK) {
-            printf("Resending packet %u due to NACK (tail)\n", pkt.header.seq_num);
-            send_data_packet(sockfd, &serv_addr, filefd, pkt.header.seq_num, total_size, payload_size);
+            nack_requests_received++;
+            retransmissions++;
+
+            send_data_packet(sockfd,
+                             &serv_addr,
+                             filefd,
+                             pkt.header.seq_num,
+                             total_size,
+                             payload_size);
         }
     }
 
@@ -207,12 +406,22 @@ int main(int argc, char *argv[])
         double elapsed;
 
         clock_gettime(CLOCK_REALTIME, &send_done);
-        elapsed = (send_done.tv_sec - send_start.tv_sec) +
-                  (send_done.tv_nsec - send_start.tv_nsec) / 1000000000.0;
+
+        elapsed =
+            (send_done.tv_sec - send_start.tv_sec) +
+            (send_done.tv_nsec - send_start.tv_nsec) / 1000000000.0;
 
         printf("Sender done timestamp (epoch): %lld.%09ld\n",
-               (long long)send_done.tv_sec, send_done.tv_nsec);
+               (long long)send_done.tv_sec,
+               send_done.tv_nsec);
+
         printf("Sender-side elapsed: %.3f seconds\n", elapsed);
+
+        printf("NACK requests received: %llu\n",
+               (unsigned long long)nack_requests_received);
+
+        printf("Retransmissions sent: %llu\n",
+               (unsigned long long)retransmissions);
     }
 
     printf("UDP file send completed.\n");
@@ -220,5 +429,5 @@ int main(int argc, char *argv[])
     close(filefd);
     close(sockfd);
 
-    return 0;
+    return EXIT_SUCCESS;
 }
