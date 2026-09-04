@@ -39,27 +39,11 @@ static void send_ctrl(int sockfd, struct sockaddr_in *addr, socklen_t len,
     sendto(sockfd, &pkt, sizeof(packet_header_t), 0, (struct sockaddr *)addr, len);
 }
 
-/* Nudges the sender for any gap currently inside the receive window,
- * so loss is caught faster than waiting for the sender's own RTO.
- * Globally throttled (not per-seq) since one sweep covers every gap
- * in the window at once.
- *
- * A gap isn't NACKed the first time it's noticed - it's only timestamped
- * in pending_since[]. It's only NACKed once it has stayed a gap for at
- * least NACK_MIN_AGE_MS, so a packet that's simply still in flight (sent
- * recently, not yet arrived/processed) isn't mistaken for a loss. Without
- * this, a fast sender that bursts the whole window at once can make every
- * not-yet-arrived packet look like a "gap" to a sweep that fires before
- * the receiver has caught up, triggering a storm of unnecessary
- * retransmits. pending_since[slot] is reset to {0,0} when the slot is
- * freed for reuse (see the rcv_base slide loop in main), so a later
- * seq_num reusing that slot starts with a clean "not yet seen" state.
- *
- * Capped at NACK_SWEEP_CAP NACKs per sweep: the lab's tc qdisc allows
- * only a ~9KB instantaneous burst before dropping outright (see the
- * NACK_SWEEP_CAP comment in common.h), and a window this size can have
- * thousands of simultaneous gaps after a burst-loss event - sending
- * them all in one tight loop would itself blow through that budget. */
+/* Diagnostic counter only - total NACKs sent across every sweep, used
+ * to compare against the number of distinct loss events (see the
+ * stats printed at the end of main()). No effect on protocol behavior. */
+static uint64_t stat_nacks_sent = 0;
+
 static void nack_window_gaps(int sockfd, struct sockaddr_in *addr, socklen_t len,
                               const uint8_t *received, struct timespec *pending_since,
                               uint32_t rcv_base, uint32_t window_end,
@@ -84,23 +68,13 @@ static void nack_window_gaps(int sockfd, struct sockaddr_in *addr, socklen_t len
         } else if (timespec_diff_ms(&now, &pending_since[slot]) >= NACK_MIN_AGE_MS) {
             send_ctrl(sockfd, addr, len, FLAG_NACK, seq);
             sent++;
+            stat_nacks_sent++;
         }
     }
 
     *last_sweep = now;
 }
 
-/* Upper bound for a nack_window_gaps sweep. Before EOF, this must NOT
- * just be rcv_base + WINDOW_SIZE: the sender paces its sends (see
- * pace_send() in client.c) rather than bursting the whole window
- * instantly, so a slot deep in the window may genuinely not have been
- * sent yet. NACKing based on window size alone mistakes "not sent
- * yet" for "lost". highest_seq_seen (the highest seq_num actually
- * received so far, in or out of order) is direct evidence of how far
- * the sender has actually reached, so cap the sweep there instead -
- * only gaps behind something we know arrived are treated as losses.
- * After EOF the sender has finished sending everything up to eof_seq,
- * so that evidence-based cap no longer applies. */
 static uint32_t nack_sweep_end(uint32_t rcv_base, uint32_t highest_seq_seen,
                                 int eof_received, uint32_t eof_seq)
 {
@@ -137,6 +111,9 @@ int main(int argc, char *argv[])
     int eof_received = 0;
     int retries = 0;
     struct timeval tv;
+
+    /* Diagnostic counters only - no effect on protocol behavior. */
+    uint64_t stat_new_data = 0, stat_dup_below_base = 0, stat_dup_in_window = 0;
 
     if (argc < 3) {
         fprintf(stderr, "usage: %s port output_file [chunk_size]\n", argv[0]);
@@ -238,6 +215,7 @@ int main(int argc, char *argv[])
                  * lost, so re-ACK to stop the sender retransmitting it
                  * forever. */
                 send_ctrl(sockfd, &sender_addr, sender_len, FLAG_ACK, seq);
+                stat_dup_below_base++;
             } else if (seq < rcv_base + WINDOW_SIZE) {
                 uint32_t slot = seq % WINDOW_SIZE;
 
@@ -248,6 +226,9 @@ int main(int argc, char *argv[])
 
                     received[slot] = 1;
                     bytes_received += pkt.header.data_len;
+                    stat_new_data++;
+                } else {
+                    stat_dup_in_window++;
                 }
 
                 send_ctrl(sockfd, &sender_addr, sender_len, FLAG_ACK, seq);
@@ -304,6 +285,10 @@ int main(int argc, char *argv[])
         if (!(eof_received && rcv_base >= eof_seq))
             printf("WARNING: gave up with %u packet(s) still missing (first missing seq=%u)\n",
                    eof_seq - rcv_base, rcv_base);
+
+        printf("Stats: new_data=%llu dup_below_base(ack_lost_recovery)=%llu dup_in_window=%llu nacks_sent=%llu\n",
+               (unsigned long long)stat_new_data, (unsigned long long)stat_dup_below_base,
+               (unsigned long long)stat_dup_in_window, (unsigned long long)stat_nacks_sent);
     } else {
         printf("No file data was received.\n");
     }

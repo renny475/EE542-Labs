@@ -158,6 +158,13 @@ int main(int argc, char *argv[])
     struct timeval tv;
     int retries;
 
+    /* Diagnostic counters only - no effect on protocol behavior. Printed
+     * at the end so a slow run (e.g. high-loss cases) can be attributed
+     * to a specific cause instead of guessed at. */
+    uint64_t stat_new_sends = 0, stat_nack_resends = 0, stat_rto_resends = 0;
+    uint64_t stat_acks_received = 0, stat_nacks_received = 0;
+    long stat_window_full_stall_ms = 0;
+
     if (argc < 4) {
         fprintf(stderr, "usage: %s receiver_host port file_to_send [chunk_size]\n", argv[0]);
         exit(1);
@@ -240,6 +247,17 @@ int main(int argc, char *argv[])
            argv[3], (long long)total_size, payload_size, total_packets, WINDOW_SIZE);
 
     while (send_base < total_packets) {
+        /* window_was_full: true if, at the top of this iteration, the
+         * sender literally could not send anything new (window at cap
+         * with data still left) - used below to attribute this
+         * iteration's wall-clock time to "blocked waiting on the
+         * window" rather than useful work. */
+        int window_was_full = (next_seq >= send_base + WINDOW_SIZE) && (next_seq < total_packets);
+        struct timespec stall_iter_start;
+
+        if (window_was_full)
+            clock_gettime(CLOCK_MONOTONIC, &stall_iter_start);
+
         /* Fill the window with new packets up to its limit. */
         while (next_seq < send_base + WINDOW_SIZE && next_seq < total_packets) {
             uint32_t slot = next_seq % WINDOW_SIZE;
@@ -249,6 +267,7 @@ int main(int argc, char *argv[])
             clock_gettime(CLOCK_MONOTONIC, &last_sent[slot]);
             acked[slot] = 0;
             next_seq++;
+            stat_new_sends++;
         }
 
         /* Service every ACK/NACK that has already arrived, not just one.
@@ -282,8 +301,11 @@ int main(int argc, char *argv[])
 
                         if (pkt.header.flags == FLAG_ACK) {
                             acked[slot] = 1;
+                            stat_acks_received++;
                         } else if (pkt.header.flags == FLAG_NACK) {
+                            stat_nacks_received++;
                             resend_buffered(sockfd, &serv_addr, &window_buf[slot]);
+                            stat_nack_resends++;
                             clock_gettime(CLOCK_MONOTONIC, &last_sent[slot]);
                         }
                     }
@@ -307,9 +329,17 @@ int main(int argc, char *argv[])
 
                 if (!acked[slot] && timespec_diff_ms(&now, &last_sent[slot]) >= RTO_MS) {
                     resend_buffered(sockfd, &serv_addr, &window_buf[slot]);
+                    stat_rto_resends++;
                     last_sent[slot] = now;
                 }
             }
+        }
+
+        if (window_was_full) {
+            struct timespec stall_iter_end;
+
+            clock_gettime(CLOCK_MONOTONIC, &stall_iter_end);
+            stat_window_full_stall_ms += timespec_diff_ms(&stall_iter_end, &stall_iter_start);
         }
     }
 
@@ -345,6 +375,16 @@ int main(int argc, char *argv[])
         printf("Sender done timestamp (epoch): %lld.%09ld\n",
                (long long)send_done.tv_sec, send_done.tv_nsec);
         printf("Sender-side elapsed: %.3f seconds\n", elapsed);
+
+        printf("Stats: new_sends=%llu nack_resends=%llu rto_resends=%llu total_sends=%llu (ideal=%u)\n",
+               (unsigned long long)stat_new_sends, (unsigned long long)stat_nack_resends,
+               (unsigned long long)stat_rto_resends,
+               (unsigned long long)(stat_new_sends + stat_nack_resends + stat_rto_resends),
+               total_packets);
+        printf("Stats: acks_received=%llu nacks_received=%llu window_full_stall_ms=%ld (%.1f%% of elapsed)\n",
+               (unsigned long long)stat_acks_received, (unsigned long long)stat_nacks_received,
+               stat_window_full_stall_ms,
+               elapsed > 0.0 ? 100.0 * stat_window_full_stall_ms / (elapsed * 1000.0) : 0.0);
     }
 
     printf("UDP file send completed.\n");
