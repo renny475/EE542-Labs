@@ -53,7 +53,13 @@ static void send_ctrl(int sockfd, struct sockaddr_in *addr, socklen_t len,
  * the receiver has caught up, triggering a storm of unnecessary
  * retransmits. pending_since[slot] is reset to {0,0} when the slot is
  * freed for reuse (see the rcv_base slide loop in main), so a later
- * seq_num reusing that slot starts with a clean "not yet seen" state. */
+ * seq_num reusing that slot starts with a clean "not yet seen" state.
+ *
+ * Capped at NACK_SWEEP_CAP NACKs per sweep: the lab's tc qdisc allows
+ * only a ~9KB instantaneous burst before dropping outright (see the
+ * NACK_SWEEP_CAP comment in common.h), and a window this size can have
+ * thousands of simultaneous gaps after a burst-loss event - sending
+ * them all in one tight loop would itself blow through that budget. */
 static void nack_window_gaps(int sockfd, struct sockaddr_in *addr, socklen_t len,
                               const uint8_t *received, struct timespec *pending_since,
                               uint32_t rcv_base, uint32_t window_end,
@@ -61,21 +67,24 @@ static void nack_window_gaps(int sockfd, struct sockaddr_in *addr, socklen_t len
 {
     struct timespec now;
     uint32_t seq;
+    uint32_t sent = 0;
 
     clock_gettime(CLOCK_MONOTONIC, &now);
     if (timespec_diff_ms(&now, last_sweep) < NACK_THROTTLE_MS)
         return;
 
-    for (seq = rcv_base; seq < window_end; seq++) {
+    for (seq = rcv_base; seq < window_end && sent < NACK_SWEEP_CAP; seq++) {
         uint32_t slot = seq % WINDOW_SIZE;
 
         if (received[slot])
             continue;
 
-        if (pending_since[slot].tv_sec == 0 && pending_since[slot].tv_nsec == 0)
+        if (pending_since[slot].tv_sec == 0 && pending_since[slot].tv_nsec == 0) {
             pending_since[slot] = now;
-        else if (timespec_diff_ms(&now, &pending_since[slot]) >= NACK_MIN_AGE_MS)
+        } else if (timespec_diff_ms(&now, &pending_since[slot]) >= NACK_MIN_AGE_MS) {
             send_ctrl(sockfd, addr, len, FLAG_NACK, seq);
+            sent++;
+        }
     }
 
     *last_sweep = now;

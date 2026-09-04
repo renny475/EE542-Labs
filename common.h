@@ -54,6 +54,33 @@
  * waiting for the sender's own RTO. */
 #define NACK_MIN_AGE_MS 300
 
+/* Max NACKs a single nack_window_gaps sweep will send. The lab's tc
+ * qdisc is `tbf rate 100mbit latency 0.001ms burst 9015` on every hop
+ * (client, server, and both router interfaces): burst 9015 bytes is
+ * only ~8-9 packets, and the near-zero latency means anything past
+ * that burst is dropped outright rather than queued. A sweep that
+ * fires many NACKs at once (a large window can have thousands of
+ * simultaneous gaps) would itself blow through that budget and
+ * self-inflict more loss than it's trying to repair. */
+#define NACK_SWEEP_CAP 512
+
+/* Sender-side pacing target for data sends (Mbit/s), applied to every
+ * data send - first transmission and every retransmit alike - via
+ * pace_send() in client.c. Without this, the "fill window" loop fires
+ * WINDOW_SIZE packets essentially instantaneously, which vastly
+ * exceeds the tc tbf burst allowance above and gets almost all of it
+ * dropped at the shaper instead of reaching the receiver at all. Set
+ * below Case 3's 80Mbit/s router-leg cap (not just the 100Mbit/s
+ * client/server egress cap) so pacing itself doesn't trigger the same
+ * self-inflicted loss on that hop; leaves some margin for ACK/NACK
+ * traffic sharing the link and for real network jitter. */
+#define PACE_TARGET_MBPS 75
+
+/* UDP + IPv4 header bytes added on the wire beyond our own
+ * packet_header_t + payload, used by pace_send() to pace against the
+ * actual bytes-on-the-wire rather than just the application payload. */
+#define PACE_OVERHEAD_BYTES 28
+
 typedef struct
 {
     /* data */

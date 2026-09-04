@@ -35,6 +35,52 @@ static long timespec_diff_ms(const struct timespec *a, const struct timespec *b)
     return (a->tv_sec - b->tv_sec) * 1000L + (a->tv_nsec - b->tv_nsec) / 1000000L;
 }
 
+static long timespec_diff_ns(const struct timespec *a, const struct timespec *b)
+{
+    return (a->tv_sec - b->tv_sec) * 1000000000L + (a->tv_nsec - b->tv_nsec);
+}
+
+/* Rate-limits data sends (first transmission and retransmits alike) to
+ * PACE_TARGET_MBPS. The lab's tc qdisc allows only a ~9KB instantaneous
+ * burst before dropping outright (see the NACK_SWEEP_CAP comment in
+ * common.h) - without this, "fill window" sends the whole WINDOW_SIZE
+ * burst in a tight loop, blowing through that budget and getting most
+ * of it dropped at the shaper instead of reaching the receiver.
+ * Maintains a single "next allowed send time" and sleeps as needed to
+ * hold to it; if we fall behind (e.g. after a long RTO wait), the
+ * schedule is reset to now rather than let the backlog burst out. */
+static void pace_send(size_t wire_bytes)
+{
+    static struct timespec pace_next = {0, 0};
+    struct timespec now;
+    long wait_ns, interval_ns;
+
+    clock_gettime(CLOCK_MONOTONIC, &now);
+
+    if (pace_next.tv_sec == 0 && pace_next.tv_nsec == 0)
+        pace_next = now;
+
+    wait_ns = timespec_diff_ns(&pace_next, &now);
+    if (wait_ns > 0) {
+        struct timespec sleep_ts;
+
+        sleep_ts.tv_sec = wait_ns / 1000000000L;
+        sleep_ts.tv_nsec = wait_ns % 1000000000L;
+        nanosleep(&sleep_ts, NULL);
+    } else {
+        pace_next = now;
+    }
+
+    interval_ns = (long)((double)(wire_bytes + PACE_OVERHEAD_BYTES) * 8.0
+                          / ((double)PACE_TARGET_MBPS * 1000000.0) * 1e9);
+
+    pace_next.tv_nsec += interval_ns;
+    while (pace_next.tv_nsec >= 1000000000L) {
+        pace_next.tv_nsec -= 1000000000L;
+        pace_next.tv_sec += 1;
+    }
+}
+
 /* Reads packet `seq`'s data from disk into buf and sends it. Only used
  * the first time a packet enters the window - retransmits reuse the
  * already-buffered copy (see resend_buffered) instead of touching disk. */
@@ -57,6 +103,7 @@ static void load_and_send(int sockfd, struct sockaddr_in *addr, int filefd,
     buf->header.data_len = (uint16_t)n;
     packet_set_checksum(buf);
 
+    pace_send(sizeof(packet_header_t) + (size_t)n);
     if (sendto(sockfd, buf, sizeof(packet_header_t) + n, 0,
                (struct sockaddr *)addr, sizeof(*addr)) < 0)
         error("ERROR sending UDP packet");
@@ -64,6 +111,7 @@ static void load_and_send(int sockfd, struct sockaddr_in *addr, int filefd,
 
 static void resend_buffered(int sockfd, struct sockaddr_in *addr, const packet_t *buf)
 {
+    pace_send(sizeof(packet_header_t) + buf->header.data_len);
     sendto(sockfd, buf, sizeof(packet_header_t) + buf->header.data_len, 0,
            (struct sockaddr *)addr, sizeof(*addr));
 }
