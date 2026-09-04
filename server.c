@@ -12,15 +12,7 @@
 
 #include "common.h"
 
-/* server.c is the RECEIVER: it listens for a stream from the sender
- * (client.c) and saves it to the path given on the command line. */
-
 #define PROGRESS_INTERVAL (10ULL * 1024 * 1024)
-
-/* Upper bound on how many distinct seq_nums we track for dedup/gap
- * detection, sized off a generous max transfer size / smallest chunk
- * size we support, with headroom. */
-#define MAX_TRACKED_PACKETS ((size_t)((4ULL * 1024 * 1024 * 1024) / DEFAULT_PAYLOAD) + 16)
 
 void error(const char *msg)
 {
@@ -33,101 +25,60 @@ static long timespec_diff_ms(const struct timespec *a, const struct timespec *b)
     return (a->tv_sec - b->tv_sec) * 1000L + (a->tv_nsec - b->tv_nsec) / 1000000L;
 }
 
-static void send_nack(int sockfd, struct sockaddr_in *sender_addr,
-                       socklen_t sender_len, uint32_t seq)
+static void send_ctrl(int sockfd, struct sockaddr_in *addr, socklen_t len,
+                       uint16_t flags, uint32_t seq)
 {
     packet_t pkt;
 
     pkt.header.seq_num = seq;
     pkt.header.ack_num = 0;
-    pkt.header.flags = FLAG_NACK;
+    pkt.header.flags = flags;
     pkt.header.data_len = 0;
     packet_set_checksum(&pkt);
 
-    sendto(sockfd, &pkt, sizeof(packet_header_t), 0,
-           (struct sockaddr *)sender_addr, sender_len);
+    sendto(sockfd, &pkt, sizeof(packet_header_t), 0, (struct sockaddr *)addr, len);
 }
 
-/* Used during the post-EOF tail wait, where no further packets arrive
- * on their own to reveal gaps one at a time: request every outstanding
- * gap in a single sweep so a burst of consecutive losses is resolved
- * in one round-trip instead of one gap per timeout tick. Also used
- * reactively during phase 1 whenever a later packet exposes a gap. */
-static void nack_all_gaps(int sockfd, struct sockaddr_in *sender_addr,
-                           socklen_t sender_len, const uint8_t *received,
-                           uint32_t expected_seq, uint32_t eof_seq)
-{
-    uint32_t seq;
-    uint32_t sent = 0;
-
-    for (seq = expected_seq; seq < eof_seq && seq < MAX_TRACKED_PACKETS && sent < NACK_SWEEP_CAP; seq++) {
-        if (!received[seq]) {
-            send_nack(sockfd, sender_addr, sender_len, seq);
-            sent++;
-        }
-    }
-}
-
-/* Writes a validated data packet to its correct offset in the output
- * file, marks it received, counts its bytes exactly once, and slides
- * expected_seq forward over any run of packets that are now
- * contiguously complete. */
-static void record_data_packet(int outfd, const packet_t *pkt, uint8_t *received,
-                                uint32_t *expected_seq, uint64_t *bytes_received,
-                                size_t payload_size)
-{
-    uint32_t seq = pkt->header.seq_num;
-    off_t offset = (off_t)seq * payload_size;
-
-    if (seq >= MAX_TRACKED_PACKETS)
-        return;
-
-    if (!received[seq]) {
-        if (pwrite(outfd, pkt->data, pkt->header.data_len, offset) < 0)
-            error("ERROR writing received data to output file");
-
-        received[seq] = 1;
-        *bytes_received += pkt->header.data_len;
-    }
-
-    while (*expected_seq < MAX_TRACKED_PACKETS && received[*expected_seq])
-        (*expected_seq)++;
-}
-
-/* Repairs many gaps in parallel instead of chasing the single lowest
- * one: globally throttled to once per NACK_THROTTLE_MS (not per-seq),
- * each call sweeps forward from expected_seq and NACKs up to
- * NACK_SWEEP_CAP outstanding gaps at once, bounded by `upper_bound`
- * (the highest seq_num seen so far during phase 1, or eof_seq once
- * known). This is what lets the receiver keep up when loss produces
- * tens of thousands of simultaneous gaps - resolving one gap per RTT
- * cannot scale, resolving a few hundred per RTT can. The sweep size is
- * capped well under the tbf burst allowance so a sweep can't flood the
- * link and self-inflict extra loss. */
-static void periodic_nack_sweep(int sockfd, struct sockaddr_in *sender_addr,
-                                 socklen_t sender_len, const uint8_t *received,
-                                 uint32_t expected_seq, uint32_t upper_bound,
-                                 struct timespec *last_sweep_time)
+/* Nudges the sender for any gap currently inside the receive window,
+ * so loss is caught faster than waiting for the sender's own RTO.
+ * Globally throttled (not per-seq) since one sweep covers every gap
+ * in the window at once.
+ *
+ * A gap isn't NACKed the first time it's noticed - it's only timestamped
+ * in pending_since[]. It's only NACKed once it has stayed a gap for at
+ * least NACK_MIN_AGE_MS, so a packet that's simply still in flight (sent
+ * recently, not yet arrived/processed) isn't mistaken for a loss. Without
+ * this, a fast sender that bursts the whole window at once can make every
+ * not-yet-arrived packet look like a "gap" to a sweep that fires before
+ * the receiver has caught up, triggering a storm of unnecessary
+ * retransmits. pending_since[slot] is reset to {0,0} when the slot is
+ * freed for reuse (see the rcv_base slide loop in main), so a later
+ * seq_num reusing that slot starts with a clean "not yet seen" state. */
+static void nack_window_gaps(int sockfd, struct sockaddr_in *addr, socklen_t len,
+                              const uint8_t *received, struct timespec *pending_since,
+                              uint32_t rcv_base, uint32_t window_end,
+                              struct timespec *last_sweep)
 {
     struct timespec now;
     uint32_t seq;
-    uint32_t sent = 0;
 
     clock_gettime(CLOCK_MONOTONIC, &now);
-
-    if (timespec_diff_ms(&now, last_sweep_time) < NACK_THROTTLE_MS)
+    if (timespec_diff_ms(&now, last_sweep) < NACK_THROTTLE_MS)
         return;
 
-    for (seq = expected_seq;
-         seq <= upper_bound && seq < MAX_TRACKED_PACKETS && sent < NACK_SWEEP_CAP;
-         seq++) {
-        if (!received[seq]) {
-            send_nack(sockfd, sender_addr, sender_len, seq);
-            sent++;
-        }
+    for (seq = rcv_base; seq < window_end; seq++) {
+        uint32_t slot = seq % WINDOW_SIZE;
+
+        if (received[slot])
+            continue;
+
+        if (pending_since[slot].tv_sec == 0 && pending_since[slot].tv_nsec == 0)
+            pending_since[slot] = now;
+        else if (timespec_diff_ms(&now, &pending_since[slot]) >= NACK_MIN_AGE_MS)
+            send_ctrl(sockfd, addr, len, FLAG_NACK, seq);
     }
 
-    *last_sweep_time = now;
+    *last_sweep = now;
 }
 
 int main(int argc, char *argv[])
@@ -138,18 +89,19 @@ int main(int argc, char *argv[])
     socklen_t sender_len;
     packet_t pkt;
     struct timespec start_time, end_time, finish_realtime;
+    struct timespec last_sweep = {0, 0};
     uint64_t bytes_received = 0;
     uint64_t last_reported = 0;
     int timer_started = 0;
     size_t payload_size;
 
-    uint8_t *received;
-    uint32_t expected_seq = 0;
-    uint32_t highest_seq_seen = 0;
+    uint8_t *received; /* WINDOW_SIZE slots, indexed by seq % WINDOW_SIZE */
+    struct timespec *pending_since; /* WINDOW_SIZE slots, parallel to received[] */
+    uint32_t rcv_base = 0;
     uint32_t eof_seq = 0;
     int eof_received = 0;
-
-    struct timespec last_sweep_time = {0, 0};
+    int retries = 0;
+    struct timeval tv;
 
     if (argc < 3) {
         fprintf(stderr, "usage: %s port output_file [chunk_size]\n", argv[0]);
@@ -168,9 +120,10 @@ int main(int argc, char *argv[])
     if (outfd < 0)
         error("ERROR opening output file");
 
-    received = calloc(MAX_TRACKED_PACKETS, 1);
-    if (!received)
-        error("ERROR allocating packet tracking table");
+    received = calloc(WINDOW_SIZE, 1);
+    pending_since = calloc(WINDOW_SIZE, sizeof(struct timespec));
+    if (!received || !pending_since)
+        error("ERROR allocating window tracking table");
 
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
     if (sockfd < 0)
@@ -184,20 +137,35 @@ int main(int argc, char *argv[])
     if (bind(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
         error("ERROR binding UDP socket");
 
-    printf("UDP receiver listening on port %d, saving to %s (chunk_size=%zu)\n",
-           portno, argv[2], payload_size);
+    printf("UDP receiver listening on port %d, saving to %s (chunk_size=%zu, window=%d)\n",
+           portno, argv[2], payload_size, WINDOW_SIZE);
     printf("Waiting for file data from sender...\n");
 
     sender_len = sizeof(sender_addr);
 
-    /* Phase 1: block until EOF arrives, tracking data packets, counting
-     * bytes exactly once each, and NACKing gaps as they're exposed. */
-    while (!eof_received) {
+    tv.tv_sec = TAIL_TIMEOUT_MS / 1000;
+    tv.tv_usec = (TAIL_TIMEOUT_MS % 1000) * 1000;
+    if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0)
+        error("ERROR setting receive timeout");
+
+    while (!(eof_received && rcv_base >= eof_seq) && retries < TAIL_MAX_RETRIES) {
         n = recvfrom(sockfd, &pkt, sizeof(pkt), 0,
                      (struct sockaddr *)&sender_addr, &sender_len);
 
-        if (n < 0)
+        if (n < 0) {
+            if (errno == EWOULDBLOCK || errno == EAGAIN) {
+                retries++;
+                if (eof_received)
+                    send_ctrl(sockfd, &sender_addr, sender_len, FLAG_ACK, eof_seq);
+                nack_window_gaps(sockfd, &sender_addr, sender_len, received, pending_since,
+                                  rcv_base, eof_received ? eof_seq : rcv_base + WINDOW_SIZE,
+                                  &last_sweep);
+                continue;
+            }
             error("ERROR receiving UDP data");
+        }
+
+        retries = 0;
 
         if (!packet_verify_checksum(&pkt, (size_t)n))
             continue;
@@ -210,60 +178,54 @@ int main(int argc, char *argv[])
         if (pkt.header.flags == FLAG_EOF) {
             eof_received = 1;
             eof_seq = pkt.header.seq_num;
-            break;
+            send_ctrl(sockfd, &sender_addr, sender_len, FLAG_ACK, eof_seq);
+            continue;
         }
 
-        if (pkt.header.seq_num > highest_seq_seen)
-            highest_seq_seen = pkt.header.seq_num;
+        {
+            uint32_t seq = pkt.header.seq_num;
 
-        record_data_packet(outfd, &pkt, received, &expected_seq, &bytes_received, payload_size);
-        periodic_nack_sweep(sockfd, &sender_addr, sender_len, received,
-                             expected_seq, highest_seq_seen, &last_sweep_time);
+            if (seq < rcv_base) {
+                /* Already delivered; the ACK for it must have been
+                 * lost, so re-ACK to stop the sender retransmitting it
+                 * forever. */
+                send_ctrl(sockfd, &sender_addr, sender_len, FLAG_ACK, seq);
+            } else if (seq < rcv_base + WINDOW_SIZE) {
+                uint32_t slot = seq % WINDOW_SIZE;
+
+                if (!received[slot]) {
+                    if (pwrite(outfd, pkt.data, pkt.header.data_len,
+                               (off_t)seq * payload_size) < 0)
+                        error("ERROR writing received data to output file");
+
+                    received[slot] = 1;
+                    bytes_received += pkt.header.data_len;
+                }
+
+                send_ctrl(sockfd, &sender_addr, sender_len, FLAG_ACK, seq);
+
+                while (received[rcv_base % WINDOW_SIZE]) {
+                    uint32_t freed_slot = rcv_base % WINDOW_SIZE;
+
+                    received[freed_slot] = 0;
+                    pending_since[freed_slot].tv_sec = 0;
+                    pending_since[freed_slot].tv_nsec = 0;
+                    rcv_base++;
+                }
+            }
+            /* seq >= rcv_base + WINDOW_SIZE would mean the sender sent
+             * ahead of the agreed window - shouldn't happen since it
+             * respects WINDOW_SIZE too, so just drop it defensively. */
+        }
+
+        nack_window_gaps(sockfd, &sender_addr, sender_len, received, pending_since,
+                          rcv_base, eof_received ? eof_seq : rcv_base + WINDOW_SIZE,
+                          &last_sweep);
 
         if (bytes_received - last_reported >= PROGRESS_INTERVAL) {
             printf("Progress: %.2f MiB received\n", bytes_received / (1024.0 * 1024.0));
             fflush(stdout);
             last_reported = bytes_received;
-        }
-    }
-
-    /* Phase 2: tail wait. Keep NACKing the outstanding gaps and waiting
-     * for retransmits until we catch up to eof_seq or give up after
-     * TAIL_MAX_RETRIES consecutive quiet timeouts. */
-    {
-        struct timeval tv;
-        int retries = 0;
-
-        tv.tv_sec = TAIL_TIMEOUT_MS / 1000;
-        tv.tv_usec = (TAIL_TIMEOUT_MS % 1000) * 1000;
-        if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0)
-            error("ERROR setting receive timeout");
-
-        while (expected_seq < eof_seq && retries < TAIL_MAX_RETRIES) {
-            n = recvfrom(sockfd, &pkt, sizeof(pkt), 0,
-                         (struct sockaddr *)&sender_addr, &sender_len);
-
-            if (n < 0) {
-                if (errno == EWOULDBLOCK || errno == EAGAIN) {
-                    retries++;
-                    nack_all_gaps(sockfd, &sender_addr, sender_len, received,
-                                  expected_seq, eof_seq);
-                    continue;
-                }
-                error("ERROR receiving UDP data during tail wait");
-            }
-
-            retries = 0;
-
-            if (!packet_verify_checksum(&pkt, (size_t)n))
-                continue;
-
-            if (pkt.header.flags == FLAG_EOF)
-                continue;
-
-            record_data_packet(outfd, &pkt, received, &expected_seq, &bytes_received, payload_size);
-            periodic_nack_sweep(sockfd, &sender_addr, sender_len, received,
-                                 expected_seq, eof_seq, &last_sweep_time);
         }
     }
 
@@ -290,9 +252,9 @@ int main(int argc, char *argv[])
         printf("Receiver finish timestamp (epoch): %lld.%09ld\n",
                (long long)finish_realtime.tv_sec, finish_realtime.tv_nsec);
 
-        if (expected_seq < eof_seq)
+        if (!(eof_received && rcv_base >= eof_seq))
             printf("WARNING: gave up with %u packet(s) still missing (first missing seq=%u)\n",
-                   eof_seq - expected_seq, expected_seq);
+                   eof_seq - rcv_base, rcv_base);
     } else {
         printf("No file data was received.\n");
     }
@@ -300,6 +262,7 @@ int main(int argc, char *argv[])
     fsync(outfd);
     close(outfd);
     free(received);
+    free(pending_since);
     close(sockfd);
     return 0;
 }
