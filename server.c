@@ -90,6 +90,31 @@ static void nack_window_gaps(int sockfd, struct sockaddr_in *addr, socklen_t len
     *last_sweep = now;
 }
 
+/* Upper bound for a nack_window_gaps sweep. Before EOF, this must NOT
+ * just be rcv_base + WINDOW_SIZE: the sender paces its sends (see
+ * pace_send() in client.c) rather than bursting the whole window
+ * instantly, so a slot deep in the window may genuinely not have been
+ * sent yet. NACKing based on window size alone mistakes "not sent
+ * yet" for "lost". highest_seq_seen (the highest seq_num actually
+ * received so far, in or out of order) is direct evidence of how far
+ * the sender has actually reached, so cap the sweep there instead -
+ * only gaps behind something we know arrived are treated as losses.
+ * After EOF the sender has finished sending everything up to eof_seq,
+ * so that evidence-based cap no longer applies. */
+static uint32_t nack_sweep_end(uint32_t rcv_base, uint32_t highest_seq_seen,
+                                int eof_received, uint32_t eof_seq)
+{
+    uint32_t window_cap, reachable;
+
+    if (eof_received)
+        return eof_seq;
+
+    window_cap = rcv_base + WINDOW_SIZE;
+    reachable = highest_seq_seen + 1;
+
+    return reachable < window_cap ? reachable : window_cap;
+}
+
 int main(int argc, char *argv[])
 {
     int sockfd, portno, outfd;
@@ -107,6 +132,7 @@ int main(int argc, char *argv[])
     uint8_t *received; /* WINDOW_SIZE slots, indexed by seq % WINDOW_SIZE */
     struct timespec *pending_since; /* WINDOW_SIZE slots, parallel to received[] */
     uint32_t rcv_base = 0;
+    uint32_t highest_seq_seen = 0;
     uint32_t eof_seq = 0;
     int eof_received = 0;
     int retries = 0;
@@ -138,6 +164,15 @@ int main(int argc, char *argv[])
     if (sockfd < 0)
         error("ERROR opening UDP socket");
 
+    /* See the matching comment in client.c: a generous receive buffer
+     * keeps a burst of incoming data packets from being silently
+     * dropped by the kernel before this process gets to read them. */
+    {
+        int rcvbuf = 4 * 1024 * 1024;
+
+        setsockopt(sockfd, SOL_SOCKET, SO_RCVBUF, &rcvbuf, sizeof(rcvbuf));
+    }
+
     bzero((char *)&serv_addr, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = INADDR_ANY;
@@ -167,7 +202,8 @@ int main(int argc, char *argv[])
                 if (eof_received)
                     send_ctrl(sockfd, &sender_addr, sender_len, FLAG_ACK, eof_seq);
                 nack_window_gaps(sockfd, &sender_addr, sender_len, received, pending_since,
-                                  rcv_base, eof_received ? eof_seq : rcv_base + WINDOW_SIZE,
+                                  rcv_base,
+                                  nack_sweep_end(rcv_base, highest_seq_seen, eof_received, eof_seq),
                                   &last_sweep);
                 continue;
             }
@@ -193,6 +229,9 @@ int main(int argc, char *argv[])
 
         {
             uint32_t seq = pkt.header.seq_num;
+
+            if (seq > highest_seq_seen)
+                highest_seq_seen = seq;
 
             if (seq < rcv_base) {
                 /* Already delivered; the ACK for it must have been
@@ -228,7 +267,8 @@ int main(int argc, char *argv[])
         }
 
         nack_window_gaps(sockfd, &sender_addr, sender_len, received, pending_since,
-                          rcv_base, eof_received ? eof_seq : rcv_base + WINDOW_SIZE,
+                          rcv_base,
+                          nack_sweep_end(rcv_base, highest_seq_seen, eof_received, eof_seq),
                           &last_sweep);
 
         if (bytes_received - last_reported >= PROGRESS_INTERVAL) {

@@ -81,6 +81,14 @@
  * actual bytes-on-the-wire rather than just the application payload. */
 #define PACE_OVERHEAD_BYTES 28
 
+/* pace_send() sleeps once per this many accumulated bytes rather than
+ * once per packet, so OS/VM scheduler oversleep on a very short
+ * nanosleep() doesn't dominate and silently throttle throughput well
+ * under PACE_TARGET_MBPS. Kept under the tc tbf burst allowance
+ * (9015 bytes, see NACK_SWEEP_CAP above) so batching sends doesn't
+ * reintroduce the burst-drop problem pacing exists to avoid. */
+#define PACE_BATCH_BYTES 8000
+
 typedef struct
 {
     /* data */

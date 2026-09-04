@@ -46,38 +46,50 @@ static long timespec_diff_ns(const struct timespec *a, const struct timespec *b)
  * common.h) - without this, "fill window" sends the whole WINDOW_SIZE
  * burst in a tight loop, blowing through that budget and getting most
  * of it dropped at the shaper instead of reaching the receiver.
- * Maintains a single "next allowed send time" and sleeps as needed to
- * hold to it; if we fall behind (e.g. after a long RTO wait), the
- * schedule is reset to now rather than let the backlog burst out. */
+ *
+ * Paces in batches rather than sleeping after every single packet:
+ * bytes accumulate in batch_bytes, freely, until PACE_BATCH_BYTES is
+ * reached, then a single sleep brings the batch's average rate down
+ * to target before the next batch starts. Sleeping once per ~8 packets
+ * for ~8x as long each time is far more accurate than sleeping after
+ * every packet - OS/VM schedulers commonly can't honor a sub-200us
+ * nanosleep() precisely (they round up, often to 1ms+), and at one
+ * sleep per packet that oversleep dominates and silently throttles
+ * throughput to a fraction of PACE_TARGET_MBPS. Batching amortizes
+ * that fixed per-call error over more bytes. PACE_BATCH_BYTES is kept
+ * under the tbf burst allowance so batching doesn't reintroduce the
+ * burst-drop problem this function exists to avoid; if a single
+ * packet alone exceeds it (e.g. jumbo-frame chunk sizes), it's still
+ * paced correctly as a batch of one. */
 static void pace_send(size_t wire_bytes)
 {
-    static struct timespec pace_next = {0, 0};
+    static struct timespec batch_start = {0, 0};
+    static size_t batch_bytes = 0;
     struct timespec now;
-    long wait_ns, interval_ns;
 
     clock_gettime(CLOCK_MONOTONIC, &now);
 
-    if (pace_next.tv_sec == 0 && pace_next.tv_nsec == 0)
-        pace_next = now;
+    if (batch_start.tv_sec == 0 && batch_start.tv_nsec == 0)
+        batch_start = now;
 
-    wait_ns = timespec_diff_ns(&pace_next, &now);
-    if (wait_ns > 0) {
-        struct timespec sleep_ts;
+    batch_bytes += wire_bytes;
 
-        sleep_ts.tv_sec = wait_ns / 1000000000L;
-        sleep_ts.tv_nsec = wait_ns % 1000000000L;
-        nanosleep(&sleep_ts, NULL);
-    } else {
-        pace_next = now;
-    }
+    if (batch_bytes >= PACE_BATCH_BYTES) {
+        long elapsed_ns = timespec_diff_ns(&now, &batch_start);
+        long target_ns = (long)((double)batch_bytes * 8.0
+                                 / ((double)PACE_TARGET_MBPS * 1000000.0) * 1e9);
+        long wait_ns = target_ns - elapsed_ns;
 
-    interval_ns = (long)((double)(wire_bytes + PACE_OVERHEAD_BYTES) * 8.0
-                          / ((double)PACE_TARGET_MBPS * 1000000.0) * 1e9);
+        if (wait_ns > 0) {
+            struct timespec sleep_ts;
 
-    pace_next.tv_nsec += interval_ns;
-    while (pace_next.tv_nsec >= 1000000000L) {
-        pace_next.tv_nsec -= 1000000000L;
-        pace_next.tv_sec += 1;
+            sleep_ts.tv_sec = wait_ns / 1000000000L;
+            sleep_ts.tv_nsec = wait_ns % 1000000000L;
+            nanosleep(&sleep_ts, NULL);
+        }
+
+        clock_gettime(CLOCK_MONOTONIC, &batch_start);
+        batch_bytes = 0;
     }
 }
 
@@ -178,6 +190,23 @@ int main(int argc, char *argv[])
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
     if (sockfd < 0)
         error("ERROR opening UDP socket");
+
+    /* The paced "fill window" loop can run for the better part of a
+     * second (WINDOW_SIZE packets at PACE_TARGET_MBPS) without ever
+     * draining incoming ACKs, so up to WINDOW_SIZE of them can pile up
+     * in the kernel socket buffer before this process reads any. The
+     * OS default is usually far too small for that (a few hundred KB,
+     * sometimes less), so the overflow gets silently dropped by the
+     * kernel before packet_verify_checksum() ever sees it - recoverable
+     * only via the RTO_MS fallback, not NACK (the data itself arrived
+     * fine; only its ACK was lost). Ask for a generous buffer so ACKs
+     * queue instead of being dropped; the OS clamps to its own ceiling
+     * if this exceeds it, which is harmless. */
+    {
+        int rcvbuf = 4 * 1024 * 1024;
+
+        setsockopt(sockfd, SOL_SOCKET, SO_RCVBUF, &rcvbuf, sizeof(rcvbuf));
+    }
 
     server = gethostbyname(argv[1]);
     if (server == NULL) {
