@@ -19,10 +19,16 @@
 #define FLAG_ACK  0x3
 
 /* Selective Repeat sliding window size (packets), shared by sender and
- * receiver. Sized to comfortably cover bandwidth-delay product across
- * all three lab cases (worst case ~100Mbit * 200ms RTT), so the window
- * doesn't stall waiting for ACKs before it needs to. */
-#define WINDOW_SIZE 1024
+ * receiver. Must cover the bandwidth-delay product of the worst lab
+ * case at the smallest chunk size we test (MTU 1500 -> 1024B chunks):
+ * Case 2 is 100Mbit/s * 200ms RTT =~ 2.5MB, Case 3 is 80Mbit/s * 200ms
+ * =~ 2MB. At 1024 bytes/packet, 1024 packets is only ~1MiB - too
+ * small, and caps throughput at window_bytes/RTT regardless of actual
+ * link capacity (~42Mbit/s with the old value, well under what Case
+ * 2/3 can otherwise sustain). 8192 packets gives ~8MiB at the smallest
+ * chunk size, comfortably over the ~2.5MB requirement with headroom
+ * for Case 2's 20% loss shrinking the effective in-flight window. */
+#define WINDOW_SIZE 8192
 
 /* Sender-side per-packet retransmit timeout (fallback for when a NACK
  * doesn't catch the loss first): comfortably above the largest RTT we
