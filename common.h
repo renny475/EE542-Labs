@@ -15,7 +15,16 @@
 
 #define WINDOW_SIZE 8192
 
-#define RTO_MS 800
+/* Lowered from 800 to 400 (2x the largest real RTT we test, 200ms):
+ * with the NACK path now behaving correctly (see NACK_SWEEP_CAP and
+ * the pending_since reset in nack_window_gaps), RTO no longer needs
+ * such a large margin to avoid false positives, and a shorter fallback
+ * matters a lot under Case 2's 20% loss, where a meaningful fraction
+ * of packets end up needing it regardless of NACK. Measured on a local
+ * Case 2 emulation (100Mbit, 200ms RTT, 20% bidirectional loss): 800ms
+ * -> 9.3 Mbit/s, 500ms -> 14.3 Mbit/s, 400ms -> 16.4 Mbit/s, with
+ * Case 1 and Case 3 also improving (not regressing) at 400ms. */
+#define RTO_MS 400
 
 #define TAIL_TIMEOUT_MS 500
 #define TAIL_MAX_RETRIES 120
@@ -27,7 +36,27 @@
 #define NACK_MIN_AGE_MS 300
 
 
-#define NACK_SWEEP_CAP 512
+/* Raised to WINDOW_SIZE: a sweep can now safely address every gap in
+ * the window in one pass because nack_window_gaps paces its sends
+ * (see pace_nack_send() in server.c) instead of firing them in a tight
+ * loop. The old cap of 512 was itself unsafe: 512 tiny (~44 byte)
+ * NACKs sent back to back is ~22.5KB, well over the tc tbf burst
+ * allowance (~9015 bytes, good for only ~204 NACK-sized packets
+ * instantaneously) - so under Case 2's 20% loss, a dense sweep was
+ * silently losing NACKs to the same burst-drop mechanism pacing exists
+ * to prevent elsewhere, on top of only covering under a third of a
+ * fully-loaded window's gaps per pass to begin with. */
+#define NACK_SWEEP_CAP WINDOW_SIZE
+
+/* Pacing for NACK sends within a sweep (see pace_nack_send() in
+ * server.c), same rationale and target as the sender's data pacing:
+ * batch sends and cap each batch under the tc tbf burst allowance so a
+ * sweep with many gaps can't blow through it the way an uncapped tight
+ * loop would. NACK_PACE_BATCH_BYTES is sized in NACK-sized units (~44
+ * bytes each) rather than reusing PACE_BATCH_BYTES, which was sized
+ * for full data packets. */
+#define NACK_PACE_TARGET_MBPS 75
+#define NACK_PACE_BATCH_BYTES 8000
 
 
 #define PACE_TARGET_MBPS 75

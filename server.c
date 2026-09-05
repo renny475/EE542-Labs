@@ -25,6 +25,52 @@ static long timespec_diff_ms(const struct timespec *a, const struct timespec *b)
     return (a->tv_sec - b->tv_sec) * 1000L + (a->tv_nsec - b->tv_nsec) / 1000000L;
 }
 
+static long timespec_diff_ns(const struct timespec *a, const struct timespec *b)
+{
+    return (a->tv_sec - b->tv_sec) * 1000000000L + (a->tv_nsec - b->tv_nsec);
+}
+
+/* Rate-limits NACK sends the same way client.c's pace_send() rate-
+ * limits data sends: batch bytes freely until NACK_PACE_BATCH_BYTES is
+ * reached, then one sleep brings the batch back to NACK_PACE_TARGET_MBPS
+ * before continuing. Needed now that a single sweep can address the
+ * whole window's worth of gaps (NACK_SWEEP_CAP == WINDOW_SIZE, see
+ * common.h) - without pacing, a dense sweep under heavy loss would
+ * fire hundreds or thousands of NACKs in a tight loop, blowing through
+ * the tc tbf burst allowance just like an unpaced data burst would. */
+static void pace_nack_send(void)
+{
+    static struct timespec batch_start = {0, 0};
+    static size_t batch_bytes = 0;
+    struct timespec now;
+    const size_t wire_bytes = sizeof(packet_header_t) + PACE_OVERHEAD_BYTES;
+
+    clock_gettime(CLOCK_MONOTONIC, &now);
+
+    if (batch_start.tv_sec == 0 && batch_start.tv_nsec == 0)
+        batch_start = now;
+
+    batch_bytes += wire_bytes;
+
+    if (batch_bytes >= NACK_PACE_BATCH_BYTES) {
+        long elapsed_ns = timespec_diff_ns(&now, &batch_start);
+        long target_ns = (long)((double)batch_bytes * 8.0
+                                 / ((double)NACK_PACE_TARGET_MBPS * 1000000.0) * 1e9);
+        long wait_ns = target_ns - elapsed_ns;
+
+        if (wait_ns > 0) {
+            struct timespec sleep_ts;
+
+            sleep_ts.tv_sec = wait_ns / 1000000000L;
+            sleep_ts.tv_nsec = wait_ns % 1000000000L;
+            nanosleep(&sleep_ts, NULL);
+        }
+
+        clock_gettime(CLOCK_MONOTONIC, &batch_start);
+        batch_bytes = 0;
+    }
+}
+
 static void send_ctrl(int sockfd, struct sockaddr_in *addr, socklen_t len,
                        uint16_t flags, uint32_t seq)
 {
@@ -44,6 +90,20 @@ static void send_ctrl(int sockfd, struct sockaddr_in *addr, socklen_t len,
  * stats printed at the end of main()). No effect on protocol behavior. */
 static uint64_t stat_nacks_sent = 0;
 
+/* pending_since[slot] doubles as both "when was this gap first seen"
+ * (the NACK_MIN_AGE_MS grace period before the first NACK) and, once a
+ * NACK has actually been sent, "when did we last NACK this gap" - it
+ * gets reset to now() right after sending, so the same gap won't be
+ * NACKed again until another full NACK_MIN_AGE_MS has passed. Without
+ * this, under a real RTT close to or above NACK_MIN_AGE_MS (Case 2's
+ * 200ms RTT vs. a 300ms grace period), every sweep after the first
+ * NACK keeps re-NACKing the same still-outstanding gap every
+ * NACK_THROTTLE_MS (200ms) - the resend can't possibly have arrived
+ * yet, so each redundant NACK just triggers another redundant
+ * retransmit. Observed on the real VMs: 351,420 NACKs sent and ~278k
+ * duplicate packets received for a 1M-packet Case 2 transfer, driving
+ * throughput down to 15Mbit/s - both numbers are far above what a 20%
+ * loss rate alone would require. */
 static void nack_window_gaps(int sockfd, struct sockaddr_in *addr, socklen_t len,
                               const uint8_t *received, struct timespec *pending_since,
                               uint32_t rcv_base, uint32_t window_end,
@@ -66,7 +126,9 @@ static void nack_window_gaps(int sockfd, struct sockaddr_in *addr, socklen_t len
         if (pending_since[slot].tv_sec == 0 && pending_since[slot].tv_nsec == 0) {
             pending_since[slot] = now;
         } else if (timespec_diff_ms(&now, &pending_since[slot]) >= NACK_MIN_AGE_MS) {
+            pace_nack_send();
             send_ctrl(sockfd, addr, len, FLAG_NACK, seq);
+            pending_since[slot] = now;
             sent++;
             stat_nacks_sent++;
         }
