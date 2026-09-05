@@ -18,10 +18,10 @@
  * receiver (server.c). */
 
 #define SOCKET_BUFFER_BYTES (64 * 1024 * 1024)
-#define INITIAL_SEND_DELAY_US 40
 
 static uint64_t retransmissions = 0;
 static uint64_t nack_requests_received = 0;
+
 
 void error(const char *msg)
 {
@@ -29,11 +29,79 @@ void error(const char *msg)
     exit(EXIT_FAILURE);
 }
 
+
 static uint32_t total_packets_for_size(off_t total_size,
                                        size_t payload_size)
 {
     return (uint32_t)((total_size + payload_size - 1) / payload_size);
 }
+
+
+static long timespec_diff_ns(const struct timespec *a, const struct timespec *b)
+{
+    return (a->tv_sec - b->tv_sec) * 1000000000L + (a->tv_nsec - b->tv_nsec);
+}
+
+
+/* Rate-limits every data send - first transmission AND every
+ * retransmit alike - to PACE_TARGET_MBPS. This is required by the
+ * lab's tc qdisc: `tbf rate 100mbit latency 0.001ms burst 9015`
+ * allows only a ~9KB (~8 packet) instantaneous burst before dropping
+ * outright. Without this, two things blow through that budget:
+ *   1. The initial send loop, which would otherwise be limited only
+ *      by a flat per-packet usleep unrelated to the actual link rate
+ *      or burst allowance.
+ *   2. drain_pending_nacks(), which can fire up to NACK_SWEEP_CAP
+ *      (512) retransmits back-to-back in a single call whenever the
+ *      receiver's NACK sweep has batched up that many gaps (routine
+ *      at high loss/RTT, e.g. the lab's 20%/200ms case). Sent
+ *      unpaced, only ~8 of those 512 retransmits survive the shaper;
+ *      the rest are dropped by tbf itself, not by netem - a massive
+ *      self-inflicted loss on top of the intentional 20%, and the
+ *      dominant reason throughput collapses at high loss/RTT even
+ *      though the same code performs fine at low loss/RTT (small
+ *      NACK sweeps rarely exceed the burst budget on their own).
+ *
+ * Paces in batches (PACE_BATCH_BYTES, sized under the ~9015-byte tbf
+ * burst allowance) rather than sleeping after every packet: OS/VM
+ * schedulers commonly can't honor a sub-200us nanosleep() precisely
+ * (they round up, often to 1ms+), so sleeping once per packet would
+ * oversleep and silently throttle throughput far below
+ * PACE_TARGET_MBPS. Batching amortizes that fixed per-call error over
+ * more bytes while still keeping any single batch's burst under the
+ * shaper's allowance. */
+static void pace_send(size_t wire_bytes)
+{
+    static struct timespec batch_start = {0, 0};
+    static size_t batch_bytes = 0;
+    struct timespec now;
+
+    clock_gettime(CLOCK_MONOTONIC, &now);
+
+    if (batch_start.tv_sec == 0 && batch_start.tv_nsec == 0)
+        batch_start = now;
+
+    batch_bytes += wire_bytes;
+
+    if (batch_bytes >= PACE_BATCH_BYTES) {
+        long elapsed_ns = timespec_diff_ns(&now, &batch_start);
+        long target_ns = (long)((double)batch_bytes * 8.0
+                                 / ((double)PACE_TARGET_MBPS * 1000000.0) * 1e9);
+        long wait_ns = target_ns - elapsed_ns;
+
+        if (wait_ns > 0) {
+            struct timespec sleep_ts;
+
+            sleep_ts.tv_sec = wait_ns / 1000000000L;
+            sleep_ts.tv_nsec = wait_ns % 1000000000L;
+            nanosleep(&sleep_ts, NULL);
+        }
+
+        clock_gettime(CLOCK_MONOTONIC, &batch_start);
+        batch_bytes = 0;
+    }
+}
+
 
 /*
  * Request larger UDP queues. The Linux sysctl limits must also permit
@@ -63,11 +131,15 @@ static void configure_socket_buffers(int sockfd)
     }
 }
 
+
 /*
  * Sends or retransmits the packet identified by seq.
  *
  * The packet data is read from disk every time using pread(), so no
  * memory buffer is needed for retransmission history.
+ *
+ * Every send goes through pace_send() first - see its comment for why
+ * this is required for both first transmissions and retransmits.
  */
 static void send_data_packet(int sockfd,
                              struct sockaddr_in *addr,
@@ -117,6 +189,8 @@ static void send_data_packet(int sockfd,
 
     packet_set_checksum(&pkt);
 
+    pace_send(sizeof(packet_header_t) + (size_t)bytes_read + PACE_OVERHEAD_BYTES);
+
     bytes_sent = sendto(sockfd,
                         &pkt,
                         sizeof(packet_header_t) + bytes_read,
@@ -138,6 +212,7 @@ static void send_data_packet(int sockfd,
         exit(EXIT_FAILURE);
     }
 }
+
 
 /*
  * Send the EOF marker. Its seq_num contains the number of data packets
@@ -177,10 +252,17 @@ static void send_eof(int sockfd,
     }
 }
 
+
 /*
  * Drain NACK packets that are already queued for this sender socket.
  * MSG_DONTWAIT makes this non-blocking, so the normal initial DATA
  * send loop does not pause while waiting for a NACK.
+ *
+ * Each retransmit still goes through send_data_packet(), which now
+ * paces itself via pace_send() - so a call that drains a large batch
+ * of NACKs (e.g. a full NACK_SWEEP_CAP=512 sweep from the receiver,
+ * routine at high loss/RTT) no longer fires them all in one
+ * unthrottled burst that the tc shaper would mostly drop.
  */
 static void drain_pending_nacks(int sockfd,
                                 struct sockaddr_in *addr,
@@ -222,6 +304,7 @@ static void drain_pending_nacks(int sockfd,
         }
     }
 }
+
 
 int main(int argc, char *argv[])
 {
@@ -312,8 +395,7 @@ int main(int argc, char *argv[])
            payload_size,
            total_packets);
 
-    printf("Initial send pacing delay: %d microseconds\n",
-           INITIAL_SEND_DELAY_US);
+    printf("Pacing target: %d Mbit/s\n", PACE_TARGET_MBPS);
 
     printf("Requested UDP socket buffers: %d MiB\n",
            SOCKET_BUFFER_BYTES / (1024 * 1024));
@@ -323,6 +405,12 @@ int main(int argc, char *argv[])
      *
      * Drain already-arrived NACKs after each packet, but do not print
      * every retransmission. Per-packet terminal output slows recovery.
+     *
+     * No separate usleep() here anymore: pace_send() (called from
+     * inside send_data_packet(), for both this loop and any
+     * retransmits drained below) is what limits the send rate now,
+     * tied to the actual link/shaper budget instead of a fixed
+     * microsecond delay unrelated to it.
      */
     for (seq = 0; seq < total_packets; seq++) {
         send_data_packet(sockfd,
@@ -337,8 +425,6 @@ int main(int argc, char *argv[])
                             filefd,
                             total_size,
                             payload_size);
-
-        usleep(INITIAL_SEND_DELAY_US);
     }
 
     send_eof(sockfd, &serv_addr, total_packets);
