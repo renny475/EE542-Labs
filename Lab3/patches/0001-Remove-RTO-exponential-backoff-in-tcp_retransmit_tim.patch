@@ -1,0 +1,26 @@
+From 15b83030df894b87a88546719a578e1628ecb6a5 Mon Sep 17 00:00:00 2001
+From: Kai Wu <tingkaiw@usc.edu>
+Date: Thu, 17 Sep 2026 07:55:42 +0000
+Subject: [PATCH] Remove RTO exponential backoff in tcp_retransmit_timer
+
+---
+ net/ipv4/tcp_timer.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
+index a0107eb02ae4..a12c9c100bab 100644
+--- a/net/ipv4/tcp_timer.c
++++ b/net/ipv4/tcp_timer.c
+@@ -576,7 +576,8 @@ void tcp_retransmit_timer(struct sock *sk)
+ 		icsk->icsk_rto = min(__tcp_set_rto(tp), TCP_RTO_MAX);
+ 	} else {
+ 		/* Use normal (exponential) backoff */
+-		icsk->icsk_rto = min(icsk->icsk_rto << 1, TCP_RTO_MAX);
++		// icsk->icsk_rto = min(icsk->icsk_rto << 1, TCP_RTO_MAX);
++		icsk->icsk_rto = min(icsk->icsk_rto, TCP_RTO_MAX);
+ 	}
+ 	inet_csk_reset_xmit_timer(sk, ICSK_TIME_RETRANS,
+ 				  tcp_clamp_rto_to_user_timeout(sk), TCP_RTO_MAX);
+-- 
+2.53.0
+
