@@ -1,0 +1,15 @@
+# Secrets
+*.pem
+
+# Build outputs
+build/
+matrix_cpu
+bench_cpu
+*.so
+*.o
+
+# Tooling / OS
+graft/
+.vscode/
+.DS_Store
+__pycache__/
