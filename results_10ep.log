@@ -1,0 +1,79 @@
+Using device: cuda
+Classes: {'cat': 0, 'dog': 1}
+Total images: 23410
+Batch images shape: torch.Size([32, 3, 64, 64])
+Batch labels shape: torch.Size([32])
+Train: 18728  Test (unseen): 4682
+Decoded images in 46.1s
+
+[NumPy MLP2 on cpu]
+  epoch   1/10  loss=0.6815  train_acc=0.574
+  epoch   2/10  loss=0.6561  train_acc=0.606
+  epoch   3/10  loss=0.6490  train_acc=0.621
+  epoch   4/10  loss=0.6409  train_acc=0.629
+  epoch   5/10  loss=0.6338  train_acc=0.637
+  epoch   6/10  loss=0.6274  train_acc=0.644
+  epoch   7/10  loss=0.6222  train_acc=0.648
+  epoch   8/10  loss=0.6170  train_acc=0.650
+  epoch   9/10  loss=0.6119  train_acc=0.658
+  epoch  10/10  loss=0.6056  train_acc=0.665
+
+[Torch MLP2 on cpu]
+  epoch   1/10  loss=0.6784  train_acc=0.570
+  epoch   2/10  loss=0.6603  train_acc=0.606
+  epoch   3/10  loss=0.6501  train_acc=0.620
+  epoch   4/10  loss=0.6422  train_acc=0.624
+  epoch   5/10  loss=0.6371  train_acc=0.633
+  epoch   6/10  loss=0.6305  train_acc=0.639
+  epoch   7/10  loss=0.6263  train_acc=0.645
+  epoch   8/10  loss=0.6200  train_acc=0.652
+  epoch   9/10  loss=0.6166  train_acc=0.654
+  epoch  10/10  loss=0.6125  train_acc=0.658
+
+[Torch MLP2 on cuda]
+  epoch   1/10  loss=0.6783  train_acc=0.571
+  epoch   2/10  loss=0.6603  train_acc=0.606
+  epoch   3/10  loss=0.6504  train_acc=0.618
+  epoch   4/10  loss=0.6426  train_acc=0.622
+  epoch   5/10  loss=0.6374  train_acc=0.633
+  epoch   6/10  loss=0.6309  train_acc=0.640
+  epoch   7/10  loss=0.6276  train_acc=0.645
+  epoch   8/10  loss=0.6207  train_acc=0.650
+  epoch   9/10  loss=0.6165  train_acc=0.655
+  epoch  10/10  loss=0.6128  train_acc=0.658
+
+[CatDogCNN on cpu]
+  epoch   1/10  loss=0.3574  train_acc=0.499
+  epoch   2/10  loss=0.3363  train_acc=0.499
+  epoch   3/10  loss=0.3261  train_acc=0.499
+  epoch   4/10  loss=0.2881  train_acc=0.556
+  epoch   5/10  loss=0.1332  train_acc=0.817
+  epoch   6/10  loss=0.1127  train_acc=0.852
+  epoch   7/10  loss=0.0961  train_acc=0.881
+  epoch   8/10  loss=0.0786  train_acc=0.912
+  epoch   9/10  loss=0.0636  train_acc=0.935
+  epoch  10/10  loss=0.0500  train_acc=0.959
+
+[CatDogCNN on cuda]
+  epoch   1/10  loss=0.3576  train_acc=0.499
+  epoch   2/10  loss=0.3070  train_acc=0.546
+  epoch   3/10  loss=0.1556  train_acc=0.778
+  epoch   4/10  loss=0.1360  train_acc=0.813
+  epoch   5/10  loss=0.1205  train_acc=0.834
+  epoch   6/10  loss=0.1071  train_acc=0.860
+  epoch   7/10  loss=0.0934  train_acc=0.883
+  epoch   8/10  loss=0.0775  train_acc=0.911
+  epoch   9/10  loss=0.0619  train_acc=0.937
+  epoch  10/10  loss=0.0491  train_acc=0.959
+
+model         device    train (s)   test (s)  test img/s  test acc
+NumPy MLP2    cpu           87.99      0.223       21011     0.642
+Torch MLP2    cpu            9.98      0.037      127961     0.594
+Torch MLP2    cuda           9.27      0.053       88844     0.612
+CatDogCNN     cpu          101.22      2.283        2051     0.780
+CatDogCNN     cuda          17.48      0.112       41736     0.794
+
+Speedup (baseline time / GPU time):
+  NumPy MLP2 cpu   -> Torch MLP2 cuda train x  9.5   test x  4.2
+  Torch MLP2 cpu   -> Torch MLP2 cuda train x  1.1   test x  0.7
+  CatDogCNN cpu    -> CatDogCNN cuda  train x  5.8   test x 20.3
