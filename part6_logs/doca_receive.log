@@ -1,0 +1,4 @@
+[2026-10-25 00:24:51:144937][2703151104][DOCA][INF][CORE][doca_log.cpp:1335] DOCA version 3.5.0098
+[2026-10-25 00:24:51:144975][2703151104][DOCA][INF][GPUNETIO_SIMPLE_RECEIVE][gpunetio_simple_receive_main.c:198][main] Starting the sample
+[2026-10-25 00:24:51:146152][2703151104][DOCA][ERR][GPUNETIO_SIMPLE_RECEIVE][gpunetio_simple_receive_main.c:227][main] CUDA initialization failed: system has unsupported display driver / cuda driver combination
+[2026-10-25 00:24:51:146163][2703151104][DOCA][INF][GPUNETIO_SIMPLE_RECEIVE][gpunetio_simple_receive_main.c:261][main] Sample finished with errors
