@@ -1,0 +1,12 @@
+.env
+.venv/
+__pycache__/
+*.gguf
+.DS_Store
+
+# Android build artifacts / IDE
+.gradle/
+build/
+.idea/
+local.properties
+*.apk
