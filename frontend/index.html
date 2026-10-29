@@ -12,8 +12,8 @@
       <h1>Group Chat</h1>
       <p>Create an account or log in to join the chat.</p>
       <div class="row">
-        <input id="username" placeholder="Username">
-        <input id="password" placeholder="Password" type="password">
+        <input id="username" placeholder="Username (3-50 characters)" minlength="3" maxlength="50" autocomplete="username">
+        <input id="password" placeholder="Password (at least 8 characters)" type="password" minlength="8" maxlength="128" autocomplete="current-password">
       </div>
       <div class="row">
         <button id="signupBtn">Sign Up</button>

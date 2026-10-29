@@ -33,8 +33,23 @@ async function callAPI(path, method = "GET", body) {
   const res = await fetch(API + path, {
     method, headers, body: body ? JSON.stringify(body) : undefined
   });
-  if (!res.ok) throw new Error((await res.json()).detail || ("HTTP "+res.status));
+  if (!res.ok) throw new Error(await errorMessage(res));
   return res.json();
+}
+
+// Turn any API error body into a sentence a person can act on.
+// FastAPI validation errors (422) arrive as a list of {loc, msg} objects.
+async function errorMessage(res) {
+  let detail;
+  try { detail = (await res.json()).detail; } catch (e) { detail = null; }
+  if (Array.isArray(detail)) {
+    return detail.map(d => {
+      const field = Array.isArray(d.loc) ? d.loc[d.loc.length - 1] : "";
+      return field ? `${field}: ${d.msg}` : d.msg;
+    }).join("; ");
+  }
+  if (typeof detail === "string" && detail) return detail;
+  return "HTTP " + res.status;
 }
 
 function addMessage(m) {
@@ -58,18 +73,30 @@ async function loadMessages() {
 }
 
 function connectWS() {
+  // Idempotent: never hold more than one live socket per page, otherwise every
+  // broadcast is rendered once per socket.
+  if (ws && (ws.readyState === WebSocket.CONNECTING || ws.readyState === WebSocket.OPEN)) return;
   const proto = location.protocol === "https:" ? "wss" : "ws";
-  ws = new WebSocket(`${proto}://${location.host}/ws`);
-  ws.onmessage = (ev) => {
+  const socket = new WebSocket(`${proto}://${location.host}/ws`);
+  ws = socket;
+  socket.onmessage = (ev) => {
     try {
       const data = JSON.parse(ev.data);
       if (data.type === "message") addMessage(data.message);
     } catch (e) {}
   };
-  ws.onclose = () => {
-    // try to reconnect after a delay
-    setTimeout(connectWS, 2000);
+  socket.onclose = () => {
+    // Reconnect only if this is still the current socket and we are logged in.
+    if (ws === socket && token) setTimeout(connectWS, 2000);
   };
+}
+
+function disconnectWS() {
+  if (!ws) return;
+  const socket = ws;
+  ws = null;
+  socket.onclose = null; // prevent the reconnect timer from firing
+  socket.close();
 }
 
 signupBtn.onclick = async () => {
@@ -107,6 +134,8 @@ loginBtn.onclick = async () => {
 logoutBtn.onclick = () => {
   token = "";
   localStorage.removeItem("token");
+  disconnectWS();
+  messagesDiv.innerHTML = "";
   showAuth();
 };
 

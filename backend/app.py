@@ -36,7 +36,13 @@ LLM_API_KEY = os.getenv("LLM_API_KEY", "")
 if not JWT_SECRET or JWT_SECRET == "please_change_me_to_a_long_random_value":
     raise RuntimeError("Set a unique JWT_SECRET in the project .env file.")
 
-engine = create_async_engine(DATABASE_URL, pool_pre_ping=True)
+# Force every connection to UTC so TIMESTAMP columns are read/written as UTC
+# wall time. Timestamps are stored in UTC and converted only in the browser.
+engine = create_async_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,
+    connect_args={"init_command": "SET time_zone = '+00:00'"},
+)
 SessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 passwords = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
