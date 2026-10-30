@@ -23,3 +23,8 @@ uvicorn app:app --host 0.0.0.0 --port 8000
 Open http://localhost:8000
 
 LLM endpoint defaults to http://localhost:8001/v1 (llama.cpp server). Set `LLM_API_BASE`, `LLM_MODEL`, `LLM_API_KEY` if needed in `.env`.
+
+## PDF Chatbot (Lab 9 Part 2)
+
+The Streamlit RAG app lives in [`embedding/`](embedding/). See
+[embedding/README.md](embedding/README.md) for setup and how it works.
