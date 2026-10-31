@@ -10,3 +10,6 @@ build/
 .idea/
 local.properties
 *.apk
+
+# graft local graph cache - regenerable, not committed (run `graft build`).
+/graft/
