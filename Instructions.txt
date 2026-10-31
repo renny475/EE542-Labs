@@ -1,0 +1,50 @@
+Execution commands
+Run on the CloudLab hosts after their setup. Both homes contain their own installation. Set the environment and helper on both nodes. Start each server on node0 before its corresponding client on node1; finish one pair before starting another.
+export GPU_PCI=25:00.0
+export RDMA_DEV=rocep65s0
+export P7_GID=3
+export EX="$HOME/gpunetio/install/examples"
+export P7_LOG="$HOME/lab8p7/logs"
+export P7_LIB="$HOME/gpunetio/install"
+export LD_LIBRARY_PATH="$P7_LIB/lib:$P7_LIB/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export LD_LIBRARY_PATH="/opt/mellanox/gdrcopy/src:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="/usr/local/cuda-13.0/lib64:$LD_LIBRARY_PATH"
+mkdir -p "$P7_LOG"
+set -o pipefail
+p7run() {
+  sudo env PATH="$PATH" LD_LIBRARY_PATH="$LD_LIBRARY_PATH" \
+    DOCA_GPUNETIO_LOG=6 bash -c \
+    'ulimit -l unlimited; exec "$@"' p7 "$@"
+}
+GPU latency
+# node0
+p7run "$EX/gpunetio_verbs_write_lat" \
+  -g "$GPU_PCI" -d "$RDMA_DEV" -l "$P7_GID" -p 1
+# node1
+p7run "$EX/gpunetio_verbs_write_lat" \
+  -g "$GPU_PCI" -d "$RDMA_DEV" -l "$P7_GID" -p 1 -c 10.10.1.1
+For the direct-doorbell attempt, replace -p 1 with -p 2 on both peers. Our run was bounded by p7run timeout --signal=INT --kill-after=10s 90s followed by the example path and its arguments; it completed before the timeout. No latency value was derived from the timeout duration.
+GPU bandwidth
+# node0
+p7run stdbuf -oL -eL "$EX/gpunetio_verbs_put_bw" \
+  -g "$GPU_PCI" -d "$RDMA_DEV" -l "$P7_GID" -p 1 \
+  2>&1 | tee --ignore-interrupts "$P7_LOG/gpu-put-bw-server-repeat.log"
+# node1
+p7run stdbuf -oL -eL "$EX/gpunetio_verbs_put_bw" \
+  -g "$GPU_PCI" -d "$RDMA_DEV" -l "$P7_GID" -p 1 -c 10.10.1.1 \
+  2>&1 | tee "$P7_LOG/gpu-put-bw-client-repeat.log"
+For write_bw, use gpunetio_verbs_write_bw on both nodes and omit -l "$P7_GID". Save to gpu-write-bw-server.log and gpu-write-bw-client.log. After each bandwidth client finishes, press Ctrl+C once on its server and wait for validation. Line buffering and tee --ignore-interrupts preserved the shutdown output.
+CPU baselines
+# node0 latency then node1 latency
+p7run ib_write_lat -d "$RDMA_DEV" -x "$P7_GID" -s 1 -n 2048
+p7run ib_write_lat -d "$RDMA_DEV" -x "$P7_GID" -s 1 -n 2048 10.10.1.1
+# node0 bandwidth then node1 bandwidth
+p7run ib_write_bw -d "$RDMA_DEV" -x "$P7_GID" \
+  -s 65536 -n 2048 --report_gbits
+p7run ib_write_bw -d "$RDMA_DEV" -x "$P7_GID" \
+  -s 65536 -n 2048 --report_gbits 10.10.1.1
+The CPU latency lines run on different nodes, as do the bandwidth lines. Their outputs were saved in cpu-lat-server.log, cpu-lat-client.log, cpu-bw64k-server.log, and cpu-bw64k-client.log using 2>&1 | tee and the local log directory.
+
+Evidence and references
+The result archive retains separate directories for node0 and node1. Plotting uses node1 client logs; node0 supplies the server completion and validation evidence. All three supplied CSV files were checked field by field against their source log rows.
+
