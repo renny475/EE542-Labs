@@ -69,7 +69,7 @@ class Message(Base):
     user_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     content: Mapped[str] = mapped_column(Text)
     is_bot: Mapped[bool] = mapped_column(Boolean, default=False)
-    sources: Mapped[Optional[list]] = mapped_column(JSON, nullable=True)
+    sources: Mapped[Optional[list]] = mapped_column(JSON(none_as_null=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
 

@@ -2,15 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Group Chat + LLM Bot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <title>USC OIS Assistant</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <div class="auth" id="auth">
-      <h1>Group Chat</h1>
-      <p>Create an account or log in to join the chat.</p>
+    <section class="auth" id="auth">
+      <h1>USC OIS Assistant</h1>
+      <p class="subtitle">F-1 · CPT · OPT · STEM OPT</p>
+      <p>Log in to ask questions. Your conversation is private to your account.</p>
       <div class="row">
         <input id="username" placeholder="Username (3-50 characters)" minlength="3" maxlength="50" autocomplete="username">
         <input id="password" placeholder="Password (at least 8 characters)" type="password" minlength="8" maxlength="128" autocomplete="current-password">
@@ -19,20 +21,37 @@
         <button id="signupBtn">Sign Up</button>
         <button id="loginBtn">Log In</button>
       </div>
-      <div class="hint">Hint: messages that contain a question mark “?” will trigger an LLM reply.</div>
-      <div id="authMsg" class="msg"></div>
-    </div>
-    <div class="chat hidden" id="chat">
-      <div class="header">
-        <h2>Group Chat</h2>
-        <button id="logoutBtn">Log Out</button>
+      <div id="authMsg" class="msg" role="alert"></div>
+    </section>
+
+    <section class="chat hidden" id="chat">
+      <header class="header">
+        <div>
+          <h2>USC OIS Assistant</h2>
+          <p class="subtitle">F-1 · CPT · OPT · STEM OPT</p>
+        </div>
+        <button id="logoutBtn" class="secondary">Log Out</button>
+      </header>
+      <div id="notice" class="notice">
+        Not legal advice. Answers are generated from OIS and USCIS documents as of
+        <span id="corpusDate">…</span>. Confirm anything important with an OIS advisor.
       </div>
-      <div id="messages" class="messages"></div>
+      <div id="messages" class="messages" aria-live="polite">
+        <div id="welcome" class="welcome">
+          <p>Ask about working, staying in status or travelling as an F-1 student. Try one of these:</p>
+          <button class="example">When can I apply for post-completion OPT?</button>
+          <button class="example">How many hours can I work on campus during the semester?</button>
+          <button class="example">Do I qualify for the STEM OPT extension?</button>
+          <button class="example">What do I need to re-enter the U.S. after travelling?</button>
+        </div>
+      </div>
+      <div id="typing" class="typing hidden">OIS Assistant is thinking…</div>
       <div class="composer">
-        <input id="chatInput" placeholder="Type a message…">
+        <input id="chatInput" placeholder="Ask a question…" autocomplete="off" maxlength="4000">
         <button id="sendBtn">Send</button>
       </div>
-    </div>
+      <div id="sendError" class="error hidden" role="alert"></div>
+    </section>
   </div>
   <script src="app.js"></script>
 </body>
