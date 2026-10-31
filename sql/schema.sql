@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS messages (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 -- Upgrading a Part 1 database: the old messages table lacks `sources` and holds
 -- public group-chat rows that the private assistant must not show. Drop and
--- recreate it (the backend does this once at startup when the column is missing):
+-- recreate it once before starting the Part 4 backend (create_all then rebuilds it):
 --   DROP TABLE IF EXISTS messages;
 
 -- Part 4: curated corpus. Source of truth for the in-memory FAISS index that the

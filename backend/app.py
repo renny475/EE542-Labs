@@ -1,45 +1,47 @@
+"""USC OIS Assistant backend.
+
+Each user has a private thread with the assistant. A posted question is
+saved, echoed to the asker's own WebSocket connections, and answered in a
+background task that retrieves from the curated corpus (see ``rag.py``) and
+calls the local ``llama-server``.
+"""
+
+from __future__ import annotations
+
 import asyncio
 import json
-import os
+import logging
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 from typing import Optional
 
-import httpx
-from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import BackgroundTasks, Depends, FastAPI, Header, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel, Field
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, func, select
+from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, String, Text, func, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
+import corpus_db
+import rag
+import settings
+from embeddings import OpenAIEmbedder
+from rag import LLMClient, Retriever
 
-# Load groupchat_app_src/.env, one directory above backend/
-PROJECT_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(PROJECT_DIR / ".env")
+log = logging.getLogger("app")
 
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "mysql+asyncmy://chatuser:chatpass@localhost:3306/groupchat",
-)
-JWT_SECRET = os.getenv("JWT_SECRET", "")
-JWT_EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MINUTES", "43200"))
-LLM_API_BASE = os.getenv("LLM_API_BASE", "http://localhost:8001/v1").rstrip("/")
-LLM_MODEL = os.getenv("LLM_MODEL", "llama-3-8b-instruct")
-LLM_API_KEY = os.getenv("LLM_API_KEY", "")
-
-if not JWT_SECRET or JWT_SECRET == "please_change_me_to_a_long_random_value":
-    raise RuntimeError("Set a unique JWT_SECRET in the project .env file.")
+BOT_NAME = "OIS Assistant"
+HISTORY_MESSAGES = 4
+HISTORY_CHARS = 500
+WS_UNAUTHORIZED = 4401
 
 # Force every connection to UTC so TIMESTAMP columns are read/written as UTC
 # wall time. Timestamps are stored in UTC and converted only in the browser.
 engine = create_async_engine(
-    DATABASE_URL,
+    settings.DATABASE_URL,
     pool_pre_ping=True,
     connect_args={"init_command": "SET time_zone = '+00:00'"},
 )
@@ -64,11 +66,10 @@ class Message(Base):
     __tablename__ = "messages"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    user_id: Mapped[Optional[int]] = mapped_column(
-        ForeignKey("users.id", ondelete="SET NULL"), nullable=True
-    )
+    user_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     content: Mapped[str] = mapped_column(Text)
     is_bot: Mapped[bool] = mapped_column(Boolean, default=False)
+    sources: Mapped[Optional[list]] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
 
@@ -87,23 +88,23 @@ async def get_session():
 
 
 def make_token(user: User) -> str:
-    expiry = datetime.now(timezone.utc) + timedelta(minutes=JWT_EXPIRE_MINUTES)
+    expiry = datetime.now(timezone.utc) + timedelta(minutes=settings.JWT_EXPIRE_MINUTES)
     return jwt.encode(
         {"sub": str(user.id), "username": user.username, "exp": expiry},
-        JWT_SECRET,
+        settings.JWT_SECRET,
         algorithm="HS256",
     )
 
 
-async def authenticated_user(
-    session: AsyncSession = Depends(get_session),
-    authorization: Optional[str] = None,
-) -> User:
-    # FastAPI injects the Authorization header below via Header.
-    raise NotImplementedError
-
-
-from fastapi import Header
+def user_id_from_token(token: str | None) -> int | None:
+    """Decode a login token; None when missing, malformed, forged or expired."""
+    if not token:
+        return None
+    try:
+        payload = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
+        return int(payload["sub"])
+    except (JWTError, KeyError, ValueError, TypeError):
+        return None
 
 
 async def current_user(
@@ -112,14 +113,9 @@ async def current_user(
 ) -> User:
     if not authorization or not authorization.lower().startswith("bearer "):
         raise HTTPException(status_code=401, detail="Missing login token")
-
-    token = authorization.split(" ", 1)[1]
-    try:
-        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
-        user_id = int(payload["sub"])
-    except (JWTError, KeyError, ValueError):
+    user_id = user_id_from_token(authorization.split(" ", 1)[1])
+    if user_id is None:
         raise HTTPException(status_code=401, detail="Invalid or expired login token")
-
     user = await session.get(User, user_id)
     if user is None:
         raise HTTPException(status_code=401, detail="User no longer exists")
@@ -127,21 +123,33 @@ async def current_user(
 
 
 class ConnectionManager:
-    def __init__(self):
-        self.connections: set[WebSocket] = set()
+    """Open WebSockets grouped by user id, so a message reaches only its owner."""
 
-    async def connect(self, websocket: WebSocket):
+    def __init__(self) -> None:
+        self.connections: dict[int, set[WebSocket]] = {}
+        self._owner: dict[WebSocket, int] = {}
+
+    async def connect(self, websocket: WebSocket, user_id: int) -> None:
         await websocket.accept()
-        self.connections.add(websocket)
+        self.connections.setdefault(user_id, set()).add(websocket)
+        self._owner[websocket] = user_id
 
-    def disconnect(self, websocket: WebSocket):
-        self.connections.discard(websocket)
+    def disconnect(self, websocket: WebSocket) -> None:
+        user_id = self._owner.pop(websocket, None)
+        if user_id is None:
+            return
+        sockets = self.connections.get(user_id)
+        if sockets is not None:
+            sockets.discard(websocket)
+            if not sockets:
+                del self.connections[user_id]
 
-    async def broadcast(self, data: dict):
+    async def send_to(self, user_id: int, data: dict) -> None:
+        text = json.dumps(data)
         stale = []
-        for connection in self.connections:
+        for connection in list(self.connections.get(user_id, ())):
             try:
-                await connection.send_text(json.dumps(data))
+                await connection.send_text(text)
             except Exception:
                 stale.append(connection)
         for connection in stale:
@@ -160,64 +168,92 @@ def message_json(message: Message, username: str) -> dict:
         "username": username,
         "content": message.content,
         "is_bot": message.is_bot,
+        "sources": message.sources or [],
         "created_at": created_at.isoformat() if created_at else None,
     }
 
 
 async def save_message(
-    content: str, user_id: Optional[int], is_bot: bool, username: str
+    content: str, user_id: Optional[int], is_bot: bool, username: str, sources: list | None = None
 ) -> dict:
     async with SessionLocal() as session:
-        message = Message(content=content, user_id=user_id, is_bot=is_bot)
+        message = Message(content=content, user_id=user_id, is_bot=is_bot, sources=sources)
         session.add(message)
         await session.commit()
         await session.refresh(message)
         return message_json(message, username)
 
 
-async def ask_llm(question: str) -> str:
-    headers = {}
-    if LLM_API_KEY:
-        headers["Authorization"] = f"Bearer {LLM_API_KEY}"
-
-    body = {
-        "model": LLM_MODEL,
-        "messages": [
-            {
-                "role": "system",
-                "content": "You are a helpful assistant in a group chat. Give concise, useful answers.",
-            },
-            {"role": "user", "content": question},
-        ],
-        "temperature": 0.7,
-    }
-
-    try:
-        async with httpx.AsyncClient(timeout=120) as client:
-            response = await client.post(
-                f"{LLM_API_BASE}/chat/completions",
-                headers=headers,
-                json=body,
+async def recent_history(user_id: int, before_message_id: int) -> list[dict]:
+    """The user's last few messages before the question, oldest first, as chat turns."""
+    async with SessionLocal() as session:
+        rows = (
+            await session.scalars(
+                select(Message)
+                .where(Message.user_id == user_id, Message.id < before_message_id)
+                .order_by(Message.id.desc())
+                .limit(HISTORY_MESSAGES)
             )
-            response.raise_for_status()
-            data = response.json()
-            return data["choices"][0]["message"]["content"].strip()
-    except (httpx.HTTPError, KeyError, IndexError, TypeError, ValueError) as exc:
-        return f"Sorry, I could not reach the LLM server. Check its address and status. ({exc})"
+        ).all()
+    return [
+        {"role": "assistant" if m.is_bot else "user", "content": m.content[:HISTORY_CHARS]}
+        for m in reversed(rows)
+    ]
+
+
+async def respond(user_id: int, username: str, question: str, message_id: int) -> None:
+    """Background task: answer one question and push the bot message to its asker."""
+    try:
+        history = await recent_history(user_id, message_id)
+        result = await rag.answer(
+            question,
+            history,
+            retriever=app.state.retriever,
+            embedder=app.state.embedder,
+            chat=app.state.llm.chat,
+            top_k=settings.RAG_TOP_K,
+            min_score=settings.RAG_MIN_SCORE,
+        )
+        bot_message = await save_message(result.content, user_id, True, BOT_NAME, result.sources)
+        await manager.send_to(user_id, {"type": "message", "message": bot_message})
+    except Exception:
+        log.exception("answering message %s for user %s (%s) failed", message_id, user_id, username)
+
+
+def _load_corpus() -> tuple[Retriever, corpus_db.CorpusSnapshot]:
+    sync_engine = corpus_db.make_engine(settings.SYNC_DATABASE_URL)
+    try:
+        snapshot = corpus_db.load_snapshot(sync_engine)
+    finally:
+        sync_engine.dispose()
+    return Retriever(snapshot, settings.EMBEDDING_MODEL), snapshot
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create tables automatically. You can also run sql/schema.sql first.
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(corpus_db.metadata.create_all)
+
+    # CorpusModelMismatch propagates on purpose: better to fail at startup
+    # than to serve similarities computed across two different models.
+    retriever, snapshot = await asyncio.to_thread(_load_corpus)
+    app.state.retriever = retriever
+    app.state.corpus_as_of = snapshot.corpus_as_of
+    app.state.embedder = OpenAIEmbedder(settings.EMBEDDING_MODEL, settings.OPENAI_API_KEY)
+    app.state.llm = LLMClient(settings.LLM_API_BASE, settings.LLM_MODEL, settings.LLM_API_KEY)
+    if retriever.size == 0:
+        log.warning("corpus is empty: run backend/ingest.py; every question will be answered as not covered")
+    else:
+        log.info("corpus loaded: %d documents, %d chunks, as of %s",
+                 snapshot.document_count, retriever.size, snapshot.corpus_as_of)
     yield
     await engine.dispose()
 
 
-app = FastAPI(title="Group Chat + LLM Bot", lifespan=lifespan)
+app = FastAPI(title="USC OIS Assistant", lifespan=lifespan)
 
-FRONTEND_DIR = PROJECT_DIR / "frontend"
+FRONTEND_DIR = settings.PROJECT_DIR / "frontend"
 app.mount("/.well-known", StaticFiles(directory=FRONTEND_DIR / ".well-known"), name="well-known")
 
 
@@ -236,16 +272,27 @@ async def javascript():
     return FileResponse(FRONTEND_DIR / "app.js", media_type="application/javascript")
 
 
+@app.get("/api/meta")
+async def meta():
+    retriever: Retriever = app.state.retriever
+    corpus_as_of = app.state.corpus_as_of
+    return {
+        "document_count": len({c.document_id for c in retriever._chunks}) if retriever.size else 0,
+        "chunk_count": retriever.size,
+        "corpus_as_of": corpus_as_of.isoformat() if corpus_as_of else None,
+        "llm_model": settings.LLM_MODEL,
+        "embedding_model": settings.EMBEDDING_MODEL,
+    }
+
+
 @app.post("/api/signup")
 async def signup(data: Credentials, session: AsyncSession = Depends(get_session)):
     username = data.username.strip()
     if not username:
         raise HTTPException(status_code=400, detail="Username cannot be blank")
-
     existing = await session.scalar(select(User).where(User.username == username))
     if existing:
         raise HTTPException(status_code=409, detail="Username is already taken")
-
     user = User(username=username, password_hash=passwords.hash(data.password))
     session.add(user)
     await session.commit()
@@ -262,52 +309,42 @@ async def login(data: Credentials, session: AsyncSession = Depends(get_session))
 
 
 @app.get("/api/messages")
-async def get_messages(
-    user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_session),
-):
+async def get_messages(user: User = Depends(current_user), session: AsyncSession = Depends(get_session)):
     rows = (
-        await session.execute(
-            select(Message, User.username)
-            .outerjoin(User, Message.user_id == User.id)
-            .order_by(Message.id.desc())
-            .limit(100)
+        await session.scalars(
+            select(Message).where(Message.user_id == user.id).order_by(Message.id.desc()).limit(100)
         )
     ).all()
-
-    messages = [
-        message_json(message, "Bot" if message.is_bot else (username or "unknown"))
-        for message, username in reversed(rows)
-    ]
-    return {"messages": messages}
+    return {"messages": [message_json(m, BOT_NAME if m.is_bot else user.username) for m in reversed(rows)]}
 
 
 @app.post("/api/messages")
-async def post_message(
-    data: NewMessage,
-    user: User = Depends(current_user),
-):
+async def post_message(data: NewMessage, background_tasks: BackgroundTasks, user: User = Depends(current_user)):
     content = data.content.strip()
     if not content:
         raise HTTPException(status_code=400, detail="Message cannot be blank")
-
     saved = await save_message(content, user.id, False, user.username)
-    await manager.broadcast({"type": "message", "message": saved})
-
-    if "?" in content:
-        answer = await ask_llm(content)
-        bot_message = await save_message(answer, None, True, "Bot")
-        await manager.broadcast({"type": "message", "message": bot_message})
-
+    await manager.send_to(user.id, {"type": "message", "message": saved})
+    background_tasks.add_task(respond, user.id, user.username, content, saved["id"])
     return {"ok": True}
 
 
 @app.websocket("/ws")
 async def websocket_chat(websocket: WebSocket):
-    await manager.connect(websocket)
+    user_id = user_id_from_token(websocket.query_params.get("token"))
+    if user_id is not None:
+        async with SessionLocal() as session:
+            if await session.get(User, user_id) is None:
+                user_id = None
+    if user_id is None:
+        await websocket.accept()
+        await websocket.close(code=WS_UNAUTHORIZED)
+        return
+
+    await manager.connect(websocket, user_id)
     try:
         while True:
-            # The frontend receives broadcasts; it does not send chat through this socket.
+            # The frontend only receives on this socket; it posts questions over HTTP.
             await websocket.receive_text()
     except WebSocketDisconnect:
         manager.disconnect(websocket)
