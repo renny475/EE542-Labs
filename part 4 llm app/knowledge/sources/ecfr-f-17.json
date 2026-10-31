@@ -1,0 +1,15 @@
+{
+  "id": "ecfr-f-17",
+  "title": "Federal regulation: 8 CFR 214.2(f)(17) \u2014 Current name and address (text version 2026-10-14)",
+  "url": "https://www.ecfr.gov/on/2026-10-14/title-8/chapter-I/subchapter-B/part-214/section-214.2#p-214.2(f)(17)",
+  "topic": "F-1",
+  "text": "8 CFR 214.2(f)(17): Current name and address. Federal rule, not a USC application procedure.\n\n(17) Current name and address. A student must inform DHS and the DSO of any legal changes to the student's name or of any change of address, within 10 days of the change, in a manner prescribed by the school. A student can satisfy the requirement in 8 CFR 265.1 of notifying DHS by providing a notice of a change of address within 10 days to the DSO, and the DSO in turn must enter the information in SEVIS within 21 days of notification by the student. Except in the case of a student who cannot receive mail where the student resides, the address provided by the student must be the actual physical location where the student resides rather than a mailing address. In cases where a student provides a mailing address, the school must maintain a record of, and must provide upon request from DHS, the actual physical location where the student resides.",
+  "collected_at": "2026-10-31T20:05:46.984899+00:00",
+  "sha256": "ca60d00591775c1dce6f27b3483d94f986ea355bc714ca41648e180a32e853fe",
+  "reviewed": true,
+  "source_kind": "official_federal_regulatory_text",
+  "text_version": "2026-10-14",
+  "up_to_date_as_of": "2026-10-29",
+  "citation": "8 CFR 214.2(f)(17)",
+  "curation_note": "Full selected subsection from the official eCFR XML API, preserving paragraph order; F-2 and other non-F-1 topics omitted from this collection."
+}

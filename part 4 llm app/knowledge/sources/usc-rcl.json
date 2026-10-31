@@ -1,0 +1,13 @@
+{
+  "id": "usc-rcl",
+  "title": "USC OIS: Reduced Course Load (curated summary)",
+  "topic": "F-1",
+  "url": "https://ois.usc.edu/maintaining-status/reduced-course-load/",
+  "collected_at": "2026-10-31T13:26:46.959552+00:00",
+  "sha256": "5d958967bc2c26c64da377f0cb06757f6f94593771de53f4938766df034a7fd6",
+  "text": "USC Reduced Course Load (RCL) is an authorized exception to the normal enrollment load for international students. Eligibility depends on the reason, supporting documentation, and OIS authorization; a student's preference alone is not approval.\nUSC academic-difficulty RCL: the source addresses initial language, reading, teaching-method, or course-placement difficulties in the first semester. It is limited to one authorization per degree level. The student must retain at least half-time enrollment and obtain OIS approval before reducing registration; consult the page for unit thresholds and submission timing.\nUSC medical RCL: a temporary health condition may support reduced or, where approved, zero enrollment. The student needs appropriate U.S. medical-provider documentation and prior academic-department and OIS approvals. Authorization is semester-specific, with limits at the degree level. Treatment outside the U.S. calls for reviewing leave-of-absence guidance instead. Do not upload medical records to this chatbot; discuss a personal case directly with OIS.",
+  "reviewed": true,
+  "source_kind": "reviewed_summary",
+  "reviewed_on": "2026-10-31",
+  "curation_note": "Concise paraphrase checked against the linked USC page via web retrieval. Not a complete page snapshot or a substitute for OIS advice."
+}

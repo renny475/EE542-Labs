@@ -1,0 +1,13 @@
+{
+  "id": "usc-oncampus",
+  "title": "USC OIS: On-Campus Employment (curated summary)",
+  "topic": "F-1",
+  "url": "https://ois.usc.edu/employment/on-campus-employment/",
+  "collected_at": "2026-10-31T13:26:46.959552+00:00",
+  "sha256": "6333178e4b0ad4559cc942c41cc5793bcadd8ca4ec42df8dbf905963dd9ff0cf",
+  "text": "USC OIS says F-1 undergraduate and graduate students may start eligible on-campus employment in their first semester. The university lists a 20-hour weekly limit during fall and spring and up to 40 hours during summer and official university breaks. Add together hours from all campus jobs when checking the limit.\nUSC on-campus work and enrollment: payroll's student-employment unit thresholds differ from immigration's full-time enrollment requirements. Holding a campus job does not itself permit dropping below the F-1 study requirement; OIS must approve an applicable exception. The page describes special treatment for final-semester students and certain thesis, dissertation, or qualifying-exam registrations.\nUSC campus job search: use the Career Center and university job resources. International students do not qualify for federally funded Work-Study positions. Off-campus employment needs its own appropriate authorization; do not assume a job is authorized merely because it is associated with USC. Confirm ambiguous campus/employer arrangements with OIS.",
+  "reviewed": true,
+  "source_kind": "reviewed_summary",
+  "reviewed_on": "2026-10-31",
+  "curation_note": "Concise paraphrase checked against the linked USC page via web retrieval. Not a complete page snapshot or a substitute for OIS advice."
+}

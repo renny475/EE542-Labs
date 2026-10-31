@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#852c36">
+  <title>USC Student Guide · F-1, CPT & OPT</title>
+  <link rel="stylesheet" href="/student.css">
+</head>
+<body>
+<header class="masthead"><a class="brand" href="/" aria-label="USC Student Guide home"><span class="brand-mark">SG</span><span>USC Student Guide<small>INTERNATIONAL STUDENT ASSISTANT</small></span></a><span class="project-tag">Unofficial student project</span></header>
+<div class="layout">
+  <aside class="sidebar">
+    <p class="eyebrow">YOUR GUIDE TO WHAT'S NEXT</p>
+    <h1>Study here.<br> Plan ahead.</h1>
+    <p class="intro">Find your way through F-1 status, CPT, OPT and STEM OPT with official guidance in reach.</p>
+    <section id="authPanel" class="card">
+      <h2>Start a conversation</h2><p class="subtle">Use your team’s chat account, or create one.</p>
+      <form id="authForm">
+        <label for="username">Username</label><input id="username" minlength="3" maxlength="50" required autocomplete="username">
+        <label for="password">Password</label><input id="password" type="password" minlength="8" maxlength="72" required autocomplete="current-password">
+        <div class="button-row"><button type="submit" id="loginBtn">Log in</button><button type="button" id="signupBtn" class="secondary">Create account</button></div>
+      </form><p id="authMsg" role="status" class="error"></p>
+    </section>
+    <section id="profilePanel" class="card hidden">
+      <div class="section-heading"><h2>Your context</h2><button id="logoutBtn" class="text-button">Log out</button></div>
+      <p class="subtle">Optional details help frame your question.</p>
+      <label for="degree">Degree level</label><select id="degree"><option>Not specified</option><option>Undergraduate</option><option>Master's</option><option>Doctoral</option><option>Other</option></select>
+      <label for="stage">Where are you now?</label><select id="stage"><option>Not specified</option><option>Enrolled</option><option>Graduating</option><option>On OPT</option><option>On STEM OPT</option></select>
+      <label for="school">School or program</label><input id="school" maxlength="100" placeholder="Optional · e.g. Marshall, Viterbi">
+    </section>
+    <section class="knowledge-panel"><div class="section-heading"><h2>Knowledge base</h2><span id="readyDot" class="dot"></span></div><p id="knowledgeStatus" class="subtle" role="status">Checking collected sources…</p><details><summary>Explore indexed sources</summary><ul id="sourceList" class="source-list"></ul></details></section>
+    <details id="curatorPanel" class="curator hidden"><summary>Knowledge-base curator</summary><p class="subtle">Upload only reviewed, public official guidance. No personal documents. Uploading the same source URL replaces its indexed content.</p><form id="uploadForm">
+      <label for="adminKey">Curator key</label><input type="password" id="adminKey" required autocomplete="off">
+      <label for="documentTitle">Source title</label><input id="documentTitle" required maxlength="200">
+      <label for="documentUrl">Official source URL</label><input id="documentUrl" type="url" required placeholder="https://ois.usc.edu/…">
+      <label for="documentTopic">Topic</label><select id="documentTopic"><option>F-1</option><option>CPT</option><option>OPT</option><option>STEM OPT</option><option>Travel</option></select>
+      <label for="documentFile">PDF, TXT or Markdown · up to 10 MB</label><input id="documentFile" type="file" accept=".pdf,.txt,.md" required>
+      <button id="uploadBtn" type="submit">Add to knowledge base</button><p id="uploadStatus" role="status" class="subtle"></p>
+    </form></details>
+    <a class="ois-link" href="https://ois.usc.edu/" target="_blank" rel="noopener noreferrer">Visit USC Office of International Services ↗</a>
+  </aside>
+  <main class="workspace">
+    <div class="workspace-heading"><div><p class="eyebrow">F-1 · CPT · OPT · STEM OPT</p><h2>One question at a time.</h2></div><button id="clearBtn" class="secondary" disabled>New chat</button></div>
+    <div id="messages" class="messages" aria-live="polite" aria-relevant="additions">
+      <section id="welcome" class="welcome"><div class="welcome-icon" aria-hidden="true">✦</div><h3>A little clarity for your next step.</h3><p>Ask about published USC procedures and F-1 guidance. Answers link back to the collected official sources.</p><div class="suggestions">
+        <button type="button" data-question="What is USC’s process for requesting CPT?">I’m planning an internship <span>Explore CPT →</span></button>
+        <button type="button" data-question="What are the steps to apply for post-completion OPT at USC?">I’m preparing to graduate <span>Understand OPT →</span></button>
+        <button type="button" data-question="What reporting requirements does USC list for STEM OPT?">I’m working on STEM OPT <span>Check reporting →</span></button>
+        <button type="button" data-question="Where can I find USC’s F-1 enrollment requirements?">I’m maintaining F-1 status <span>Review the guidance →</span></button>
+      </div><p class="welcome-note">For USC students across all schools and degree levels.</p></section>
+    </div>
+    <div id="questionStatus" class="question-status" role="status"></div>
+    <form id="questionForm" class="composer"><label for="question" class="sr-only">Your question</label><textarea id="question" rows="2" maxlength="2000" placeholder="Log in to ask your question…" required disabled></textarea><button id="sendBtn" type="submit" disabled>Ask guide <span aria-hidden="true">↗</span></button></form>
+    <p class="disclaimer">Unofficial information assistant, not USC OIS or legal advice. Confirm personal eligibility with OIS. Recent chat is sent to the configured AI services; avoid personal identifiers.</p>
+    <a class="legacy-link" href="/group-chat">Team’s original group-chat demo</a>
+  </main>
+</div>
+<script src="/student.js"></script>
+</body></html>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">USC Student Guide</string>
+    <string name="defaultUrl">https://predictions-textiles-sim-karen.trycloudflare.com/</string>
+    <string name="asset_statements" translatable="false">[{\"relation\": [\"delegate_permission/common.handle_all_urls\"], \"target\": {\"namespace\": \"web\", \"site\": \"https://predictions-textiles-sim-karen.trycloudflare.com\"}}]</string>
+</resources>

@@ -1,0 +1,13 @@
+{
+  "id": "usc-stem",
+  "title": "USC OIS: STEM OPT Extension (curated summary)",
+  "topic": "STEM OPT",
+  "url": "https://ois.usc.edu/employment/stem-opt-extension/",
+  "collected_at": "2026-10-31T13:26:46.959552+00:00",
+  "sha256": "4c9e96bd0916e2cf9e33de0999c06be6dfb7fc240f643907fc1a8a8f8fd5f176",
+  "text": "USC STEM OPT can extend eligible post-completion OPT by 24 months. Employment must relate to the qualifying STEM degree. Check the degree's CIP code against the DHS STEM-designated program list; the job and employer must also satisfy STEM OPT requirements.\nUSC STEM OPT application order: the student and employer prepare and sign Form I-983; the student requests the STEM-recommended I-20 through Trojan International; OIS sends the I-20; then the student files Form I-765 and supporting documents with USCIS. Review the official filing deadlines before the current EAD expires.\nUSC STEM OPT reporting: submit U.S. address and employment changes through Trojan International within 10 days. Reporting milestones occur at months 6, 12, 18, and 24 measured from the STEM EAD start date. The source distinguishes validation reports from the I-983 progress and final evaluations. Employer changes may require a new training plan and a final evaluation for the prior employer. Consult the source's reporting table for the correct form and supporting pages.",
+  "reviewed": true,
+  "source_kind": "reviewed_summary",
+  "reviewed_on": "2026-10-31",
+  "curation_note": "Concise paraphrase checked against the linked USC page via web retrieval. Not a complete page snapshot or a substitute for OIS advice."
+}

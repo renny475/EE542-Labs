@@ -1,0 +1,15 @@
+{
+  "id": "ecfr-f-1",
+  "title": "Federal regulation: 8 CFR 214.2(f)(1) \u2014 Admission of student (text version 2026-10-14)",
+  "url": "https://www.ecfr.gov/on/2026-10-14/title-8/chapter-I/subchapter-B/part-214/section-214.2#p-214.2(f)(1)",
+  "topic": "F-1",
+  "text": "8 CFR 214.2(f)(1): Admission of student. Federal rule, not a USC application procedure.\n\n(1) Admission of student\u2014(i) Eligibility for admission. A nonimmigrant student may be admitted into the United States in nonimmigrant status under section 101(a)(15)(F) of the Act, if:\n\n(A) The student presents a Form I-20 or successor form issued in the student's name by a school certified by the Student and Exchange Visitor Program (SEVP) for attendance by F-1 foreign students;\n\n(B) The student has documentary evidence of financial support in the amount indicated on the Form I-20 or successor form;\n\n(C) For students seeking initial admission only, the student intends to attend the school specified in the student's visa (or, where the student is exempt from the requirement for a visa, the school indicated on the Form I-20 or successor form); and\n\n(D) In the case of a student who intends to study at a public secondary school, the student has demonstrated that he or she has reimbursed the local educational agency that administers the school for the full, unsubsidized per capita cost of providing education at the school for the period of the student's attendance.\n\n(ii) Form I-20 or successor form requirements at the port-of-entry. When an F-1 student applies for admission with a complete Form I-20 or successor form, the inspecting officer will:\n\n(A) Transcribe the student's admission number from Form I-94 onto the student's Form I-20 or successor form (for students seeking initial admission only);\n\n(B) Endorse the Form I-20 or successor form; and\n\n(C) Return the Form I-20 or successor form to the student.\n\n(iii) Use of the Student and Exchange Visitor Information System (SEVIS). Schools must issue a Form I-20 or successor form in SEVIS to any current student requiring a reportable action (e.g., extension of stay, practical training, and requests for employment authorization), or to any alien who must obtain a new nonimmigrant student visa.",
+  "collected_at": "2026-10-31T20:05:46.984899+00:00",
+  "sha256": "4ce18142becacece31efb8c02627c76811f4b5f1ff69fe787ce0af8785a71b95",
+  "reviewed": true,
+  "source_kind": "official_federal_regulatory_text",
+  "text_version": "2026-10-14",
+  "up_to_date_as_of": "2026-10-29",
+  "citation": "8 CFR 214.2(f)(1)",
+  "curation_note": "Full selected subsection from the official eCFR XML API, preserving paragraph order; F-2 and other non-F-1 topics omitted from this collection."
+}

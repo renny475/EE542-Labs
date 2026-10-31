@@ -1,0 +1,43 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.helloworld.groupchat.twa'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.helloworld.groupchat.twa"
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    // Optional local demonstration key. Never commit a private signing key.
+    def suppliedStore = System.getenv('STUDENT_GUIDE_KEYSTORE')
+    if (suppliedStore) {
+        signingConfigs {
+            demo {
+                storeFile file(suppliedStore)
+                storePassword 'android'
+                keyAlias 'studentguide-demo'
+                keyPassword 'android'
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            if (suppliedStore) signingConfig signingConfigs.demo
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
+}

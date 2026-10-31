@@ -1,0 +1,86 @@
+[
+  {
+    "id": "usc-status",
+    "title": "USC OIS: Guidelines for Maintaining Status",
+    "topic": "F-1",
+    "url": "https://ois.usc.edu/maintaining-status/guidelines-maintaining-status/"
+  },
+  {
+    "id": "usc-cpt",
+    "title": "USC OIS: Curricular Practical Training",
+    "topic": "CPT",
+    "url": "https://ois.usc.edu/employment/curricular-practical-training-cpt/"
+  },
+  {
+    "id": "usc-cpt-update",
+    "title": "USC OIS: Important Update About CPT Requirements",
+    "topic": "CPT",
+    "url": "https://ois.usc.edu/important-update-regarding-curricular-practical-training/"
+  },
+  {
+    "id": "usc-opt",
+    "title": "USC OIS: Optional Practical Training",
+    "topic": "OPT",
+    "url": "https://ois.usc.edu/employment/optional-practical-training-opt/"
+  },
+  {
+    "id": "usc-post-opt",
+    "title": "USC OIS: Post-Completion OPT",
+    "topic": "OPT",
+    "url": "https://ois.usc.edu/employment/post-completion-opt/"
+  },
+  {
+    "id": "usc-stem",
+    "title": "USC OIS: STEM OPT Extension",
+    "topic": "STEM OPT",
+    "url": "https://ois.usc.edu/employment/stem-opt-extension/"
+  },
+  {
+    "id": "usc-f1-employment",
+    "title": "USC OIS: F-1 Student Employment",
+    "topic": "F-1",
+    "url": "https://ois.usc.edu/employment/f1-student-employment/"
+  },
+  {
+    "id": "usc-reentry",
+    "title": "USC OIS: Requirements for Reentry",
+    "topic": "Travel",
+    "url": "https://ois.usc.edu/travel/requirements-for-reentry/"
+  },
+  {
+    "id": "usc-rcl",
+    "title": "USC OIS: Reduced Course Load",
+    "topic": "F-1",
+    "url": "https://ois.usc.edu/maintaining-status/reduced-course-load/"
+  },
+  {
+    "id": "usc-oncampus",
+    "title": "USC OIS: On-Campus Employment",
+    "topic": "F-1",
+    "url": "https://ois.usc.edu/employment/on-campus-employment/"
+  },
+  {
+    "id": "usc-transfer",
+    "title": "USC OIS: Attending Another Institution",
+    "topic": "F-1",
+    "url": "https://ois.usc.edu/maintaining-status/attending-another-institution/"
+  },
+  {
+    "id": "usc-pre-opt",
+    "title": "USC OIS: Pre-Completion OPT",
+    "topic": "OPT",
+    "url": "https://ois.usc.edu/employment/pre-completion-opt/"
+  },
+  {
+    "id": "uscis-opt",
+    "title": "USCIS: Optional Practical Training for F-1 Students",
+    "topic": "OPT",
+    "url": "https://www.uscis.gov/working-in-the-united-states/students-and-exchange-visitors/optional-practical-training-opt-for-f-1-students"
+  },
+  {
+    "id": "uscis-stem",
+    "title": "USCIS: STEM OPT Extension",
+    "topic": "STEM OPT",
+    "url": "https://www.uscis.gov/working-in-the-united-states/students-and-exchange-visitors/optional-practical-training-extension-for-stem-students-stem-opt"
+  }
+]
