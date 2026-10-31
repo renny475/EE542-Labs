@@ -1,0 +1,16 @@
+- {question: "When can I apply for post-completion OPT?", expect: [ois-post-completion-opt, ois-opt, uscis-opt-for-f1-students, uscis-pm-2f-ch5]}
+- {question: "How many hours can I work on campus during the semester?", expect: [ois-on-campus-employment, ois-f1-student-employment, uscis-pm-2f-ch6, cfr-8-214-2-f]}
+- {question: "Do I qualify for the STEM OPT extension?", expect: [ois-stem-opt-extension, uscis-stem-opt, sevp-stem-opt-hub]}
+- {question: "What do I need to re-enter the U.S. after travelling?", expect: [ois-requirements-for-reentry, ois-entering-united-states, uscis-pm-2f-ch7]}
+- {question: "How many days of unemployment am I allowed on OPT?", expect: [uscis-pm-2f-ch5, cfr-8-214-2-f, uscis-opt-for-f1-students, ois-post-completion-opt]}
+- {question: "What is CPT and do I need a course for it?", expect: [ois-cpt, uscis-pm-2f-ch5, cfr-8-214-2-f]}
+- {question: "What is Form I-983 and who fills it out?", expect: [sevp-form-i-983-instructions, sevp-form-i-983, sevp-stem-opt-hub, uscis-stem-opt]}
+- {question: "Is my major on the STEM designated degree list?", expect: [sevp-stem-designated-degree-list, uscis-stem-opt]}
+- {question: "What is the cap-gap extension for H-1B?", expect: [ois-cap-gap-extension, uscis-pm-2f-ch5, uscis-opt-for-f1-students]}
+- {question: "Can I take fewer classes in my last semester?", expect: [ois-reduced-course-load, uscis-pm-2f-ch3, cfr-8-214-2-f]}
+- {question: "How do I extend my I-20 if I need more time to finish?", expect: [ois-extending-program, uscis-pm-2f-ch8, cfr-8-214-2-f]}
+- {question: "What is the 60-day grace period after graduation?", expect: [ois-program-completion, uscis-pm-2f-ch8, cfr-8-214-2-f]}
+- {question: "Can my spouse on F-2 work or study?", expect: [ois-f2-dependents, uscis-pm-2f-ch9, cfr-8-214-2-f]}
+- {question: "How do I file Form I-765 for OPT?", expect: [uscis-i-765-instructions, uscis-opt-for-f1-students, ois-post-completion-opt]}
+- {question: "Can I transfer my SEVIS record to another school?", expect: [ois-attending-another-institution, ois-transferring-to-usc, uscis-pm-2f-ch4]}
+- {question: "Is there a new fee for OPT applications?", expect: [ois-news-proposed-opt-fees]}
