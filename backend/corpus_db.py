@@ -124,6 +124,14 @@ def existing_sha(conn: Connection, source_id: str) -> str | None:
     return conn.execute(select(documents.c.sha256).where(documents.c.source_id == source_id)).scalar_one_or_none()
 
 
+def existing_ingest(conn: Connection, source_id: str) -> tuple[str, str] | None:
+    """(sha256, embedding_model) of the stored document, or None when absent."""
+    row = conn.execute(
+        select(documents.c.sha256, documents.c.embedding_model).where(documents.c.source_id == source_id)
+    ).one_or_none()
+    return (row.sha256, row.embedding_model) if row else None
+
+
 def _delete_documents(conn: Connection, document_ids: list[int]) -> None:
     if not document_ids:
         return

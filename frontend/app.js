@@ -44,7 +44,11 @@ async function callAPI(path, method = "GET", body) {
   const res = await fetch(API + path, {
     method, headers, body: body ? JSON.stringify(body) : undefined
   });
-  if (!res.ok) throw new Error(await errorMessage(res));
+  if (!res.ok) {
+    const err = new Error(await errorMessage(res));
+    err.status = res.status;
+    throw err;
+  }
   return res.json();
 }
 
@@ -248,10 +252,15 @@ if (token) {
   loadMessages().then(() => {
     connectWS();
     showChat();
-  }).catch(() => {
-    token = "";
-    localStorage.removeItem("token");
-    authMsg.textContent = "Your session has expired. Please log in again.";
+  }).catch((e) => {
+    if (e.status === 401) {
+      // Only a rejected token ends the session; a server that is down keeps it.
+      token = "";
+      localStorage.removeItem("token");
+      authMsg.textContent = "Your session has expired. Please log in again.";
+    } else {
+      authMsg.textContent = "Could not reach the server. Please reload to try again.";
+    }
     showAuth();
   });
 } else {

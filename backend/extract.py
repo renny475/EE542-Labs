@@ -66,12 +66,25 @@ def strip_repeated_lines(pages: list[Page], min_fraction: float = 0.3) -> list[P
     for _, text in pages:
         for key in {_normalise_digits(line) for line in text.splitlines() if line.strip()}:
             pages_with_line[key] = pages_with_line.get(key, 0) + 1
-    threshold = max(2.0, min_fraction * len(pages))  # a line on one page is never "repeated"
+    # A line must recur on at least three pages: on a four-page OIS print, a section
+    # title legitimately appears on both the jump list and the section itself.
+    threshold = max(3.0, min_fraction * len(pages))
     repeated = {key for key, count in pages_with_line.items() if count >= threshold}
     return [
         (n, "\n".join(line for line in text.splitlines() if _normalise_digits(line) not in repeated))
         for n, text in pages
     ]
+
+
+def join_wrapped_lines(text: str) -> str:
+    """Undo PDF line wrapping inside sentences while keeping headings on their own line.
+
+    A hyphen at a line end followed by a lowercase letter is a broken word; a line
+    that ends in a lowercase letter or comma and continues with a lowercase letter
+    is a wrapped sentence. Lines that start with a capital are left alone.
+    """
+    text = re.sub(r"(?<=[a-z])-[ \t]*\n(?=[a-z])", "", text)
+    return re.sub(r"(?<=[a-z,;])[ \t]*\n(?=[a-z])", " ", text)
 
 
 def cfr_paragraph_f(text: str) -> str:
@@ -94,7 +107,7 @@ def cfr_paragraph_f(text: str) -> str:
 def extract_source(source: Source, data_dir: Path) -> list[Page]:
     path = source.path(data_dir)
     if source.kind == "pdf":
-        pages = strip_repeated_lines(pdf_pages(path))
+        pages = [(n, join_wrapped_lines(text)) for n, text in strip_repeated_lines(pdf_pages(path))]
     elif source.kind == "html":
         pages = [(None, html_to_text(path.read_text(encoding="utf-8", errors="replace")))]
     else:

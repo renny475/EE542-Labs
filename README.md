@@ -23,7 +23,7 @@ sql/       reference schema
 ## Quick Start (Dev)
 
 ```bash
-# 1) MySQL
+# 1) MySQL (a database from Lab 9 Part 1 is upgraded in place at backend startup)
 mysql -u root < sql/schema.sql
 
 # 2) Backend
@@ -32,8 +32,8 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp ../.env.example ../.env   # set JWT_SECRET, OPENAI_API_KEY, LLM_API_KEY
 
-# 3) Corpus
-python fetch_sources.py && python ingest.py
+# 3) Corpus (OIS pages are saved by hand as PDFs, see SETUP.md step 6)
+python fetch_sources.py && python fetch_sources.py --check && python ingest.py
 
 # 4) Run (llama-server on :8001, see SETUP.md)
 uvicorn app:app --host 0.0.0.0 --port 8000

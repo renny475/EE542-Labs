@@ -21,7 +21,7 @@ from fastapi.staticfiles import StaticFiles
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel, Field
-from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, String, Text, func, select
+from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, String, Text, func, inspect, select, text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -220,6 +220,20 @@ async def respond(user_id: int, username: str, question: str, message_id: int) -
         log.exception("answering message %s for user %s (%s) failed", message_id, user_id, username)
 
 
+def ensure_messages_sources_column(conn) -> bool:
+    """Add messages.sources to a Part 1 database. Returns True when it was added.
+
+    create_all never alters an existing table, so without this every POST
+    /api/messages on an upgraded database fails with "Unknown column".
+    """
+    columns = {c["name"] for c in inspect(conn).get_columns("messages")}
+    if "sources" in columns:
+        return False
+    conn.execute(text("ALTER TABLE messages ADD COLUMN sources JSON NULL"))
+    log.warning("added the missing messages.sources column (database created by Lab 9 Part 1)")
+    return True
+
+
 def _load_corpus() -> tuple[Retriever, corpus_db.CorpusSnapshot]:
     sync_engine = corpus_db.make_engine(settings.SYNC_DATABASE_URL)
     try:
@@ -234,6 +248,7 @@ async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
         await conn.run_sync(corpus_db.metadata.create_all)
+        await conn.run_sync(ensure_messages_sources_column)
 
     # CorpusModelMismatch propagates on purpose: better to fail at startup
     # than to serve similarities computed across two different models.

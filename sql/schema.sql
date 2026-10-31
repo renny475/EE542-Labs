@@ -23,9 +23,9 @@ CREATE TABLE IF NOT EXISTS messages (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
--- Upgrading a Part 1 database: the old messages table lacks `sources` and holds
--- public group-chat rows that the private assistant must not show. Drop and
--- recreate it once before starting the Part 4 backend (create_all then rebuilds it):
+-- Upgrading a Part 1 database: the backend adds the missing `sources` column at
+-- startup. Old public group-chat rows stay but are only ever shown to their own
+-- author; to start clean, drop the table before starting the Part 4 backend:
 --   DROP TABLE IF EXISTS messages;
 
 -- Part 4: curated corpus. Source of truth for the in-memory FAISS index that the

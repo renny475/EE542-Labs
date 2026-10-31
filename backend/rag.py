@@ -147,7 +147,10 @@ class LLMClient:
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             response = await client.post(f"{self.base_url}/chat/completions", json=payload, headers=headers)
         response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"]
+        content = response.json()["choices"][0]["message"]["content"]
+        if not isinstance(content, str):
+            raise ValueError(f"model returned no text (content={content!r})")
+        return content
 
 
 @dataclass
@@ -177,8 +180,8 @@ async def answer(
         return BotAnswer(NOT_COVERED, [])
 
     try:
-        text = await chat(build_messages(question, hits, history))
+        text = (await chat(build_messages(question, hits, history))).strip()
     except Exception:
         log.exception("LLM call failed")
         return BotAnswer(LLM_ERROR, [])
-    return BotAnswer(text.strip(), [h.to_source() for h in hits])
+    return BotAnswer(text, [h.to_source() for h in hits])

@@ -69,3 +69,34 @@ def test_strip_repeated_lines_catches_alternating_headers_and_varying_digit_widt
         pages.append((i, f"{head}\nParagraph {['a','b','c','d','e','f','g','h','i','j'][i-1]}\nPage {i} of 10"))
     stripped = strip_repeated_lines(pages)
     assert [t for _, t in stripped] == [f"Paragraph {c}" for c in "abcdefghij"]
+
+
+def test_strip_repeated_lines_keeps_a_heading_that_appears_on_two_pages_of_a_short_document():
+    # OIS "Program Completion": page 2 is a jump list of the section titles, page 3 holds
+    # the sections themselves. A title seen on two of four pages is content, not chrome.
+    chrome = "Office of International Services\nNeed help?"
+    pages = [
+        (1, f"{chrome}\nProgram Completion (Students)"),
+        (2, f"{chrome}\nChoose one of the following actions.\nTransfer to Another Institution\nDepart From the United States"),
+        (3, f"{chrome}\nTransfer to Another Institution\nAsk your new school to request a SEVIS transfer."),
+        (4, f"{chrome}\nDepart From the United States\nLeave within the 60-day grace period."),
+    ]
+    out = strip_repeated_lines(pages)
+    assert "Transfer to Another Institution" in out[2][1]
+    assert "Depart From the United States" in out[3][1]
+    assert all("Need help?" not in text and "Office of International Services" not in text for _, text in out)
+
+
+def test_join_wrapped_lines_repairs_hyphenation_and_mid_sentence_breaks_but_keeps_headings():
+    from extract import join_wrapped_lines
+
+    text = (
+        "STEM OPT Extension\nWhat Is a STEM OPT Extension?\n"
+        "(f) Students in colleges, universities, \nseminaries, conservatories, academic high \n"
+        "schools, elementary schools, other aca-\ndemic institutions, and in language \ntraining programs."
+    )
+    assert join_wrapped_lines(text) == (
+        "STEM OPT Extension\nWhat Is a STEM OPT Extension?\n"
+        "(f) Students in colleges, universities, seminaries, conservatories, academic high "
+        "schools, elementary schools, other academic institutions, and in language training programs."
+    )

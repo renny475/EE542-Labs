@@ -22,3 +22,10 @@ def test_blob_roundtrip_is_float32_little_endian():
 def test_normalise_rows():
     out = normalise(np.array([[3.0, 4.0], [0.0, 0.0]], dtype=np.float32))
     assert np.allclose(out[0], [0.6, 0.8]) and np.allclose(out[1], [0, 0])
+
+
+def test_openai_embedder_bounds_request_time():
+    from embeddings import OpenAIEmbedder
+
+    client = OpenAIEmbedder("text-embedding-3-small", "sk-test-not-used")._client
+    assert client.timeout == 30.0 and client.max_retries == 2

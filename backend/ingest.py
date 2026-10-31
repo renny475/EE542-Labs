@@ -23,7 +23,7 @@ from corpus_db import (
     ChunkRecord,
     DocumentRecord,
     create_tables,
-    existing_sha,
+    existing_ingest,
     make_engine,
     prune_documents,
     replace_document,
@@ -61,8 +61,10 @@ def _ingest_one(source: Source, data_dir: Path, engine: Engine, embedder: Embedd
     path = source.path(data_dir)
     sha = sha256_of(path)
     with engine.begin() as conn:
-        previous = existing_sha(conn, source.id)
-    if previous == sha:
+        previous = existing_ingest(conn, source.id)
+    # Unchanged file embedded with the current model: nothing to do. A model change
+    # must re-embed, or the backend refuses to start on the stale vectors.
+    if previous == (sha, embedder.model):
         report.skipped.append(source.id)
         return
 

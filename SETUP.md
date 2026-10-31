@@ -5,8 +5,9 @@
 
    Creates the database, the `chatuser` account and every table. `schema.sql` is the
    reference schema; `ingest.py` and the backend also create any missing table
-   themselves. Upgrading a Part 1 database: run `DROP TABLE messages;` once first
-   (the old table lacks the `sources` column and holds public group-chat rows).
+   themselves. Upgrading a Part 1 database: the backend adds the missing
+   `messages.sources` column at startup; run `DROP TABLE messages;` first only if
+   you also want to discard the old public group-chat rows.
 3. `cd backend && python -m venv .venv && source .venv/bin/activate`
 4. `pip install -r requirements.txt greenlet "bcrypt<4.1"`
 

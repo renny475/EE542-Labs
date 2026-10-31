@@ -127,3 +127,13 @@ def test_answer_when_llm_fails():
 
     out = run(answer("q", [], retriever=r, embedder=Emb(dim=2), chat=chat, top_k=5, min_score=0.3))
     assert out.content == LLM_ERROR and out.sources == []
+
+
+def test_answer_when_llm_returns_no_text():
+    r = Retriever(snapshot([[1, 0]]), expected_model="fake")
+
+    async def chat(msgs):
+        return None  # llama-server replied with "content": null
+
+    out = run(answer("q", [], retriever=r, embedder=Emb(dim=2), chat=chat, top_k=5, min_score=0.3))
+    assert out.content == LLM_ERROR and out.sources == []

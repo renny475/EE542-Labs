@@ -56,3 +56,16 @@ def test_message_json_includes_sources_and_utc():
     m = Message(id=1, user_id=3, content="hi", is_bot=True, sources=None, created_at=datetime(2026, 10, 31, 12, 0, 0))
     out = message_json(m, "OIS Assistant")
     assert out["sources"] == [] and out["created_at"].endswith("+00:00") and out["username"] == "OIS Assistant"
+
+
+def test_ensure_messages_sources_column_upgrades_a_part1_table():
+    from sqlalchemy import create_engine, inspect, text
+
+    from app import ensure_messages_sources_column
+
+    engine = create_engine("sqlite://")
+    with engine.begin() as conn:
+        conn.execute(text("CREATE TABLE messages (id INTEGER PRIMARY KEY, user_id INTEGER, content TEXT, is_bot BOOLEAN)"))
+        assert ensure_messages_sources_column(conn) is True   # column was added
+        assert ensure_messages_sources_column(conn) is False  # already present
+    assert "sources" in {c["name"] for c in inspect(engine).get_columns("messages")}

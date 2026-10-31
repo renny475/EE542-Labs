@@ -49,3 +49,11 @@ def test_prune_removes_documents_missing_from_manifest(tmp_path):
     m.write_text("- {id: ois-a, title: A, tier: ois, url: v, file: data/ois/a.pdf, kind: pdf, manual: true}\n")
     r = ingest(m, d, e, FakeEmbedder(), prune=True)
     assert r.pruned == ["uscis-x"] and load_snapshot(e).document_count == 0
+
+
+def test_ingest_re_embeds_when_embedding_model_changes(tmp_path):
+    m, d, e = setup(tmp_path)
+    assert ingest(m, d, e, FakeEmbedder(model="model-a")).added == ["uscis-x"]
+    r = ingest(m, d, e, FakeEmbedder(model="model-b"))
+    assert r.replaced == ["uscis-x"] and r.skipped == []
+    assert load_snapshot(e).embedding_models == {"model-b"}

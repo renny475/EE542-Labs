@@ -32,7 +32,9 @@ class OpenAIEmbedder:
             raise ValueError("OPENAI_API_KEY is required for embeddings")
         self.model = model
         self.batch_size = batch_size
-        self._client = OpenAI(api_key=api_key, max_retries=3)
+        # 30 s covers a 100-text batch; without a bound the SDK waits 600 s per try
+        # and a live question could hang for most of an hour.
+        self._client = OpenAI(api_key=api_key, timeout=30.0, max_retries=2)
 
     def embed(self, texts: list[str]) -> list[list[float]]:
         out: list[list[float]] = []
