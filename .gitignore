@@ -13,3 +13,4 @@ local.properties
 
 # graft local graph cache - regenerable, not committed (run `graft build`).
 /graft/
+.pytest_cache/
