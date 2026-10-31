@@ -75,10 +75,21 @@ Three tiers, in order of authority for USC procedure vs. federal rule:
 
 | Tier | Source | How it is fetched |
 |---|---|---|
-| `ois` | ois.usc.edu pages (about 25) | Saved manually from Chrome as PDF (the site blocks scripted fetches; we do not work around that) |
-| `uscis` | USCIS pages and the I-765 instructions PDF | `fetch_sources.py` |
+| `ois` | ois.usc.edu pages (about 28) | Saved manually from Chrome as PDF (the site blocks scripted fetches; we do not work around that) |
+| `uscis` | USCIS pages, the nine Policy Manual Part F chapters, the I-765 instructions PDF | `fetch_sources.py` |
 | `sevp` | ICE SEVP / Study in the States pages, Form I-983 and instructions, STEM designated degree list | `fetch_sources.py` |
-| `cfr` | 8 CFR 214.2, paragraph (f) only | `fetch_sources.py`, then the ingester keeps only paragraph (f) |
+| `cfr` | 8 CFR 214.2, paragraph (f) only, from the GPO govinfo PDF of the 2025 CFR edition | `fetch_sources.py`, then the ingester keeps only paragraph (f) |
+
+Fetch policy for the scripted tiers: one request per document, a 2 second
+pause between requests, and a User-Agent that names the project
+(`EE542-OIS-Assistant/0.1 (USC student course project)`). No browser
+impersonation, no retries against a 403. Checked on 2026-10-31: with that
+User-Agent uscis.gov, ice.gov, studyinthestates.dhs.gov and govinfo.gov all
+return 200 for the URLs below, and none of their `robots.txt` files
+disallow those paths. ecfr.gov redirects scripted requests to a block page
+and disallows its API in `robots.txt`, so it is replaced by the govinfo PDF
+of the same section. If any site starts refusing, that entry becomes
+`manual: true` and Kai saves it from the browser like the OIS pages.
 
 OIS pages to include (all under ois.usc.edu):
 - employment/: f1-student-employment, on-campus-employment,
@@ -93,25 +104,51 @@ OIS pages to include (all under ois.usc.edu):
 - travel/: entering-united-states, renewing-passport-f1-j1-visa,
   requirements-for-reentry, automatic-revalidation
 - getting-started/: student-visa-types, transferring-to-usc, f2-dependents
-- news: duration-status-rule-change, update-regarding-proposed-opt-fees
-  (time-sensitive; keep their dates visible in metadata)
+- news (time-sensitive; `published` is recorded in the manifest and shown
+  in the sources list):
+  - https://ois.usc.edu/duration-status-rule-change/ (updated 2026-09-14)
+  - https://ois.usc.edu/dhs-final-rule-postponed/ (2026-09-14)
+  - https://ois.usc.edu/update-regarding-proposed-opt-fees/ (2026-10-07)
 
-Federal sources (verified live on 2026-10-31):
+Federal sources (all verified live on 2026-10-31 with the project
+User-Agent):
 - https://www.uscis.gov/sites/default/files/document/forms/i-765instr.pdf
 - https://www.uscis.gov/working-in-the-united-states/students-and-exchange-visitors/optional-practical-training-opt-for-f-1-students
 - https://www.uscis.gov/working-in-the-united-states/students-and-exchange-visitors/optional-practical-training-extension-for-stem-students-stem-opt
 - https://www.uscis.gov/working-in-the-united-states/students-and-exchange-visitors/students-and-employment
-- https://www.uscis.gov/policy-manual/volume-2-part-f plus every
-  `/policy-manual/volume-2-part-f-chapter-N` page it links to
+- USCIS Policy Manual, Volume 2 Part F, chapters 1 to 9, one document each:
+  `https://www.uscis.gov/policy-manual/volume-2-part-f-chapter-N` for N in
+  1..9 (Purpose and Background; Eligibility Requirements; Courses and
+  Enrollment, Full Course of Study, and Reduced Course Load; School
+  Transfer; Practical Training; Employment; Absences From the United
+  States; Change of Status, Extension of Stay, and Length of Stay;
+  Dependents). The chapter list is fixed in the manifest, not crawled.
 - https://studyinthestates.dhs.gov/stem-opt-hub
 - https://studyinthestates.dhs.gov/students/work/training-opportunities-in-the-united-states
 - https://www.ice.gov/sevis/practical-training
 - https://www.ice.gov/doclib/sevis/pdf/i983.pdf
 - https://www.ice.gov/doclib/sevis/pdf/i983Instructions.pdf
 - https://www.ice.gov/doclib/sevis/pdf/stemList2024.pdf
-- https://www.ecfr.gov/current/title-8/chapter-I/subchapter-B/part-214/section-214.2
+- https://www.govinfo.gov/content/pkg/CFR-2025-title8-vol1/pdf/CFR-2025-title8-vol1-sec214-2.pdf
+  (8 CFR 214.2, 2025 edition, about 0.7 MB). The ingester keeps the text
+  from the heading of paragraph `(f) Students in colleges, universities,
+  ...` up to the heading of paragraph `(g)`.
 
-Expected size: about 37 documents, 400 to 800 chunks.
+Expected size: about 48 documents, 600 to 1000 chunks.
+
+### 4.1a Hand-off for the manual (OIS) files
+
+The builder writes the complete `sources.yaml` first, including all OIS
+entries, with `file: data/ois/<slug>.pdf` where `<slug>` is the last path
+segment of the URL (for example
+`data/ois/optional-practical-training-opt.pdf`). Kai then opens each URL
+in Chrome, prints to PDF and saves under exactly that name.
+`fetch_sources.py --check` lists the manual files still missing and fills
+`fetched` for newly present ones from the file's modification date when the
+field is empty. Ingestion, the retrieval eval and the end-to-end checks can
+run on the federal tiers alone while OIS files are still arriving; final
+acceptance in section 9 requires the OIS tier to be present, because the
+example questions are USC-procedure questions.
 
 ### 4.2 Layout and manifest
 
@@ -125,10 +162,11 @@ data/
 
 `sources.yaml` entry fields: `id` (stable slug, used as the DB key),
 `title`, `tier`, `url`, `file` (path under data/), `kind` (`pdf` | `html`),
-`fetched` (YYYY-MM-DD), `manual` (true for OIS). `fetch_sources.py`
-downloads every non-manual entry that is missing or whose `--refresh` flag
-is given, and writes `fetched` back. For manual entries it only checks the
-file exists and reports the ones still missing.
+`fetched` (YYYY-MM-DD), `manual` (true for OIS), and optional `published`
+(YYYY-MM-DD, for news items). `fetch_sources.py` downloads every non-manual
+entry that is missing or whose `--refresh` flag is given, and writes
+`fetched` back. For manual entries it only checks the file exists and
+reports the ones still missing (see 4.1a).
 
 Files in `data/` are committed. They are the curated deliverable and the
 teammate needs the identical corpus. Keep the total under roughly 30 MB.
@@ -145,8 +183,10 @@ Run from the backend venv after `fetch_sources.py`; safe to re-run.
 3. Extract text. PDF: `pypdf`, page by page, keeping the page number.
    HTML: BeautifulSoup; drop `script`, `style`, `nav`, `header`, `footer`,
    `aside`; prefer `<main>` or `<article>` when present; emit headings and
-   paragraphs as separate lines. For the eCFR page keep only the subtree of
-   paragraph (f). Collapse whitespace and strip repeated page headers.
+   paragraphs as separate lines. For the 8 CFR 214.2 PDF keep only the
+   text of paragraph (f), located by its heading and the heading of (g).
+   Collapse whitespace and strip repeated page headers (Chrome's printed
+   PDFs carry a URL and date line on every page).
 4. Chunk with `RecursiveCharacterTextSplitter(chunk_size=1000,
    chunk_overlap=200)` (characters). My call: larger than the Part 2
    setting because legal text needs more surrounding context, and five
@@ -192,8 +232,10 @@ in-memory cache built at backend startup.
 Startup: load all chunks, L2-normalise the vectors, build a FAISS
 `IndexFlatIP` (cosine), keep a parallel list of chunk metadata. Refuse to
 start if `documents.embedding_model` disagrees with `EMBEDDING_MODEL`. Log
-document and chunk counts. After re-ingesting, restart the backend; there
-is no hot reload.
+document and chunk counts. An empty corpus is allowed (the backend starts,
+logs a warning, and every question gets the not-covered reply) so the app
+can be developed before ingestion. After re-ingesting, restart the
+backend; there is no hot reload.
 
 Per question:
 1. Embed the question with the same model. If the embeddings API fails,
@@ -212,8 +254,9 @@ Per question:
      itself; be concise; never give legal advice or predict case outcomes.
    - the sources block: `[n] <title> (<tier>, p.<page>)` followed by the
      chunk text.
-   - the last 4 messages of this user's thread (user and bot), each
-     truncated to 500 characters, then the current question.
+   - the last 4 messages of this user's thread before the current one
+     (user and bot), each truncated to 500 characters, then the current
+     question as the final user turn.
 4. Call `llama-server` `/v1/chat/completions` with `temperature=0.2`,
    `max_tokens=500`, 120 s timeout.
 5. Save the bot message with `sources` = the surviving hits as JSON
@@ -231,7 +274,9 @@ answer (500) is under 2500. SETUP.md is updated from `-c 4096`.
   FK stays `ON DELETE SET NULL`. `GET /api/messages` returns only the
   caller's rows. The old `is_bot` rows with `user_id NULL` are dropped
   with the table reset.
-- `messages.sources JSON NULL` is added.
+- `messages.sources JSON NULL` is added. The dev `messages` table is
+  dropped and recreated from the updated `sql/schema.sql` (SQLAlchemy's
+  `create_all` does not alter existing tables); `users` is kept.
 - Every user message triggers an answer; the `?` rule is removed.
 - `POST /api/messages` saves and pushes the user message, then runs
   retrieval and the LLM in a FastAPI background task, returning at once.
@@ -263,9 +308,12 @@ answer (500) is under 2500. SETUP.md is updated from `-c 4096`.
   (e.g. "When can I apply for post-completion OPT?", "How many hours can I
   work on campus during the semester?", "Do I qualify for the STEM OPT
   extension?", "What do I need to re-enter the U.S. after travelling?").
-- Bot messages: the answer text, then a collapsed "Sources (n)" section;
-  each source shows `[n] title`, a link to `url`, the page if any, and the
-  excerpt. Citation markers in the answer are plain text.
+- Bot messages: the answer text rendered as plain text with line breaks
+  preserved (`white-space: pre-wrap`, no Markdown library, so nothing the
+  model emits is interpreted as HTML), then a collapsed "Sources (n)"
+  section; each source shows `[n] title`, a link to `url`, the page if
+  any, the `published` date for news items, and the excerpt. Citation
+  markers in the answer are plain text.
 - A typing indicator appears when the user sends and disappears when the
   bot message arrives or after 120 s.
 - Phone layout: the message list fills the viewport (`100dvh` minus header
@@ -279,7 +327,7 @@ answer (500) is under 2500. SETUP.md is updated from `-c 4096`.
 
 - Unit tests (pytest, run against SQLite where a DB is needed; ingest and
   rag use SQLAlchemy Core so this works): HTML cleaning keeps headings and
-  drops navigation; eCFR extraction keeps only paragraph (f); chunker
+  drops navigation; 8 CFR extraction keeps only paragraph (f); chunker
   settings; ingest skips unchanged files and replaces changed ones;
   retrieval threshold and the not-covered path with a fake embedder; prompt
   assembly includes exactly the surviving sources.
