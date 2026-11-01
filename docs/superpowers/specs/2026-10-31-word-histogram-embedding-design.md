@@ -162,11 +162,13 @@ OK/MISS, the top score and the hit ids, then two summary numbers:
 - `with threshold: answered x/y, rejected r/5` using the model's threshold
   (what the app would actually do).
 `--all` prints that table for every model present. `--calibrate` picks each
-histogram model's threshold as the midpoint between the lowest top score
-among on-topic questions that hit and the highest top score among off-topic
-questions, writes `data/models/thresholds.json`, and prints both numbers;
-if the two ranges overlap, it prefers rejecting off-topic questions and
-reports how many on-topic questions that costs. Hashing in Word2Vec uses an
+histogram model's threshold as the cut (midpoint between neighbouring top
+scores) that maximises answered on-topic hits plus rejected off-topic
+questions, ties going to the higher cut, and writes
+`data/models/thresholds.json`. (Revised during implementation: the earlier
+"prefer rejection whenever the ranges overlap" rule let one off-topic
+question that happened to mention Los Angeles push the threshold to 0.72 and
+silence 12 of 16 on-topic questions.) Hashing in Word2Vec uses an
 explicit deterministic `hashfxn` so results do not depend on
 `PYTHONHASHSEED`.
 

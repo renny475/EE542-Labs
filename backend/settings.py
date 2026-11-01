@@ -6,6 +6,8 @@ Every other module imports its settings from here instead of calling
 
 from __future__ import annotations
 
+import json
+import logging
 import os
 from pathlib import Path
 
@@ -47,3 +49,26 @@ USER_AGENT = "EE542-OIS-Assistant/0.1 (USC student course project)"
 
 if not JWT_SECRET or JWT_SECRET == "please_change_me_to_a_long_random_value":
     raise RuntimeError("Set a unique JWT_SECRET in the project .env file.")
+
+
+log = logging.getLogger("settings")
+
+
+def load_thresholds(models_dir: Path) -> dict[str, float]:
+    """Per-model not-covered thresholds written by eval_retrieval.py --calibrate."""
+    path = models_dir / "thresholds.json"
+    if not path.exists():
+        return {}
+    return {k: float(v) for k, v in json.loads(path.read_text(encoding="utf-8")).items()}
+
+
+def threshold_for(model: str, thresholds: dict[str, float]) -> float:
+    """OpenAI models use RAG_MIN_SCORE; histogram models use their calibrated entry."""
+    from embeddings import is_histogram_model
+
+    if not is_histogram_model(model):
+        return RAG_MIN_SCORE
+    if model in thresholds:
+        return thresholds[model]
+    log.warning("no calibrated threshold for %s; using RAG_MIN_SCORE=%.2f (run eval_retrieval.py --calibrate)", model, RAG_MIN_SCORE)
+    return RAG_MIN_SCORE

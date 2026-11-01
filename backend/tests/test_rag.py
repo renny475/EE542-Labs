@@ -94,7 +94,7 @@ def test_answer_happy_path_returns_sources():
     out = run(answer("q", [], retriever=r, embedder=Emb(dim=2), chat=chat, top_k=5, min_score=0.3))
     assert out.content == "You may apply 90 days before [1]."
     assert out.sources == [
-        {"n": 1, "title": "Doc0", "url": "https://x/0", "page": 3, "published": None, "excerpt": "x" * 600}
+        {"n": 1, "title": "Doc0", "url": "https://x/0", "page": 3, "published": None, "excerpt": "x" * 600, "score": 1.0}
     ]
     assert seen["msgs"][-1]["content"] == "q"
 
@@ -137,3 +137,14 @@ def test_answer_when_llm_returns_no_text():
 
     out = run(answer("q", [], retriever=r, embedder=Emb(dim=2), chat=chat, top_k=5, min_score=0.3))
     assert out.content == LLM_ERROR and out.sources == []
+
+
+def test_hit_source_includes_score():
+    r = Retriever(snapshot([[1, 0]]), expected_model="fake")
+    hit = r.search([1, 0], top_k=1, min_score=0.0)[0]
+    assert hit.to_source()["score"] == round(hit.score, 2) == 1.0
+
+
+def test_retriever_zero_query_yields_no_hits():
+    r = Retriever(snapshot([[1, 0], [0, 1]]), expected_model="fake")
+    assert r.search([0.0, 0.0], top_k=5, min_score=0.3) == []

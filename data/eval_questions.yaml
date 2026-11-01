@@ -14,3 +14,8 @@
 - {question: "How do I file Form I-765 for OPT?", expect: [uscis-i-765-instructions, uscis-opt-for-f1-students, ois-post-completion-opt]}
 - {question: "Can I transfer my SEVIS record to another school?", expect: [ois-attending-another-institution, ois-transferring-to-usc, uscis-pm-2f-ch4]}
 - {question: "Is there a new fee for OPT applications?", expect: [ois-news-proposed-opt-fees]}
+- {question: "What is the best pizza in Los Angeles?", expect: []}
+- {question: "How do I change a flat bicycle tire?", expect: []}
+- {question: "Who won the 2022 FIFA World Cup?", expect: []}
+- {question: "Write a Python function that reverses a string.", expect: []}
+- {question: "What is the weather like in Seattle in March?", expect: []}

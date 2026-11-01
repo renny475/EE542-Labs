@@ -71,6 +71,7 @@ class Hit:
             "page": self.page,
             "published": self.published.isoformat() if self.published else None,
             "excerpt": self.excerpt,
+            "score": round(self.score, 2),
         }
 
 
