@@ -154,12 +154,27 @@ button.secondary { background: transparent; border: 1px solid #374151; color: va
 .typing { color: var(--muted); font-style: italic; font-size: 13px; margin: 8px 4px 0; }
 
 .composer { display: flex; gap: 12px; margin-top: 12px; flex-shrink: 0; }
+.composer select {
+  max-width: 42%;
+  min-width: 0;            /* a select's intrinsic width is its longest option; let flex shrink it */
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid #374151;
+  background: var(--panel-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+}
+.composer select:disabled { opacity: .6; }
+.welcome .hint { font-size: 13px; margin-top: 16px; }
 
 .msg, .error { margin-top: 10px; color: var(--danger); font-size: 14px; }
 .error { margin-top: 8px; }
 
 @media (max-width: 480px) {
   .auth, .chat { padding: 16px; border-radius: var(--radius-sm); }
+  .composer { flex-wrap: wrap; gap: 8px; }
+  .composer select { flex-basis: 100%; width: 100%; max-width: 100%; }
   .auth .row { flex-direction: column; }
   .row > button { width: 100%; }
   .composer input { padding: 12px; }

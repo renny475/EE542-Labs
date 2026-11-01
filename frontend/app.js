@@ -7,6 +7,7 @@ const welcomeCard = $("welcome");
 const typingBar = $("typing");
 const sendError = $("sendError");
 const corpusDate = $("corpusDate");
+const embeddingSelect = $("embeddingSelect");
 const usernameInput = $("username");
 const passwordInput = $("password");
 const authMsg = $("authMsg");
@@ -23,6 +24,7 @@ const TYPING_TIMEOUT_MS = 120000;
 const RECONNECT_MS = 2000;
 
 let token = localStorage.getItem("token") || "";
+let embeddingLabels = {};   // model name -> label, from /api/meta
 let ws;
 let typingTimer;
 let errorTimer;
@@ -71,10 +73,31 @@ async function loadMeta() {
   try {
     const meta = await callAPI("/meta");
     corpusDate.textContent = meta.corpus_as_of || "an unknown date";
+    fillEmbeddingSelect(meta.embeddings || [], meta.default_embedding);
   } catch (e) {
     corpusDate.textContent = "an unknown date";
   }
 }
+
+function fillEmbeddingSelect(embeddings, fallback) {
+  embeddingLabels = {};
+  embeddingSelect.innerHTML = "";
+  for (const e of embeddings) {
+    embeddingLabels[e.model] = e.label;
+    const option = document.createElement("option");
+    option.value = e.model;
+    option.textContent = e.label;
+    embeddingSelect.appendChild(option);
+  }
+  // A remembered choice that is no longer served falls back to the default.
+  const remembered = localStorage.getItem("embedding");
+  embeddingSelect.value = remembered && embeddingLabels[remembered] ? remembered : fallback;
+  embeddingSelect.disabled = embeddings.length <= 1;
+}
+
+embeddingSelect.addEventListener("change", () => {
+  localStorage.setItem("embedding", embeddingSelect.value);
+});
 
 function setTyping(on) {
   clearTimeout(typingTimer);
@@ -108,6 +131,7 @@ function sourcesElement(sources) {
     const extra = [];
     if (s.page) extra.push(`p.${s.page}`);
     if (s.published) extra.push(s.published);
+    if (typeof s.score === "number") extra.push(`score ${s.score.toFixed(2)}`);
     if (extra.length) item.appendChild(document.createTextNode(" · " + extra.join(" · ")));
     if (s.excerpt) {
       const quote = document.createElement("blockquote");
@@ -126,7 +150,10 @@ function addMessage(m) {
   el.className = "message" + (m.is_bot ? " bot" : "");
   const meta = document.createElement("div");
   meta.className = "meta";
-  meta.textContent = `${m.username || "unknown"} • ${new Date(m.created_at).toLocaleString()}`;
+  const parts = [m.username || "unknown"];
+  if (m.is_bot && m.embedding) parts.push(embeddingLabels[m.embedding] || m.embedding);
+  parts.push(new Date(m.created_at).toLocaleString());
+  meta.textContent = parts.join(" • ");
   const body = document.createElement("div");
   body.className = "body";
   body.textContent = m.content;
@@ -228,7 +255,9 @@ async function sendQuestion(text) {
   sendError.classList.add("hidden");
   setTyping(true);
   try {
-    await callAPI("/messages", "POST", {content: text});
+    const body = {content: text};
+    if (embeddingSelect.value) body.embedding = embeddingSelect.value;
+    await callAPI("/messages", "POST", body);
   } catch (e) {
     setTyping(false);
     chatInput.value = text;

@@ -43,10 +43,12 @@
           <button class="example">How many hours can I work on campus during the semester?</button>
           <button class="example">Do I qualify for the STEM OPT extension?</button>
           <button class="example">What do I need to re-enter the U.S. after travelling?</button>
+          <p class="hint">Pick an embedding next to the box to compare retrieval: OpenAI vs. the word-histogram method (Part 5).</p>
         </div>
       </div>
       <div id="typing" class="typing hidden">OIS Assistant is thinking…</div>
       <div class="composer">
+        <select id="embeddingSelect" aria-label="Embedding"></select>
         <input id="chatInput" placeholder="Ask a question…" autocomplete="off" maxlength="4000">
         <button id="sendBtn">Send</button>
       </div>
