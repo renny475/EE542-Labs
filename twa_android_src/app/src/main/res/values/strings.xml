@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Point this to your deployed web app URL -->
-    <string name="defaultUrl">http://192.168.1.96:8001/</string>
+    <string name="app_name">USC OIS Assistant</string>
+    <!-- The deployed https URL of the web app. Set both values with: bash scripts/set_twa_url.sh https://YOUR_DOMAIN -->
+    <string name="defaultUrl">https://REPLACE_WITH_YOUR_DOMAIN/</string>
+    <string name="asset_statements" translatable="false">[{\"relation\": [\"delegate_permission/common.handle_all_urls\"], \"target\": {\"namespace\": \"web\", \"site\": \"https://REPLACE_WITH_YOUR_DOMAIN\"}}]</string>
 </resources>

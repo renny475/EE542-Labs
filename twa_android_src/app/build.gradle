@@ -1,18 +1,33 @@
 plugins {
     id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
 }
 
 android {
-    namespace 'com.helloworld.groupchat.twa'
+    namespace 'edu.usc.ee542.oisassistant'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.helloworld.groupchat.twa"
+        // Must match package_name in frontend/.well-known/assetlinks.json
+        applicationId "edu.usc.ee542.oisassistant"
         minSdk 21
         targetSdk 34
         versionCode 1
         versionName "1.0"
+    }
+
+    // Optional: sign debug builds with your own keystore so the fingerprint in
+    // assetlinks.json stays stable across machines. Never commit a keystore.
+    //   export OIS_TWA_KEYSTORE=/path/to/ois-twa.jks  (alias ois-twa, passwords "android")
+    def suppliedStore = System.getenv('OIS_TWA_KEYSTORE')
+    if (suppliedStore) {
+        signingConfigs {
+            demo {
+                storeFile file(suppliedStore)
+                storePassword 'android'
+                keyAlias 'ois-twa'
+                keyPassword 'android'
+            }
+        }
     }
 
     buildTypes {
@@ -20,7 +35,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-        debug { }
+        debug {
+            if (suppliedStore) signingConfig signingConfigs.demo
+        }
     }
 }
 

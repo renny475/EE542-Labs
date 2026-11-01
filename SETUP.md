@@ -50,3 +50,26 @@
 
    `curl localhost:8000/api/meta` shows the document and chunk counts the server loaded.
 10. Tests: `cd backend && .venv/bin/python -m pytest`
+
+## Android app (Lab 9 Part 2 wrapper, Trusted Web Activity)
+
+`twa_android_src/` wraps the deployed website in an Android app (no Kotlin or
+Java code: `android-browser-helper` opens the site full screen once Digital
+Asset Links verify). Needs Android Studio (or JDK 17 + Android SDK).
+
+1. Publish the site over https. Quick demo: `cloudflared tunnel --url http://localhost:8000 --protocol http2`
+   prints a `https://<random>.trycloudflare.com` URL (it changes every run; a
+   named tunnel on your own domain gives a stable one).
+2. Signing key (once): `keytool -genkeypair -v -keystore ~/ois-twa.jks -alias ois-twa -keyalg RSA -keysize 2048 -validity 3650 -storepass android -keypass android -dname "CN=USC OIS Assistant"`
+   then `keytool -list -v -keystore ~/ois-twa.jks -alias ois-twa -storepass android -keypass android | grep SHA256`.
+   Keep the keystore out of git; `export OIS_TWA_KEYSTORE=~/ois-twa.jks` makes Gradle sign debug builds with it.
+3. From the repo root: `bash scripts/set_twa_url.sh https://<your-domain> <SHA256 fingerprint>`.
+   This writes `defaultUrl` and `asset_statements` into `twa_android_src/app/src/main/res/values/strings.xml`
+   and the fingerprint into `frontend/.well-known/assetlinks.json` (served by the backend at
+   `/.well-known/assetlinks.json`; restart uvicorn, then check `curl https://<your-domain>/.well-known/assetlinks.json`).
+4. Build: open `twa_android_src/` in Android Studio and Run, or `cd twa_android_src && ./gradlew assembleDebug`
+   (APK at `app/build/outputs/apk/debug/app-debug.apk`). Install on a phone or an emulator
+   (Android Studio AVD, LDPlayer, BlueStacks) that has Chrome.
+5. Launch: Chrome opens the site without a URL bar when the asset links verify; with a
+   URL bar it means the fingerprint or package name (`edu.usc.ee542.oisassistant`) does not
+   match, or the URL is not https. Changing the tunnel URL means re-running step 3 and rebuilding.

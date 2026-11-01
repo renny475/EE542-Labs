@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34"/>
     <application
-        android:label="GroupChat"
+        android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
-        android:supportsRtl="true"
-        >
+        android:supportsRtl="true">
+
+        <!-- Digital Asset Links: lets Chrome open the site full screen (no URL bar)
+             once the server publishes /.well-known/assetlinks.json with this app's
+             package name and signing-key fingerprint. -->
+        <meta-data android:name="asset_statements" android:resource="@string/asset_statements"/>
 
         <!-- LauncherActivity from android-browser-helper opens the TWA -->
         <activity
