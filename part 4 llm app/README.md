@@ -33,11 +33,3 @@ From `backend/`, run `python manage_knowledge.py status` to inspect the index. T
 ## Android
 
 `USC-Student-Guide-demo.apk` is the signed demonstration app. `twa_android_src/` contains its buildable source and Gradle wrapper. Build it using JDK 17+ and the Android SDK, with `./gradlew assembleDebug` inside that folder.
-
-The APK currently points to https://predictions-textiles-sim-karen.trycloudflare.com/. This temporary address requires the host Mac, backend, gateway, and tunnel to stay available. For a different HTTPS hostname, update `app/src/main/res/values/strings.xml`, publish the matching package and signing-certificate fingerprint in `frontend/.well-known/assetlinks.json`, then rebuild and install the APK. A new signing key requires a new certificate fingerprint.
-
-The demo ran successfully in the Android 15 AOSP emulator with Brave. BlueStacks on this Mac had browser compatibility failures.
-
-`backend/demo_proxy.py` provides the optional restricted public-demo gateway. It forwards to the backend on port 8002 by default; check its configuration before starting a public demo. The original team group-chat interface remains at `/group-chat`.
-
-This assistant provides information, not employment authorization or individual eligibility decisions. Confirm personal circumstances with USC OIS.
