@@ -7,7 +7,9 @@ cosine similarity, so every stored vector is L2-normalised first.
 from __future__ import annotations
 
 import hashlib
+import re
 from collections.abc import Sequence
+from pathlib import Path
 from typing import Protocol
 
 import numpy as np
@@ -79,3 +81,26 @@ def normalise(vectors: np.ndarray) -> np.ndarray:
     norms = np.linalg.norm(vectors, axis=1, keepdims=True)
     norms[norms == 0] = 1.0
     return vectors / norms
+
+
+HISTOGRAM_MODEL_RE = re.compile(r"^w2v-hist-k(\d+)(-idf)?(-soft)?$")
+OPENAI_MODELS = ("text-embedding-3-small", "text-embedding-3-large", "text-embedding-ada-002")
+
+
+def is_histogram_model(name: str) -> bool:
+    return HISTOGRAM_MODEL_RE.match(name) is not None
+
+
+def make_embedder(model: str, *, api_key: str = "", models_dir: Path | None = None) -> Embedder:
+    """Build the embedder for a model name: OpenAI names need a key, histogram names need artefacts."""
+    if model in OPENAI_MODELS:
+        return OpenAIEmbedder(model, api_key)
+    if is_histogram_model(model):
+        from histogram_embedding import HistogramEmbedder  # local import: gensim is heavy
+
+        if models_dir is None:
+            import settings
+
+            models_dir = settings.MODELS_DIR
+        return HistogramEmbedder.load(model, models_dir)
+    raise ValueError(f"unknown embedding model {model!r}")

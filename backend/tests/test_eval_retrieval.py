@@ -15,7 +15,7 @@ class Emb(FakeEmbedder):
 
 def test_evaluate_marks_hits_and_misses():
     chunks = [ChunkMeta(1, 10, "A", "ois", "u", None, None, "a"), ChunkMeta(2, 20, "B", "ois", "v", None, None, "b")]
-    snap = CorpusSnapshot(chunks, np.array([[1, 0], [0, 1]], np.float32), {"fake"}, 2, date(2026, 10, 31))
+    snap = CorpusSnapshot(chunks, np.array([[1, 0], [0, 1]], np.float32), "fake", 2, date(2026, 10, 31))
     r = Retriever(snap, "fake")
     res = evaluate(
         [EvalQuestion("opt?", ["ois-opt"]), EvalQuestion("cpt?", ["ois-opt"])], r, Emb(dim=2),

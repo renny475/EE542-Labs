@@ -76,12 +76,11 @@ class Hit:
 
 class Retriever:
     def __init__(self, snapshot: CorpusSnapshot, expected_model: str) -> None:
-        foreign = snapshot.embedding_models - {expected_model}
-        if foreign:
+        if snapshot.chunks and snapshot.model != expected_model:
             raise CorpusModelMismatch(
-                f"corpus was embedded with {sorted(foreign)} but EMBEDDING_MODEL is {expected_model!r}; "
-                "re-run ingest.py or change EMBEDDING_MODEL"
+                f"snapshot holds {snapshot.model!r} vectors but the retriever expects {expected_model!r}"
             )
+        self.model = expected_model
         self._chunks = snapshot.chunks
         self.size = len(snapshot.chunks)
         self._index: faiss.Index | None = None

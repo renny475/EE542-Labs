@@ -25,11 +25,11 @@ def meta(i, content="c", page=None):
     )
 
 
-def snapshot(vectors, models={"fake"}):
+def snapshot(vectors, model="fake"):
     v = np.array(vectors, dtype=np.float32)
     return CorpusSnapshot(
         chunks=[meta(i, content="x" * 700, page=3) for i in range(len(vectors))],
-        vectors=v, embedding_models=models, document_count=1, corpus_as_of=date(2026, 10, 31),
+        vectors=v, model=model, document_count=1, corpus_as_of=date(2026, 10, 31),
     )
 
 
@@ -43,13 +43,13 @@ def test_search_ranks_and_applies_threshold():
 def test_search_respects_top_k_and_empty_corpus():
     r = Retriever(snapshot([[1, 0], [0.9, 0.1], [0.8, 0.2]]), expected_model="fake")
     assert len(r.search([1, 0], top_k=2, min_score=0.0)) == 2
-    empty = Retriever(CorpusSnapshot([], np.zeros((0, 0), np.float32), set(), 0, None), expected_model="fake")
+    empty = Retriever(CorpusSnapshot([], np.zeros((0, 0), np.float32), "fake", 0, None), expected_model="fake")
     assert empty.size == 0 and empty.search([1, 0], top_k=5, min_score=0.0) == []
 
 
 def test_retriever_rejects_model_mismatch():
     with pytest.raises(CorpusModelMismatch):
-        Retriever(snapshot([[1, 0]], models={"text-embedding-3-small"}), expected_model="fake")
+        Retriever(snapshot([[1, 0]], model="text-embedding-3-small"), expected_model="fake")
 
 
 def test_hit_carries_document_id():

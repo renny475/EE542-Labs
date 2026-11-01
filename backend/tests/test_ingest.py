@@ -1,5 +1,4 @@
-from corpus_db import create_tables, load_snapshot, make_engine
-from embeddings import FakeEmbedder
+from corpus_db import chunks_missing_embedding, create_tables, load_snapshot, make_engine, models_present
 from ingest import ingest
 
 
@@ -17,43 +16,47 @@ def setup(tmp_path, html="<html><body><main><p>" + "OPT text. " * 300 + "</p></m
     return d / "sources.yaml", d, e
 
 
+def all_chunks(e):
+    with e.begin() as c:
+        return chunks_missing_embedding(c, "any-model")
+
+
 def test_ingest_adds_then_skips_then_replaces(tmp_path):
     m, d, e = setup(tmp_path)
-    r1 = ingest(m, d, e, FakeEmbedder())
+    r1 = ingest(m, d, e)
     assert r1.added == ["uscis-x"] and r1.missing == ["ois-a"]
-    assert len(load_snapshot(e).chunks) >= 3
-    r2 = ingest(m, d, e, FakeEmbedder())
+    assert len(all_chunks(e)) >= 3
+    r2 = ingest(m, d, e)
     assert r2.skipped == ["uscis-x"] and r2.added == []
     (d / "federal" / "x.html").write_text("<html><body><main><p>changed</p></main></body></html>")
-    r3 = ingest(m, d, e, FakeEmbedder())
-    assert r3.replaced == ["uscis-x"] and [c.content for c in load_snapshot(e).chunks] == ["changed"]
+    r3 = ingest(m, d, e)
+    assert r3.replaced == ["uscis-x"] and [t for _, t in all_chunks(e)] == ["changed"]
 
 
 def test_ingest_reports_missing_files(tmp_path):
     m, d, e = setup(tmp_path)
     (d / "federal" / "x.html").unlink()
-    r = ingest(m, d, e, FakeEmbedder())
-    assert sorted(r.missing) == ["ois-a", "uscis-x"] and load_snapshot(e).document_count == 0
+    r = ingest(m, d, e)
+    assert sorted(r.missing) == ["ois-a", "uscis-x"] and load_snapshot(e, "any").document_count == 0
 
 
 def test_ingest_document_with_no_text_is_recorded_with_zero_chunks(tmp_path):
     m, d, e = setup(tmp_path, html="<html><body><main></main></body></html>")
-    r = ingest(m, d, e, FakeEmbedder())
+    r = ingest(m, d, e)
     assert r.added == ["uscis-x"] and r.empty == ["uscis-x"]
-    assert load_snapshot(e).document_count == 1 and load_snapshot(e).chunks == []
+    assert load_snapshot(e, "any").document_count == 1 and all_chunks(e) == []
 
 
 def test_prune_removes_documents_missing_from_manifest(tmp_path):
     m, d, e = setup(tmp_path)
-    ingest(m, d, e, FakeEmbedder())
+    ingest(m, d, e)
     m.write_text("- {id: ois-a, title: A, tier: ois, url: v, file: data/ois/a.pdf, kind: pdf, manual: true}\n")
-    r = ingest(m, d, e, FakeEmbedder(), prune=True)
-    assert r.pruned == ["uscis-x"] and load_snapshot(e).document_count == 0
+    r = ingest(m, d, e, prune=True)
+    assert r.pruned == ["uscis-x"] and load_snapshot(e, "any").document_count == 0
 
 
-def test_ingest_re_embeds_when_embedding_model_changes(tmp_path):
+
+def test_ingest_leaves_vectors_to_embed_corpus(tmp_path):
     m, d, e = setup(tmp_path)
-    assert ingest(m, d, e, FakeEmbedder(model="model-a")).added == ["uscis-x"]
-    r = ingest(m, d, e, FakeEmbedder(model="model-b"))
-    assert r.replaced == ["uscis-x"] and r.skipped == []
-    assert load_snapshot(e).embedding_models == {"model-b"}
+    ingest(m, d, e)
+    assert models_present(e) == {} and len(all_chunks(e)) >= 3

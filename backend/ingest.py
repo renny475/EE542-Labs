@@ -1,8 +1,9 @@
-"""Build the corpus: extract, chunk and embed every manifest source into MySQL.
+"""Build the corpus text: extract and chunk every manifest source into MySQL.
 
 Idempotent: a document whose file hash already matches the stored row is
-skipped, a changed file replaces its rows, and ``--prune`` removes rows for
-sources that left the manifest. Run after ``fetch_sources.py``.
+skipped, a changed file replaces its rows (and drops their vectors), and
+``--prune`` removes rows for sources that left the manifest. Run after
+``fetch_sources.py``; vectors are added afterwards by ``embed_corpus.py``.
 """
 
 from __future__ import annotations
@@ -23,12 +24,13 @@ from corpus_db import (
     ChunkRecord,
     DocumentRecord,
     create_tables,
-    existing_ingest,
+    existing_sha,
+    has_legacy_schema,
     make_engine,
     prune_documents,
     replace_document,
+    reset_corpus_tables,
 )
-from embeddings import Embedder, OpenAIEmbedder, to_blob
 from extract import extract_source
 from manifest import Source, load_manifest
 
@@ -57,24 +59,17 @@ def sha256_of(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _ingest_one(source: Source, data_dir: Path, engine: Engine, embedder: Embedder, report: IngestReport) -> None:
+def _ingest_one(source: Source, data_dir: Path, engine: Engine, report: IngestReport) -> None:
     path = source.path(data_dir)
     sha = sha256_of(path)
     with engine.begin() as conn:
-        previous = existing_ingest(conn, source.id)
-    # Unchanged file embedded with the current model: nothing to do. A model change
-    # must re-embed, or the backend refuses to start on the stale vectors.
-    if previous == (sha, embedder.model):
+        previous = existing_sha(conn, source.id)
+    if previous == sha:
         report.skipped.append(source.id)
         return
 
     pages = extract_source(source, data_dir)
-    chunk_texts = chunk_pages(pages)
-    vectors = embedder.embed([c.content for c in chunk_texts]) if chunk_texts else []
-    records = [
-        ChunkRecord(chunk_index=c.index, page=c.page, content=c.content, embedding=to_blob(v))
-        for c, v in zip(chunk_texts, vectors, strict=True)
-    ]
+    records = [ChunkRecord(chunk_index=c.index, page=c.page, content=c.content) for c in chunk_pages(pages)]
     doc = DocumentRecord(
         source_id=source.id,
         title=source.title,
@@ -83,7 +78,6 @@ def _ingest_one(source: Source, data_dir: Path, engine: Engine, embedder: Embedd
         file_path=source.file,
         sha256=sha,
         fetched_on=source.fetched or date.today(),
-        embedding_model=embedder.model,
         published=source.published,
     )
     with engine.begin() as conn:
@@ -95,7 +89,7 @@ def _ingest_one(source: Source, data_dir: Path, engine: Engine, embedder: Embedd
     log.info("%s: %d chunks (%s)", source.id, len(records), "replaced" if previous else "added")
 
 
-def ingest(manifest_path: Path, data_dir: Path, engine: Engine, embedder: Embedder, *, prune: bool = False) -> IngestReport:
+def ingest(manifest_path: Path, data_dir: Path, engine: Engine, *, prune: bool = False) -> IngestReport:
     sources = load_manifest(manifest_path)
     report = IngestReport()
     failed: list[tuple[str, str]] = []
@@ -105,7 +99,7 @@ def ingest(manifest_path: Path, data_dir: Path, engine: Engine, embedder: Embedd
             report.missing.append(source.id)
             continue
         try:
-            _ingest_one(source, data_dir, engine, embedder, report)
+            _ingest_one(source, data_dir, engine, report)
         except Exception as exc:  # keep going; re-raised collectively below
             log.exception("%s: ingest failed", source.id)
             failed.append((source.id, f"{type(exc).__name__}: {exc}"))
@@ -133,10 +127,14 @@ def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
     engine = make_engine(settings.SYNC_DATABASE_URL)
-    create_tables(engine)
-    embedder = OpenAIEmbedder(settings.EMBEDDING_MODEL, settings.OPENAI_API_KEY)
+    if has_legacy_schema(engine):
+        log.warning("found the Part 4 corpus tables (vector on the chunk); dropping documents/chunks and re-ingesting. "
+                    "Run embed_corpus.py --model ... afterwards to rebuild the vectors.")
+        reset_corpus_tables(engine)
+    else:
+        create_tables(engine)
     try:
-        report = ingest(settings.DATA_DIR / "sources.yaml", settings.DATA_DIR, engine, embedder, prune=args.prune)
+        report = ingest(settings.DATA_DIR / "sources.yaml", settings.DATA_DIR, engine, prune=args.prune)
     except IngestError as exc:
         print(f"FAILED: {exc}", file=sys.stderr)
         return 1
