@@ -70,6 +70,7 @@ class Artifacts:
     centroids: np.ndarray  # (K, N)
     idf: dict[str, float]
     chunk_count: int
+    fingerprint: str | None = None  # from meta.json; identifies this training run
 
 
 class ArtifactsMissing(FileNotFoundError):
@@ -89,7 +90,14 @@ def load_artifacts(models_dir: Path, k: int) -> Artifacts:
     centroids = np.load(models_dir / f"centroids-k{k}.npy").astype(np.float32)
     idf = json.loads((models_dir / "idf.json").read_text(encoding="utf-8"))
     meta = json.loads((models_dir / "meta.json").read_text(encoding="utf-8"))
-    return Artifacts(vectors=vectors, vocab=vocab, centroids=centroids, idf=idf, chunk_count=int(meta["chunk_count"]))
+    return Artifacts(
+        vectors=vectors,
+        vocab=vocab,
+        centroids=centroids,
+        idf=idf,
+        chunk_count=int(meta["chunk_count"]),
+        fingerprint=meta.get("fingerprint"),
+    )
 
 
 def histogram(tokens: list[str], art: Artifacts, spec: HistogramSpec) -> np.ndarray:
@@ -123,6 +131,7 @@ class HistogramEmbedder:
         self.spec = spec
         self.model = spec.name
         self.dim = spec.k
+        self.fingerprint = art.fingerprint
 
     @classmethod
     def load(cls, model: str, models_dir: Path) -> HistogramEmbedder:

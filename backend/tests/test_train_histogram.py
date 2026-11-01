@@ -47,3 +47,10 @@ def test_embed_corpus_warns_when_vocab_predates_chunks(tmp_path, caplog):
     with caplog.at_level(logging.WARNING):
         stale = check_vocab_age(e, emb)
     assert stale is True and "retrain" in caplog.text.lower()
+
+
+def test_train_records_a_fingerprint_that_changes_with_the_data(tmp_path):
+    meta_a = train(TEXTS, tmp_path / "a", k_values=(4,), vector_size=16)
+    meta_b = train(TEXTS[:20] + ["sevis transfer record school"] * 10, tmp_path / "b", k_values=(4,), vector_size=16)
+    assert len(meta_a["fingerprint"]) == 16 and meta_a["fingerprint"] != meta_b["fingerprint"]
+    assert HistogramEmbedder.load("w2v-hist-k4", tmp_path / "a").fingerprint == meta_a["fingerprint"]

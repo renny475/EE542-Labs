@@ -277,6 +277,9 @@ def embedding_label(model: str) -> str:
 
 def build_services(engine, *, api_key: str, models_dir: Path, thresholds: dict[str, float]) -> dict[str, EmbeddingService]:
     """One retriever + embedder per model that has vectors and whose prerequisites exist."""
+    if corpus_db.has_legacy_schema(engine):
+        raise RuntimeError("found the Part 4 corpus tables; run ingest.py first, then embed_corpus.py for every model")
+    corpus_db.ensure_corpus_columns(engine)
     services: dict[str, EmbeddingService] = {}
     for model in sorted(corpus_db.models_present(engine)):
         if not is_histogram_model(model) and not api_key:
@@ -287,6 +290,11 @@ def build_services(engine, *, api_key: str, models_dir: Path, thresholds: dict[s
         except (ValueError, FileNotFoundError) as exc:
             log.warning("skipping %s: %s", model, exc)
             continue
+        fingerprint = getattr(embedder, "fingerprint", None)
+        stored = corpus_db.embedding_fingerprints(engine, model)
+        if fingerprint is not None and stored != {fingerprint}:
+            log.warning("skipping %s: its vectors were computed with other artefacts; run embed_corpus.py --model %s --refresh", model, model)
+            continue
         retriever = Retriever(corpus_db.load_snapshot(engine, model), model)
         services[model] = EmbeddingService(
             model=model,
@@ -296,14 +304,17 @@ def build_services(engine, *, api_key: str, models_dir: Path, thresholds: dict[s
             threshold=settings.threshold_for(model, thresholds),
         )
     if not services:
-        raise RuntimeError("no embedding model available; run embed_corpus.py --model ... first")
+        raise RuntimeError("no embedding model available; run ingest.py, then embed_corpus.py --model ... first")
     return services
 
 
 def default_model(services: dict[str, EmbeddingService]) -> str:
+    """EMBEDDING_MODEL when served; otherwise any served OpenAI model, otherwise the first histogram model."""
     if settings.EMBEDDING_MODEL in services:
         return settings.EMBEDDING_MODEL
-    return sorted(m for m in services if is_histogram_model(m))[0]
+    fallback = sorted(services, key=lambda m: (is_histogram_model(m), m))[0]
+    log.warning("EMBEDDING_MODEL=%s has no vectors or is unavailable; defaulting to %s", settings.EMBEDDING_MODEL, fallback)
+    return fallback
 
 
 def _load_services() -> tuple[dict[str, EmbeddingService], corpus_db.CorpusSnapshot]:

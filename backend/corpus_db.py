@@ -75,6 +75,8 @@ chunk_embeddings = Table(
     Column("model", String(64), primary_key=True),
     Column("dim", Integer, nullable=False),
     Column("embedding", LargeBinary, nullable=False),
+    # Identifies the trained artefacts a histogram vector was computed with (NULL for OpenAI).
+    Column("fingerprint", String(32), nullable=True),
 )
 
 
@@ -127,6 +129,21 @@ def make_engine(url: str) -> Engine:
 
 def create_tables(engine: Engine) -> None:
     metadata.create_all(engine)
+    ensure_corpus_columns(engine)
+
+
+def ensure_corpus_columns(engine: Engine) -> list[str]:
+    """Add columns that an older chunk_embeddings table lacks. Returns the names added."""
+    insp = inspect(engine)
+    if "chunk_embeddings" not in insp.get_table_names():
+        return []
+    present = {c["name"] for c in insp.get_columns("chunk_embeddings")}
+    added = []
+    if "fingerprint" not in present:
+        with engine.begin() as conn:
+            conn.execute(text("ALTER TABLE chunk_embeddings ADD COLUMN fingerprint VARCHAR(32) NULL"))
+        added.append("fingerprint")
+    return added
 
 
 def has_legacy_schema(engine: Engine) -> bool:
@@ -202,7 +219,9 @@ def chunks_missing_embedding(conn: Connection, model: str) -> list[tuple[int, st
     return [(int(cid), content) for cid, content in rows]
 
 
-def upsert_embeddings(conn: Connection, model: str, rows: list[tuple[int, bytes]], dim: int) -> int:
+def upsert_embeddings(
+    conn: Connection, model: str, rows: list[tuple[int, bytes]], dim: int, fingerprint: str | None = None
+) -> int:
     if not rows:
         return 0
     ids = [cid for cid, _ in rows]
@@ -211,9 +230,26 @@ def upsert_embeddings(conn: Connection, model: str, rows: list[tuple[int, bytes]
     )
     conn.execute(
         insert(chunk_embeddings),
-        [{"chunk_id": cid, "model": model, "dim": dim, "embedding": blob} for cid, blob in rows],
+        [
+            {"chunk_id": cid, "model": model, "dim": dim, "embedding": blob, "fingerprint": fingerprint}
+            for cid, blob in rows
+        ],
     )
     return len(rows)
+
+
+def embedding_fingerprints(engine: Engine, model: str) -> set[str | None]:
+    """Distinct artefact fingerprints stored for ``model`` (empty set when it has no vectors)."""
+    with engine.connect() as conn:
+        rows = conn.execute(
+            select(chunk_embeddings.c.fingerprint).where(chunk_embeddings.c.model == model).distinct()
+        ).all()
+    return {row[0] for row in rows}
+
+
+def all_chunks(conn: Connection) -> list[tuple[int, str]]:
+    rows = conn.execute(select(chunks.c.id, chunks.c.content).order_by(chunks.c.id)).all()
+    return [(int(cid), content) for cid, content in rows]
 
 
 def delete_embeddings(conn: Connection, model: str) -> int:

@@ -92,7 +92,12 @@ def train(chunk_texts: list[str], models_dir: Path, *, k_values=(256,), vector_s
         k_done.append(k)
 
     (models_dir / "idf.json").write_text(json.dumps(compute_idf(token_lists), indent=0, sort_keys=True), encoding="utf-8")
+    digest = hashlib.sha256()
+    digest.update(np.ascontiguousarray(kv.vectors, dtype=np.float32).tobytes())
+    for k in k_done:
+        digest.update(np.load(models_dir / f"centroids-k{k}.npy").tobytes())
     meta = {
+        "fingerprint": digest.hexdigest()[:16],
         "chunk_count": len(chunk_texts),
         "vocab_size": len(kv.index_to_key),
         "vector_size": vector_size,

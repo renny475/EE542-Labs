@@ -15,10 +15,12 @@ from sqlalchemy import Engine, func, select
 
 import settings
 from corpus_db import (
+    all_chunks,
     chunks,
     chunks_missing_embedding,
     create_tables,
-    delete_embeddings,
+    embedding_fingerprints,
+    has_legacy_schema,
     make_engine,
     models_present,
     upsert_embeddings,
@@ -36,13 +38,35 @@ class EmbedReport:
     dim: int
 
 
+def require_current_schema(engine: Engine) -> None:
+    """Refuse to work on a Part 4 database: ingest.py must rebuild it first (it drops the corpus tables)."""
+    if has_legacy_schema(engine):
+        raise RuntimeError(
+            "found the Part 4 corpus tables (vector stored on the chunk); run ingest.py first, "
+            "then embed_corpus.py for every model"
+        )
+
+
+def _stale(engine: Engine, embedder: Embedder) -> bool:
+    """True when stored vectors for this model were computed with other artefacts than the embedder's."""
+    fingerprint = getattr(embedder, "fingerprint", None)
+    if fingerprint is None:
+        return False
+    stored = embedding_fingerprints(engine, embedder.model)
+    return bool(stored) and stored != {fingerprint}
+
+
 def embed_corpus(engine: Engine, embedder: Embedder, *, refresh: bool = False, batch_size: int = 100) -> EmbedReport:
     model = embedder.model
+    fingerprint = getattr(embedder, "fingerprint", None)
+    if not refresh and _stale(engine, embedder):
+        log.warning("%s: stored vectors were computed with retrained artefacts; re-embedding every chunk", model)
+        refresh = True
+    # A refresh overwrites chunk by chunk (upsert) instead of deleting first, so an
+    # interrupted run never leaves fewer vectors than it started with.
     with engine.begin() as conn:
-        if refresh:
-            delete_embeddings(conn, model)
-        todo = chunks_missing_embedding(conn, model)
-    skipped = models_present(engine).get(model, 0)
+        todo = all_chunks(conn) if refresh else chunks_missing_embedding(conn, model)
+    skipped = 0 if refresh else models_present(engine).get(model, 0)
 
     embedded = 0
     dim = 0
@@ -54,7 +78,7 @@ def embed_corpus(engine: Engine, embedder: Embedder, *, refresh: bool = False, b
         dim = len(vectors[0])
         rows = [(chunk_id, to_blob(vec)) for (chunk_id, _), vec in zip(batch, vectors, strict=True)]
         with engine.begin() as conn:
-            embedded += upsert_embeddings(conn, model, rows, dim=dim)
+            embedded += upsert_embeddings(conn, model, rows, dim=dim, fingerprint=fingerprint)
         log.info("%s: %d/%d chunks embedded", model, embedded, len(todo))
     if not dim:
         dim = getattr(embedder, "dim", 0)
@@ -86,6 +110,11 @@ def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
     engine = make_engine(settings.SYNC_DATABASE_URL)
+    try:
+        require_current_schema(engine)
+    except RuntimeError as exc:
+        print(exc, file=sys.stderr)
+        return 1
     create_tables(engine)
     try:
         embedder = make_embedder(args.model, api_key=settings.OPENAI_API_KEY, models_dir=settings.MODELS_DIR)

@@ -66,6 +66,9 @@ CREATE TABLE IF NOT EXISTS chunk_embeddings (
   dim INT NOT NULL,
   -- dim float32 values, little-endian, L2-normalised
   embedding BLOB NOT NULL,
+  -- Part 5: fingerprint of the trained artefacts (data/models/meta.json) a histogram vector was
+  -- computed with; NULL for OpenAI. embed_corpus.py re-embeds a model whose fingerprint changed.
+  fingerprint VARCHAR(32) NULL,
   PRIMARY KEY (chunk_id, model),
   CONSTRAINT fk_embedding_chunk FOREIGN KEY (chunk_id) REFERENCES chunks(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

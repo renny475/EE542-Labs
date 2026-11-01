@@ -40,3 +40,16 @@ def test_kmeans_handles_k_greater_than_unique_points_without_nan():
     x = np.array([[0, 0], [0, 0], [1, 1]], float)
     r = kmeans(x, 3)
     assert not np.isnan(r.centroids).any() and r.labels.shape == (3,)
+
+
+def test_reseeding_two_empty_clusters_in_one_round_gives_distinct_centroids():
+    from kmeans import reseed_empty_clusters
+
+    x = np.array([[0, 0], [0, 1], [5, 5], [9, 9], [20, 20]], float)
+    centroids = np.array([[0, 0.5], [100, 100], [200, 200]], float)  # clusters 1 and 2 are empty
+    labels = np.zeros(5, dtype=np.int64)
+    min_dist = ((x - centroids[0]) ** 2).sum(axis=1)
+    reseed_empty_clusters(x, centroids, labels, min_dist, [1, 2])
+    assert len({tuple(c) for c in centroids}) == 3
+    assert centroids[1].tolist() == [20, 20] and centroids[2].tolist() == [9, 9]
+    assert labels[4] == 1 and labels[3] == 2

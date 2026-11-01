@@ -57,3 +57,58 @@ def test_make_embedder_rejects_unknown_name():
 
 def test_is_histogram_model():
     assert is_histogram_model("w2v-hist-k256-idf-soft") and not is_histogram_model("text-embedding-3-small")
+
+
+class FingerprintedEmbedder(FakeEmbedder):
+    def __init__(self, fingerprint, dim=4, model="hist"):
+        super().__init__(dim=dim, model=model)
+        self.fingerprint = fingerprint
+
+
+def test_embed_corpus_re_embeds_everything_when_the_artefact_fingerprint_changed(tmp_path, caplog):
+    import logging
+
+    from corpus_db import embedding_fingerprints
+
+    e = corpus(tmp_path)
+    n = embed_corpus(e, FingerprintedEmbedder("aaaa")).embedded
+    assert embed_corpus(e, FingerprintedEmbedder("aaaa")).embedded == 0
+    with caplog.at_level(logging.WARNING):
+        r = embed_corpus(e, FingerprintedEmbedder("bbbb"))
+    assert r.embedded == n and "retrained" in caplog.text.lower()
+    assert embedding_fingerprints(e, "hist") == {"bbbb"}
+
+
+class FailsOnSecondBatch(FakeEmbedder):
+    def __init__(self):
+        super().__init__(dim=4, model="fake")
+        self.calls = 0
+
+    def embed(self, texts):
+        self.calls += 1
+        if self.calls == 2:
+            raise RuntimeError("network")
+        return super().embed(texts)
+
+
+def test_refresh_never_leaves_fewer_vectors_than_before(tmp_path):
+    e = corpus(tmp_path)
+    n = embed_corpus(e, FakeEmbedder(dim=4)).embedded
+    assert n >= 3
+    with pytest.raises(RuntimeError, match="network"):
+        embed_corpus(e, FailsOnSecondBatch(), refresh=True, batch_size=1)
+    assert models_present(e) == {"fake": n}
+
+
+def test_require_current_schema_rejects_part4_tables():
+    from sqlalchemy import text
+
+    from corpus_db import make_engine
+    from embed_corpus import require_current_schema
+
+    e = make_engine("sqlite://")
+    with e.begin() as c:
+        c.execute(text("CREATE TABLE documents (id INTEGER PRIMARY KEY, embedding_model TEXT)"))
+        c.execute(text("CREATE TABLE chunks (id INTEGER PRIMARY KEY, document_id INTEGER, embedding BLOB)"))
+    with pytest.raises(RuntimeError, match="ingest.py"):
+        require_current_schema(e)

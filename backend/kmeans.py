@@ -51,6 +51,20 @@ def kmeans_plusplus_init(x: np.ndarray, k: int, rng: np.random.Generator) -> np.
     return x[chosen].astype(np.float64, copy=True)
 
 
+def reseed_empty_clusters(x: np.ndarray, centroids: np.ndarray, labels: np.ndarray, min_dist: np.ndarray, empty: list[int]) -> None:
+    """Move each empty cluster's centroid to the point farthest from its current centroid.
+
+    ``min_dist`` (squared distance of every point to its nearest centroid) is
+    updated in place as points are taken, so two empty clusters in the same
+    round never land on the same point.
+    """
+    for j in empty:
+        farthest = int(min_dist.argmax())
+        centroids[j] = x[farthest]
+        labels[farthest] = j
+        min_dist[farthest] = -1.0  # taken: cannot be chosen again this round
+
+
 def kmeans(x: np.ndarray, k: int, *, seed: int = 42, max_iter: int = 100) -> KMeansResult:
     x = np.asarray(x, dtype=np.float64)
     if k <= 0 or k > x.shape[0]:
@@ -62,15 +76,15 @@ def kmeans(x: np.ndarray, k: int, *, seed: int = 42, max_iter: int = 100) -> KMe
     for iterations in range(1, max_iter + 1):
         dists = _sq_dists(x, centroids)
         new_labels = dists.argmin(axis=1)
+        empty = []
         for j in range(k):
             members = x[new_labels == j]
             if members.shape[0]:
                 centroids[j] = members.mean(axis=0)
             else:
-                # Empty cluster: re-seed it at the point farthest from its own centroid.
-                farthest = int(dists.min(axis=1).argmax())
-                centroids[j] = x[farthest]
-                new_labels[farthest] = j
+                empty.append(j)
+        if empty:
+            reseed_empty_clusters(x, centroids, new_labels, dists.min(axis=1), empty)
         if np.array_equal(new_labels, labels):
             labels = new_labels
             break

@@ -61,6 +61,7 @@ def test_message_json_includes_sources_and_utc():
 # --- Part 5: several embeddings ---------------------------------------------
 
 import logging  # noqa: E402
+import pathlib  # noqa: E402
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
@@ -149,3 +150,38 @@ def test_ensure_messages_columns_adds_sources_and_embedding():
         assert ensure_messages_columns(conn) == ["sources", "embedding"]
         assert ensure_messages_columns(conn) == []
     assert {"sources", "embedding"} <= {c["name"] for c in inspect(engine).get_columns("messages")}
+
+
+def test_default_model_falls_back_to_any_available_model_when_env_names_an_absent_one(monkeypatch, caplog):
+    monkeypatch.setattr(settings, "EMBEDDING_MODEL", "text-embedding-3-large")
+    with caplog.at_level(logging.WARNING):
+        assert default_model({"text-embedding-3-small": svc("x")}) == "text-embedding-3-small"
+    assert "text-embedding-3-large" in caplog.text
+
+
+def test_build_services_rejects_a_part4_database():
+    from sqlalchemy import text as sql_text
+
+    e = make_engine("sqlite://")
+    with e.begin() as c:
+        c.execute(sql_text("CREATE TABLE documents (id INTEGER PRIMARY KEY, embedding_model TEXT)"))
+        c.execute(sql_text("CREATE TABLE chunks (id INTEGER PRIMARY KEY, document_id INTEGER, embedding BLOB)"))
+    with pytest.raises(RuntimeError, match="ingest.py"):
+        build_services(e, api_key="sk-x", models_dir=pathlib.Path("/nonexistent"), thresholds={})
+
+
+def test_build_services_skips_a_model_whose_vectors_predate_the_artefacts(tmp_path, caplog, monkeypatch):
+    import embeddings as embeddings_module
+
+    e = two_model_engine()  # vectors for w2v-hist-k256 carry no fingerprint
+
+    class Stale(FakeEmbedder):
+        fingerprint = "ffff"
+
+    monkeypatch.setattr(
+        "app.make_embedder",
+        lambda model, **kw: Stale(dim=4, model=model) if embeddings_module.is_histogram_model(model) else FakeEmbedder(dim=4, model=model),
+    )
+    with caplog.at_level(logging.WARNING):
+        s = build_services(e, api_key="sk-x", models_dir=tmp_path, thresholds={})
+    assert "w2v-hist-k256" not in s and "--refresh" in caplog.text
