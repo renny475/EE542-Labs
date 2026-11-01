@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">USC OIS Assistant</string>
     <!-- The deployed https URL of the web app. Set both values with: bash scripts/set_twa_url.sh https://YOUR_DOMAIN -->
-    <string name="defaultUrl">https://REPLACE_WITH_YOUR_DOMAIN/</string>
-    <string name="asset_statements" translatable="false">[{\"relation\": [\"delegate_permission/common.handle_all_urls\"], \"target\": {\"namespace\": \"web\", \"site\": \"https://REPLACE_WITH_YOUR_DOMAIN\"}}]</string>
+    <string name="defaultUrl">https://logged-let-pee-significant.trycloudflare.com/</string>
+    <string name="asset_statements" translatable="false">[{\"relation\": [\"delegate_permission/common.handle_all_urls\"], \"target\": {\"namespace\": \"web\", \"site\": \"https://logged-let-pee-significant.trycloudflare.com\"}}]</string>
 </resources>
