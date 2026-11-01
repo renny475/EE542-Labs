@@ -84,6 +84,7 @@ class Retriever:
         self.model = expected_model
         self._chunks = snapshot.chunks
         self.size = len(snapshot.chunks)
+        self.document_count = len({c.document_id for c in snapshot.chunks})
         self._index: faiss.Index | None = None
         if self.size:
             vectors = np.ascontiguousarray(normalise(snapshot.vectors), dtype=np.float32)
