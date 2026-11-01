@@ -1,0 +1,12 @@
+{
+  "chunk_count": 785,
+  "vocab_size": 2483,
+  "vector_size": 100,
+  "k_values": [
+    256
+  ],
+  "window": 5,
+  "min_count": 2,
+  "epochs": 25,
+  "seed": 42
+}

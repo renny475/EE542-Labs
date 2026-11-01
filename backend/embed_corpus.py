@@ -11,10 +11,11 @@ import logging
 import sys
 from dataclasses import dataclass
 
-from sqlalchemy import Engine
+from sqlalchemy import Engine, func, select
 
 import settings
 from corpus_db import (
+    chunks,
     chunks_missing_embedding,
     create_tables,
     delete_embeddings,
@@ -60,6 +61,22 @@ def embed_corpus(engine: Engine, embedder: Embedder, *, refresh: bool = False, b
     return EmbedReport(model=model, embedded=embedded, skipped=skipped, dim=dim)
 
 
+def check_vocab_age(engine: Engine, embedder: Embedder) -> bool:
+    """Warn when a histogram embedder was trained on a different number of chunks. Returns True when stale."""
+    art = getattr(embedder, "art", None)
+    if art is None:
+        return False
+    with engine.connect() as conn:
+        current = conn.execute(select(func.count()).select_from(chunks)).scalar_one()
+    if current == art.chunk_count:
+        return False
+    log.warning(
+        "Word2Vec was trained on %d chunks but the corpus now has %d; retrain with train_histogram.py",
+        art.chunk_count, current,
+    )
+    return True
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--model", required=True, help="embedding model name, e.g. text-embedding-3-small or w2v-hist-k256-idf")
@@ -75,6 +92,7 @@ def main() -> int:
     except (ValueError, FileNotFoundError) as exc:
         print(f"cannot build embedder {args.model!r}: {exc}", file=sys.stderr)
         return 1
+    check_vocab_age(engine, embedder)
     report = embed_corpus(engine, embedder, refresh=args.refresh, batch_size=args.batch_size)
     print(f"model {report.model}: embedded {report.embedded}, skipped {report.skipped}, dim {report.dim}")
     return 0
