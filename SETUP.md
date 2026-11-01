@@ -16,18 +16,26 @@
    - `JWT_SECRET` (generate one with `python -c "import secrets; print(secrets.token_hex(32))"`)
    - `OPENAI_API_KEY`, used only for `text-embedding-3-small` embeddings (ingest and the
      question embedding at query time). The answers come from the local model below.
-6. Corpus (run from `backend/`, with MySQL up and `OPENAI_API_KEY` set):
+6. Corpus (run from `backend/`, with MySQL up):
 
    ```bash
    .venv/bin/python fetch_sources.py            # downloads the USCIS / SEVP / CFR documents
    # OIS pages block scripts: open each ois.usc.edu URL listed in data/sources.yaml in Chrome,
    # print to PDF and save it as data/ois/<slug>.pdf, or run  bash scripts/save_ois_pdfs.sh
    .venv/bin/python fetch_sources.py --check    # lists OIS files still missing
-   .venv/bin/python ingest.py                   # extract, chunk, embed into MySQL (idempotent)
-   .venv/bin/python eval_retrieval.py           # optional: recall@5 on data/eval_questions.yaml
+   .venv/bin/python ingest.py                   # extract + chunk into MySQL (idempotent, no key needed)
+   .venv/bin/python embed_corpus.py --model text-embedding-3-small   # OpenAI vectors (needs OPENAI_API_KEY)
+   .venv/bin/python train_histogram.py          # Part 5: Word2Vec + k-means -> data/models/ (committed, optional)
+   .venv/bin/python embed_corpus.py --model w2v-hist-k256-idf-soft   # Part 5 vectors; also: w2v-hist-k256, -idf, -soft
+   .venv/bin/python eval_retrieval.py --all --calibrate   # recall@5 per model, writes data/models/thresholds.json
    ```
 
-   Restart uvicorn after every ingest; the backend loads the corpus into memory at startup.
+   Only the `text-embedding-3-small` step needs the OpenAI key; the histogram
+   models work offline. `data/models/` (trained artefacts and thresholds) is
+   committed, so a teammate can skip `train_histogram.py` and `--calibrate`.
+   The app serves every model that has vectors; without an OpenAI key it serves
+   the histogram models only. Restart uvicorn after every embed; the backend
+   loads the vectors into memory at startup.
 7. llama.cpp: `brew install llama.cpp` (or build from source into `../llama.cpp/build/bin/`), then start the server from the `lab9` directory:
 
    ```bash

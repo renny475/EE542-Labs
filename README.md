@@ -34,12 +34,51 @@ cp ../.env.example ../.env   # set JWT_SECRET, OPENAI_API_KEY, LLM_API_KEY
 
 # 3) Corpus (OIS pages are saved by hand as PDFs, see SETUP.md step 6)
 python fetch_sources.py && python fetch_sources.py --check && python ingest.py
+python embed_corpus.py --model text-embedding-3-small      # OpenAI vectors
+python embed_corpus.py --model w2v-hist-k256-idf-soft      # Part 5 word-histogram vectors
 
 # 4) Run (llama-server on :8001, see SETUP.md)
 uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
 Open http://localhost:8000
+
+## Part 5: word-histogram embedding
+
+A second way to vectorise the chunks, built by hand and selectable per
+question in the UI (the dropdown next to the input box). Word2Vec (gensim,
+skip-gram, 100 dims) is trained on the 785 chunks; the word vectors are
+clustered into K=256 groups with a hand-written k-means
+([backend/kmeans.py](backend/kmeans.py)); a chunk becomes the normalised
+256-bin histogram of its words' nearest clusters
+([backend/histogram_embedding.py](backend/histogram_embedding.py)). Two
+improvements are available as flags in the model name: `idf` weights each
+word by its inverse document frequency instead of counting it once, and
+`soft` spreads each word over its three nearest clusters by distance. Each
+bot answer shows which embedding retrieved its sources and the cosine score
+of every source, so the same question can be compared across embeddings.
+
+Retrieval eval on [data/eval_questions.yaml](data/eval_questions.yaml)
+(16 on-topic questions with expected documents, 5 off-topic questions that
+must be rejected; `python eval_retrieval.py --all`):
+
+| model | recall@5 | answered at threshold | off-topic rejected | threshold |
+|---|---|---|---|---|
+| text-embedding-3-small (OpenAI) | 15/16 | 16/16 | 5/5 | 0.30 |
+| w2v-hist-k256 | 12/16 | 16/16 | 3/5 | 0.30 |
+| w2v-hist-k256-idf | 12/16 | 15/16 | 4/5 | 0.54 |
+| w2v-hist-k256-soft | 12/16 | 13/16 | 4/5 | 0.52 |
+| w2v-hist-k256-idf-soft | 13/16 | 13/16 | 4/5 | 0.54 |
+
+Observations: the histogram embedding finds the right document for most
+questions, a few points behind OpenAI; `idf` plus `soft` is the best variant.
+Its weakness is telling off-topic questions apart: histogram cosines are all
+non-negative and dominated by common-word bins, so an off-topic question that
+happens to share vocabulary with the corpus ("best pizza in Los Angeles"
+matches the OIS page listing Social Security offices in Los Angeles) scores as
+high as a real question. The per-model threshold is therefore chosen to
+maximise answered on-topic plus rejected off-topic questions, and the
+language model's instructions catch the rest.
 
 ## PDF Chatbot (Lab 9 Part 2)
 

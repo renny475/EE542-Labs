@@ -18,8 +18,10 @@ CREATE TABLE IF NOT EXISTS messages (
   user_id INT NULL,
   content TEXT NOT NULL,
   is_bot BOOLEAN DEFAULT FALSE,
-  -- Part 4: cited sources of a bot answer, JSON list of {n, title, url, page, published, excerpt}
+  -- Part 4: cited sources of a bot answer, JSON list of {n, title, url, page, published, excerpt, score}
   sources JSON NULL,
+  -- Part 5: embedding model the question was retrieved with (NULL for rows older than Part 5)
+  embedding VARCHAR(64) NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -28,8 +30,11 @@ CREATE TABLE IF NOT EXISTS messages (
 -- author; to start clean, drop the table before starting the Part 4 backend:
 --   DROP TABLE IF EXISTS messages;
 
--- Part 4: curated corpus. Source of truth for the in-memory FAISS index that the
--- backend rebuilds at startup. Written only by backend/ingest.py.
+-- Part 4/5: curated corpus. Source of truth for the in-memory FAISS indexes the
+-- backend rebuilds at startup (one per embedding model). documents and chunks are
+-- written by backend/ingest.py, chunk_embeddings by backend/embed_corpus.py.
+-- ingest.py drops and recreates these three tables when it finds the older Part 4
+-- shape (vector stored on the chunk, embedding_model on the document).
 CREATE TABLE IF NOT EXISTS documents (
   id INT AUTO_INCREMENT PRIMARY KEY,
   source_id VARCHAR(64) NOT NULL UNIQUE,
@@ -40,7 +45,6 @@ CREATE TABLE IF NOT EXISTS documents (
   sha256 CHAR(64) NOT NULL,
   fetched_on DATE NOT NULL,
   published DATE NULL,
-  embedding_model VARCHAR(64) NOT NULL,
   chunk_count INT NOT NULL,
   ingested_at DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -51,8 +55,17 @@ CREATE TABLE IF NOT EXISTS chunks (
   chunk_index INT NOT NULL,
   page INT NULL,
   content TEXT NOT NULL,
-  -- 1536 float32 values, little-endian (6144 bytes) for text-embedding-3-small
-  embedding BLOB NOT NULL,
   UNIQUE KEY uq_chunk (document_id, chunk_index),
   CONSTRAINT fk_chunk_document FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS chunk_embeddings (
+  chunk_id INT NOT NULL,
+  -- text-embedding-3-small (1536 dims) or a Part 5 histogram model such as w2v-hist-k256-idf-soft (256 dims)
+  model VARCHAR(64) NOT NULL,
+  dim INT NOT NULL,
+  -- dim float32 values, little-endian, L2-normalised
+  embedding BLOB NOT NULL,
+  PRIMARY KEY (chunk_id, model),
+  CONSTRAINT fk_embedding_chunk FOREIGN KEY (chunk_id) REFERENCES chunks(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
