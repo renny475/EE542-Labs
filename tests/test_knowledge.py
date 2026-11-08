@@ -1,4 +1,5 @@
 import json
+import re
 
 import httpx
 import pytest
@@ -37,6 +38,9 @@ def test_official_url_allowlist():
     assert official_url("https://www.cdc.gov/copd/index.html")
     assert official_url("https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=abc")
     assert official_url("https://www.kidney.org/kidney-topics/kidney-stones")
+    assert official_url("https://www.upmc.com/healthbeat/urology/x")
+    assert official_url("https://kidneystones.uchicago.edu/2015/11/16/how-to-eat-a-low-oxalate-diet/")
+    assert not official_url("https://docs.google.com/spreadsheets/d/x")
     assert not official_url("http://medlineplus.gov/kidneystones.html")  # HTTPS only
     assert not official_url("https://medlineplus.gov.evil.example/x")
     assert not official_url("https://evil.example/medlineplus.gov")
@@ -273,6 +277,27 @@ def test_real_library_snapshots_are_valid():
         topics.add(item["topic"])
     assert set(knowledge.SCENARIO_TOPICS) <= topics
     assert {p.stem for p in (knowledge.DATA / "sources").glob("*.json")} == set(ids)
+
+
+def test_real_curated_summaries_match_their_source_snapshot():
+    """Every curated summary names a snapshot of the same page, and every number in
+    the summary appears in that snapshot. The UChicago summary's key quotes are verbatim."""
+    sources = knowledge.DATA / "sources"
+    curated = [json.loads(p.read_text()) for p in sources.glob("*.json")]
+    curated = [c for c in curated if c.get("curated")]
+    assert curated
+    for summary in curated:
+        source = json.loads((sources / f"{summary['summarized_source_id']}.json").read_text())
+        assert source["url"] == summary["url"] and not source.get("curated"), summary["id"]
+        for number in re.findall(r"\d+(?:\.\d+)?", summary["text"]):
+            assert number in source["text"], (summary["id"], number)
+    uchicago = json.loads((sources / "curated-uchicago-oxalate-table-use.json").read_text())
+    source = json.loads((sources / "uchicago-low-oxalate-diet.json").read_text())
+    for quote in ("Less than 100 mg of diet oxalate is good; less than 50 mg is ideal.",
+                  "Note that quantity is critical.",
+                  "The graph shows mg of oxalate in a common portion."):
+        assert quote in uchicago["text"] and quote in source["text"]
+    assert not (sources / "curated-high-oxalate-cutoff.json").exists()
 
 
 def test_clean_html_joins_inline_links_and_honors_selector():

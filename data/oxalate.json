@@ -5,639 +5,822 @@
   "url": "https://docs.google.com/spreadsheets/d/1nbDZPxhAW4It-m2-c460w6eGr4dMSIeDiQdqg3MaRgQ/edit#gid=1354389148",
   "linked_from": "https://kidneystones.uchicago.edu/2015/11/16/how-to-eat-a-low-oxalate-diet/",
   "checked_at": "2026-11-07",
+  "csv_export_url": "https://docs.google.com/spreadsheets/d/1nbDZPxhAW4It-m2-c460w6eGr4dMSIeDiQdqg3MaRgQ/export?format=csv&gid=1354389148",
+  "csv_export_sha256": "64f652d825dff5601b3fc13e0b1446973d3bb647d217504500ea0acc380ff3d2",
   "about": "Oxalate table published by the University of Chicago Kidney Stone Program (Fredric Coe, MD, and Jill Harris, LPN) as the full list for the article \"How To Eat A Low Oxalate Diet\". It is based on the Harvard School of Public Health food oxalate list, with updates reviewed by Ross Holmes, PhD, and annotated in the table. Values are mg of oxalate per stated serving."
  },
- "method": "Each value below appears in the source table for the food label and serving shown in source_food and source_serving (checked against a copy of the table on checked_at). Our serving (table_serving) is the same amount as the source serving; no value was converted. Foods in data/build_foods.py that the source does not list, or lists only for a different serving we cannot convert, have no entry here and get oxalate null.",
+ "method": "Each value below appears in the source table for the food label and serving shown in source_food and source_serving, at source_row (the row number in the sheet and in its CSV export) (checked against a copy of the table on checked_at). Our serving (table_serving) is the same amount as the source serving; no value was converted. source_category is the table's own OxalateCategory word for that row, copied verbatim; the linked article gives no mg cutoffs for these words, and they are not comparable with other sources' categories (for example UPMC's, which use 3.5 oz servings). Foods in data/build_foods.py that the source does not list, or lists only for a different serving we cannot convert, have no entry here and get oxalate null.",
  "values": [
   {
    "food_id": "almonds",
    "oxalate_mg": 122,
+   "source_category": "Very High",
    "source_food": "Almonds",
    "source_serving": "1 oz or 22 kernels",
+   "source_row": 289,
    "table_serving": "1 oz (about 23 almonds)"
   },
   {
    "food_id": "peanuts",
    "oxalate_mg": 27,
+   "source_category": "Very High",
    "source_food": "Peanuts",
    "source_serving": "1 oz",
+   "source_row": 292,
    "table_serving": "1 oz"
   },
   {
    "food_id": "peanut-butter",
    "oxalate_mg": 13,
+   "source_category": "Very High",
    "source_food": "Peanut Butter",
    "source_serving": "1 Tbs",
+   "source_row": 401,
    "table_serving": "1 tablespoon"
   },
   {
    "food_id": "cashews",
    "oxalate_mg": 49,
+   "source_category": "Very High",
    "source_food": "Cashews",
    "source_serving": "1 oz or 18 kernels",
+   "source_row": 291,
    "table_serving": "1 oz (about 18 cashews)"
   },
   {
    "food_id": "walnuts",
    "oxalate_mg": 31,
+   "source_category": "Very High",
    "source_food": "Walnuts",
    "source_serving": "1 cup or 7 nuts",
+   "source_row": 297,
    "table_serving": "7 walnuts, shelled (about 1 oz)",
    "note": "The source lists the serving as \"1 cup or 7 nuts\". We use 7 nuts, which FoodData Central weighs at 28 g (its portion \"1 cup, in shell, edible yield (7 nuts)\")."
   },
   {
    "food_id": "pecans",
    "oxalate_mg": 10,
+   "source_category": "High",
    "source_food": "Pecans",
    "source_serving": "1 oz or 15 halves",
+   "source_row": 299,
    "table_serving": "1 oz"
   },
   {
    "food_id": "pistachios",
    "oxalate_mg": 14,
+   "source_category": "Very High",
    "source_food": "Pistachios",
    "source_serving": "1 oz or 48 kernels",
+   "source_row": 293,
    "table_serving": "1 oz (about 49 kernels)"
   },
   {
    "food_id": "mixed-nuts",
    "oxalate_mg": 39,
+   "source_category": "Very High",
    "source_food": "Mixed Nuts (with Peanuts)",
    "source_serving": "1 oz",
+   "source_row": 294,
    "table_serving": "1 oz"
   },
   {
    "food_id": "tahini",
    "oxalate_mg": 16,
+   "source_category": "Very High",
    "source_food": "Tahini",
    "source_serving": "1 Tbs",
+   "source_row": 404,
    "table_serving": "1 tablespoon"
   },
   {
    "food_id": "spinach-raw",
    "oxalate_mg": 656,
+   "source_category": "Very High",
    "source_food": "Spinach, raw",
    "source_serving": "1 cup",
+   "source_row": 72,
    "table_serving": "1 cup raw"
   },
   {
    "food_id": "spinach-cooked",
    "oxalate_mg": 755,
+   "source_category": "Very High",
    "source_food": "Spinach, cooked",
    "source_serving": "1/2 cup",
+   "source_row": 71,
    "table_serving": "1/2 cup cooked"
   },
   {
    "food_id": "rhubarb",
    "oxalate_mg": 541,
+   "source_category": "Very High",
    "source_food": "Rhubarb",
    "source_serving": "1/2 cup",
+   "source_row": 69,
    "table_serving": "1/2 cup diced, raw",
    "note": "The source does not state raw or cooked; we use raw diced rhubarb."
   },
   {
    "food_id": "beets",
    "oxalate_mg": 76,
+   "source_category": "Very High",
    "source_food": "Beets",
    "source_serving": "1/2 cup",
+   "source_row": 61,
    "table_serving": "1/2 cup sliced, cooked",
    "note": "The source does not state raw or cooked; we use cooked sliced beets."
   },
   {
    "food_id": "sweet-potato",
    "oxalate_mg": 28,
+   "source_category": "Very High",
    "source_food": "Sweet Potatoes",
    "source_serving": "1 cup",
+   "source_row": 126,
    "table_serving": "1 cup, baked (flesh only)",
    "note": "The source does not state the preparation; we use baked sweet potato."
   },
   {
    "food_id": "baked-potato",
    "oxalate_mg": 97,
+   "source_category": "Very High",
    "source_food": "Baked Potato with Skin",
    "source_serving": "1 medium",
+   "source_row": 122,
    "table_serving": "1 medium potato"
   },
   {
    "food_id": "mashed-potatoes",
    "oxalate_mg": 29,
+   "source_category": "Very High",
    "source_food": "Mashed Potatoes",
    "source_serving": "1 cup",
+   "source_row": 123,
    "table_serving": "1 cup (made with whole milk and butter)"
   },
   {
    "food_id": "broccoli",
    "oxalate_mg": 6,
+   "source_category": "Moderate",
    "source_food": "Broccoli",
    "source_serving": "1/2 cup chopped",
+   "source_row": 100,
    "table_serving": "1/2 cup chopped, raw",
    "note": "The source does not state raw or cooked; we use raw chopped broccoli."
   },
   {
    "food_id": "carrots-cooked",
    "oxalate_mg": 7,
+   "source_category": "Moderate",
    "source_food": "Carrots, cooked",
    "source_serving": "1/2 cup sliced",
+   "source_row": 83,
    "table_serving": "1/2 cup sliced, cooked"
   },
   {
    "food_id": "celery",
    "oxalate_mg": 19,
+   "source_category": "Very High",
    "source_food": "Celery, raw",
    "source_serving": "1/2 Cup",
+   "source_row": 92,
    "table_serving": "1/2 cup chopped, raw"
   },
   {
    "food_id": "tomato",
    "oxalate_mg": 7,
+   "source_category": "Moderate",
    "source_food": "Tomato",
    "source_serving": "1 med whole",
+   "source_row": 89,
    "table_serving": "1 medium tomato"
   },
   {
    "food_id": "iceberg-lettuce",
    "oxalate_mg": 0,
+   "source_category": "Little or None",
    "source_food": "Iceberg Lettuce",
    "source_serving": "1 cup",
+   "source_row": 108,
    "table_serving": "1 cup shredded"
   },
   {
    "food_id": "kidney-beans",
    "oxalate_mg": 15,
+   "source_category": "Very High",
    "source_food": "Red Kidney Beans",
    "source_serving": "1/2 cup",
+   "source_row": 67,
    "table_serving": "1/2 cup cooked"
   },
   {
    "food_id": "navy-beans",
    "oxalate_mg": 76,
+   "source_category": "Very High",
    "source_food": "Navy Beans",
    "source_serving": "1/2 cup",
+   "source_row": 63,
    "table_serving": "1/2 cup cooked"
   },
   {
    "food_id": "tomato-sauce",
    "oxalate_mg": 17,
+   "source_category": "Very High",
    "source_food": "Tomato Sauce",
    "source_serving": "1/2 cup",
+   "source_row": 73,
    "table_serving": "1/2 cup"
   },
   {
    "food_id": "sauerkraut",
    "oxalate_mg": 1,
+   "source_category": "Little or None",
    "source_food": "Sauerkraut",
    "source_serving": "1/2 cup",
+   "source_row": 116,
    "table_serving": "1/2 cup"
   },
   {
    "food_id": "tofu",
    "oxalate_mg": 13,
+   "source_category": "Very High",
    "source_food": "Tofu",
    "source_serving": "3.5oz",
+   "source_row": 236,
    "table_serving": "3.5 oz"
   },
   {
    "food_id": "banana",
    "oxalate_mg": 3,
+   "source_category": "Low",
    "source_food": "Banana",
    "source_serving": "1 fruit",
+   "source_row": 16,
    "table_serving": "1 medium banana"
   },
   {
    "food_id": "apple",
    "oxalate_mg": 1,
+   "source_category": "Little or None",
    "source_food": "Apples",
    "source_serving": "1 fruit",
+   "source_row": 26,
    "table_serving": "1 medium apple"
   },
   {
    "food_id": "orange",
    "oxalate_mg": 29,
+   "source_category": "Very High",
    "source_food": "Orange",
    "source_serving": "1 fruit",
+   "source_row": 8,
    "table_serving": "1 orange"
   },
   {
    "food_id": "avocado",
    "oxalate_mg": 19,
+   "source_category": "Very High",
    "source_food": "Avocados",
    "source_serving": "1 fruit",
+   "source_row": 4,
    "table_serving": "1 avocado"
   },
   {
    "food_id": "grapes",
    "oxalate_mg": 1,
+   "source_category": "Little or None",
    "source_food": "Grapes",
    "source_serving": "1/2 cup or 16 seedless grapes",
+   "source_row": 29,
    "table_serving": "1/2 cup (about 16 grapes)"
   },
   {
    "food_id": "strawberries",
    "oxalate_mg": 2,
+   "source_category": "Low",
    "source_food": "Strawberries",
    "source_serving": "1/2 cup",
+   "source_row": 24,
    "table_serving": "1/2 cup whole"
   },
   {
    "food_id": "blueberries",
    "oxalate_mg": 2,
+   "source_category": "Low",
    "source_food": "Blueberries",
    "source_serving": "1/2 cup",
+   "source_row": 18,
    "table_serving": "1/2 cup"
   },
   {
    "food_id": "raspberries",
    "oxalate_mg": 48,
+   "source_category": "Very High",
    "source_food": "Raspberries",
    "source_serving": "1 cup",
+   "source_row": 9,
    "table_serving": "1 cup"
   },
   {
    "food_id": "raisins",
    "oxalate_mg": 3,
+   "source_category": "Low",
    "source_food": "Raisins",
    "source_serving": "1 oz or 1 small snack box",
+   "source_row": 23,
    "table_serving": "1 oz"
   },
   {
    "food_id": "kiwi",
    "oxalate_mg": 16,
+   "source_category": "Very High",
    "source_food": "Kiwi",
    "source_serving": "1 fruit",
+   "source_row": 7,
    "table_serving": "1 kiwi"
   },
   {
    "food_id": "grapefruit",
    "oxalate_mg": 12,
+   "source_category": "Very High",
    "source_food": "Grapefruit",
    "source_serving": "1/2 fruit",
+   "source_row": 6,
    "table_serving": "1/2 grapefruit"
   },
   {
    "food_id": "black-tea",
    "oxalate_mg": 14,
+   "source_category": "Very High",
    "source_food": "Tea, Brewed",
    "source_serving": "1 cup",
+   "source_row": 356,
    "table_serving": "1 cup (8 fl oz)",
    "note": "The source lists brewed tea without naming the type; we apply it to brewed black tea, the usual meaning in this list (green tea is not listed)."
   },
   {
    "food_id": "coffee",
    "oxalate_mg": 1,
+   "source_category": "Little or None",
    "source_food": "Coffee",
    "source_serving": "1 cup",
+   "source_row": 370,
    "table_serving": "1 cup (8 fl oz)"
   },
   {
    "food_id": "orange-juice",
    "oxalate_mg": 2,
+   "source_category": "Low",
    "source_food": "Orange Juice",
    "source_serving": "1 cup",
+   "source_row": 366,
    "table_serving": "1 cup (8 fl oz)"
   },
   {
    "food_id": "apple-juice",
    "oxalate_mg": 2,
+   "source_category": "Low",
    "source_food": "Apple Juice",
    "source_serving": "6 oz",
+   "source_row": 363,
    "table_serving": "6 fl oz"
   },
   {
    "food_id": "tomato-juice",
    "oxalate_mg": 14,
+   "source_category": "Very High",
    "source_food": "Tomato Juice",
    "source_serving": "1 cup",
+   "source_row": 357,
    "table_serving": "1 cup"
   },
   {
    "food_id": "lemonade",
    "oxalate_mg": 15,
+   "source_category": "Very High",
    "source_food": "Lemonade (frozen from concentrate)",
    "source_serving": "8 oz",
+   "source_row": 354,
    "table_serving": "1 cup (8 fl oz)"
   },
   {
    "food_id": "regular-soda",
    "oxalate_mg": 0,
+   "source_category": "Little or None",
    "source_food": "Sodas (all types)",
    "source_serving": "8 oz",
+   "source_row": 377,
    "table_serving": "8 fl oz"
   },
   {
    "food_id": "diet-soda",
    "oxalate_mg": 0,
+   "source_category": "Little or None",
    "source_food": "Sodas (all types)",
    "source_serving": "8 oz",
+   "source_row": 377,
    "table_serving": "8 fl oz"
   },
   {
    "food_id": "sports-drink",
    "oxalate_mg": 0,
+   "source_category": "Little or None",
    "source_food": "Gatorade",
    "source_serving": "1 cup",
+   "source_row": 371,
    "table_serving": "8 fl oz"
   },
   {
    "food_id": "beer",
    "oxalate_mg": 4,
+   "source_category": "Low",
    "source_food": "Beer (Regular)",
    "source_serving": "1 can",
+   "source_row": 390,
    "table_serving": "1 can (12 fl oz)"
   },
   {
    "food_id": "soy-milk",
    "oxalate_mg": 20,
+   "source_category": "Very High",
    "source_food": "Soy Milk",
    "source_serving": "1 Cup",
+   "source_row": 359,
    "table_serving": "1 cup"
   },
   {
    "food_id": "whole-milk",
    "oxalate_mg": 1,
+   "source_category": "Little or None",
    "source_food": "Whole Milk",
    "source_serving": "1 cup",
-   "table_serving": "1 cup"
+   "source_row": 170,
+   "table_serving": "1 cup",
+   "note": "The table lists this food more than once with the same value; we cite the first row, and row 388 gives the category \"Little or none\"."
   },
   {
    "food_id": "skim-milk",
    "oxalate_mg": 1,
+   "source_category": "Little or None",
    "source_food": "Fat Free Milk",
    "source_serving": "1 cup",
-   "table_serving": "1 cup"
+   "source_row": 167,
+   "table_serving": "1 cup",
+   "note": "The table lists this food more than once with the same value; we cite the first row, and row 385 gives the category \"Little or none\"."
   },
   {
    "food_id": "chocolate-milk",
    "oxalate_mg": 7,
+   "source_category": "Moderate",
    "source_food": "Chocolate Milk",
    "source_serving": "1 cup",
+   "source_row": 163,
    "table_serving": "1 cup"
   },
   {
    "food_id": "yogurt",
    "oxalate_mg": 2,
+   "source_category": "Low",
    "source_food": "Plain Yogurt",
    "source_serving": "1 cup",
+   "source_row": 140,
    "table_serving": "1 cup (8 fl oz)"
   },
   {
    "food_id": "cheddar-cheese",
    "oxalate_mg": 0,
+   "source_category": "Little or None",
    "source_food": "Cheddar Cheese",
    "source_serving": "1 slice",
+   "source_row": 148,
    "table_serving": "1 slice (1 oz)"
   },
   {
    "food_id": "american-cheese",
    "oxalate_mg": 0,
+   "source_category": "Little or None",
    "source_food": "American Cheese",
    "source_serving": "1 slice",
+   "source_row": 147,
    "table_serving": "1 slice (3/4 oz)"
   },
   {
    "food_id": "mozzarella",
    "oxalate_mg": 0,
+   "source_category": "Little or None",
    "source_food": "Mozzarella Cheese",
    "source_serving": "1 oz",
+   "source_row": 153,
    "table_serving": "1 oz"
   },
   {
    "food_id": "cottage-cheese",
    "oxalate_mg": 0,
+   "source_category": "Little or None",
    "source_food": "Cottage Cheese",
    "source_serving": "1/2 cup",
+   "source_row": 150,
    "table_serving": "1/2 cup"
   },
   {
    "food_id": "ice-cream",
    "oxalate_mg": 0,
+   "source_category": "Little or None",
    "source_food": "Ice Cream (Vanilla)",
    "source_serving": "1/2 cup",
+   "source_row": 136,
    "table_serving": "1/2 cup"
   },
   {
    "food_id": "egg",
    "oxalate_mg": 0,
+   "source_category": "Very Low",
    "source_food": "Eggs",
    "source_serving": "1 medium egg",
+   "source_row": 457,
    "table_serving": "1 medium egg"
   },
   {
    "food_id": "chicken-breast",
    "oxalate_mg": 0,
+   "source_category": "Little or None",
    "source_food": "Chicken",
    "source_serving": "3 oz",
+   "source_row": 251,
    "table_serving": "3 oz cooked"
   },
   {
    "food_id": "ground-beef",
    "oxalate_mg": 0,
+   "source_category": "Little or None",
    "source_food": "Lean Hamburg (85%)",
    "source_serving": "3 oz",
+   "source_row": 255,
    "table_serving": "3 oz cooked"
   },
   {
    "food_id": "salmon",
    "oxalate_mg": 0,
+   "source_category": "Little or None",
    "source_food": "Salmon (all types)",
    "source_serving": "4 oz",
+   "source_row": 281,
    "table_serving": "4 oz cooked"
   },
   {
    "food_id": "tuna-canned",
    "oxalate_mg": 0,
+   "source_category": "Little or None",
    "source_food": "Tuna Fish (in water)",
    "source_serving": "3.5oz",
+   "source_row": 286,
    "table_serving": "3.5 oz, drained"
   },
   {
    "food_id": "bacon",
    "oxalate_mg": 0,
+   "source_category": "Little or None",
    "source_food": "Bacon",
    "source_serving": "2 slices",
-   "table_serving": "2 slices"
+   "source_row": 246,
+   "table_serving": "2 slices",
+   "note": "The table lists this food more than once with the same value; we cite the first row, and row 531 gives the category \"Very Low\"."
   },
   {
    "food_id": "hot-dog",
    "oxalate_mg": 1,
+   "source_category": "Little or None",
    "source_food": "Hot Dogs",
    "source_serving": "1 dog",
+   "source_row": 252,
    "table_serving": "1 hot dog (no bun)"
   },
   {
    "food_id": "bologna",
    "oxalate_mg": 0,
+   "source_category": "Little or None",
    "source_food": "Bologna",
    "source_serving": "1 slice",
+   "source_row": 247,
    "table_serving": "1 slice"
   },
   {
    "food_id": "white-bread",
    "oxalate_mg": 5,
+   "source_category": "Moderate",
    "source_food": "White Bread",
    "source_serving": "1 slice",
+   "source_row": 194,
    "table_serving": "1 slice"
   },
   {
    "food_id": "whole-wheat-bread",
    "oxalate_mg": 6,
+   "source_category": "Moderate",
    "source_food": "Whole Wheat Bread",
    "source_serving": "1 slice",
+   "source_row": 197,
    "table_serving": "1 slice"
   },
   {
    "food_id": "bagel",
    "oxalate_mg": 9,
+   "source_category": "Moderate",
    "source_food": "Plain Bagel",
    "source_serving": "1 bagel",
+   "source_row": 198,
    "table_serving": "1 bagel"
   },
   {
    "food_id": "corn-tortilla",
    "oxalate_mg": 7,
+   "source_category": "Moderate",
    "source_food": "Tortillas, Corn",
    "source_serving": "1 tortilla",
+   "source_row": 192,
    "table_serving": "1 tortilla"
   },
   {
    "food_id": "flour-tortilla",
    "oxalate_mg": 8,
+   "source_category": "Moderate",
    "source_food": "Tortillas, flour",
    "source_serving": "1 tortilla",
+   "source_row": 193,
    "table_serving": "1 medium tortilla (6 inch)"
   },
   {
    "food_id": "white-rice",
    "oxalate_mg": 4,
+   "source_category": "Low",
    "source_food": "White Rice, cooked",
    "source_serving": "1 cup",
+   "source_row": 227,
    "table_serving": "1 cup cooked"
   },
   {
    "food_id": "brown-rice",
    "oxalate_mg": 24,
+   "source_category": "Very High",
    "source_food": "Brown Rice, cooked",
    "source_serving": "1 cup",
+   "source_row": 206,
    "table_serving": "1 cup cooked"
   },
   {
    "food_id": "spaghetti",
    "oxalate_mg": 11,
+   "source_category": "High",
    "source_food": "Spaghetti",
    "source_serving": "1 cup cooked",
+   "source_row": 221,
    "table_serving": "1 cup cooked"
   },
   {
    "food_id": "oatmeal",
    "oxalate_mg": 0,
+   "source_category": "Very Low",
    "source_food": "Oatmeal Cereal",
    "source_serving": "1 cup",
+   "source_row": 536,
    "table_serving": "1 cup cooked",
    "note": "The source does not state cooked or dry; we use cooked oatmeal."
   },
   {
    "food_id": "cheerios",
    "oxalate_mg": 8,
+   "source_category": "Moderate",
    "source_food": "Cheerios",
    "source_serving": "1 cup",
+   "source_row": 614,
    "table_serving": "1 cup"
   },
   {
    "food_id": "raisin-bran",
    "oxalate_mg": 46,
+   "source_category": "Very High",
    "source_food": "Raisin Bran",
    "source_serving": "1 cup",
+   "source_row": 552,
    "table_serving": "1 cup",
    "note": "The source lists the cereal by name without a brand; the FoodData Central item is Post Raisin Bran."
   },
   {
    "food_id": "potato-chips",
    "oxalate_mg": 21,
+   "source_category": "Very High",
    "source_food": "Potato Chips",
    "source_serving": "1 oz",
+   "source_row": 124,
    "table_serving": "1 oz (about 15-20 chips)"
   },
   {
    "food_id": "tortilla-chips",
    "oxalate_mg": 7,
+   "source_category": "Moderate",
    "source_food": "Tortilla Corn Chips",
    "source_serving": "1 oz",
+   "source_row": 338,
    "table_serving": "1 oz"
   },
   {
    "food_id": "pretzels",
    "oxalate_mg": 5,
+   "source_category": "Moderate",
    "source_food": "Pretzels, Hard & Salted",
    "source_serving": "1 oz",
+   "source_row": 340,
    "table_serving": "1 oz"
   },
   {
    "food_id": "saltine-crackers",
    "oxalate_mg": 1,
+   "source_category": "Little or None",
    "source_food": "Saltines",
    "source_serving": "1 cracker",
+   "source_row": 347,
    "table_serving": "1 cracker"
   },
   {
    "food_id": "popcorn",
    "oxalate_mg": 4,
+   "source_category": "Low",
    "source_food": "Popcorn, air-popped",
    "source_serving": "1 cup",
+   "source_row": 344,
    "table_serving": "1 cup"
   },
   {
    "food_id": "french-fries",
    "oxalate_mg": 51,
+   "source_category": "Very High",
    "source_food": "French Fries (homemade or fast food)",
    "source_serving": "4 oz or 1/2 cup",
+   "source_row": 121,
    "table_serving": "4 oz"
   },
   {
    "food_id": "chocolate-chip-cookie",
    "oxalate_mg": 10,
+   "source_category": "High",
    "source_food": "Chocolate Chip Cookies (store brand)",
    "source_serving": "1 cookie",
+   "source_row": 312,
    "table_serving": "1 medium cookie"
   },
   {
    "food_id": "milk-chocolate",
    "oxalate_mg": 5,
+   "source_category": "Moderate",
    "source_food": "Milk Chocolate Candies",
    "source_serving": "1 oz",
+   "source_row": 315,
    "table_serving": "1 oz"
   },
   {
    "food_id": "hummus",
    "oxalate_mg": 4,
+   "source_category": "Low",
    "source_food": "Hummus",
    "source_serving": "1 Tbs",
+   "source_row": 225,
    "table_serving": "1 tablespoon"
   },
   {
    "food_id": "soy-sauce",
    "oxalate_mg": 3,
+   "source_category": "Low",
    "source_food": "Soy Sauce",
    "source_serving": "1 Tbs",
+   "source_row": 409,
    "table_serving": "1 tablespoon"
   },
   {
    "food_id": "ketchup",
    "oxalate_mg": 1,
+   "source_category": "Little or None",
    "source_food": "Catsup/Ketchup",
    "source_serving": "1 packet",
+   "source_row": 413,
    "table_serving": "1 packet"
   },
   {
    "food_id": "table-salt",
    "oxalate_mg": 0,
+   "source_category": "Very Low",
    "source_food": "Salt",
    "source_serving": "1 tsp",
+   "source_row": 466,
    "table_serving": "1 teaspoon"
   },
   {
    "food_id": "sugar",
    "oxalate_mg": 0,
+   "source_category": "Very Low",
    "source_food": "Sugar",
    "source_serving": "1 tsp",
+   "source_row": 468,
    "table_serving": "1 teaspoon"
   }
  ],
@@ -660,7 +843,7 @@
   },
   {
    "food_id": "dill-pickle",
-   "reason": "The source lists \"Pickles, 1 pickle\" without a size, so it cannot be matched to a weighed serving."
+   "reason": "The source lists \"Pickles, 1 pickle, 0 mg\" without a size, so it cannot be matched to our weighed serving (1 small spear)."
   },
   {
    "food_id": "deli-turkey",
@@ -668,7 +851,7 @@
   },
   {
    "food_id": "deli-ham",
-   "reason": "The source lists \"Ham, 3 oz\" without saying deli or cooked ham; our serving is 2 oz of deli ham."
+   "reason": "The source lists \"Ham, 3 oz, 0 mg\" without saying deli or cooked ham; our serving is 2 oz of deli ham, a different amount."
   },
   {
    "food_id": "chicken-noodle-soup",

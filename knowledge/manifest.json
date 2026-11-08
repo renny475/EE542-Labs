@@ -291,10 +291,17 @@
     "selector": ".blog-article-container"
   },
   {
-    "id": "curated-high-oxalate-cutoff",
-    "title": "Curated summary: What counts as a high-oxalate food",
+    "id": "uchicago-low-oxalate-diet",
+    "title": "University of Chicago Kidney Stone Program: How To Eat A Low Oxalate Diet",
     "topic": "Kidney stones",
-    "url": "https://www.upmc.com/healthbeat/urology/help-prevent-kidney-stones-with-a-low-oxalate-diet",
+    "url": "https://kidneystones.uchicago.edu/2015/11/16/how-to-eat-a-low-oxalate-diet/",
+    "selector": ".entry-content"
+  },
+  {
+    "id": "curated-uchicago-oxalate-table-use",
+    "title": "Curated summary: How to read the oxalate table (University of Chicago Kidney Stone Program)",
+    "topic": "Kidney stones",
+    "url": "https://kidneystones.uchicago.edu/2015/11/16/how-to-eat-a-low-oxalate-diet/",
     "curated": true
   },
   {

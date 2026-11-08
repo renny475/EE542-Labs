@@ -5,9 +5,15 @@ points into the table's `sources`. A value of None means no published value
 was found, and callers must say "unknown" rather than estimate.
 
 Lookup normalizes names the way patients type them: lowercase, punctuation
-stripped, and a plural ending removed per word ("ies" -> "y", "es" after
-s/x/z/ch/sh/o, otherwise a trailing "s" unless it is "ss"). Matching is on
-whole words, so "tea" never matches "steak".
+stripped, and a plural ending removed per word ("ies" -> "y" for words longer
+than four letters, "es" after s/x/z/ch/sh/o, otherwise a trailing "s" unless it
+is "ss"). Matching is on whole words, so "tea" never matches "steak".
+
+Each result says how it matched: `match` is "exact" when the normalized query
+equals the food's normalized name or an alias, and "partial" when one only
+contains the other ("almond flour" -> Almonds). A partial match is a different
+food until shown otherwise, so callers must not present its numbers as the
+asked-about food's. `matched_term` is the name or alias that matched.
 """
 import copy
 import json
@@ -20,7 +26,7 @@ _ES_STEMS = ("s", "x", "z", "ch", "sh", "o")
 
 
 def _singular(word: str) -> str:
-    if len(word) > 3 and word.endswith("ies"):
+    if len(word) > 4 and word.endswith("ies"):
         return word[:-3] + "y"
     if len(word) > 3 and word.endswith("es") and word[:-2].endswith(_ES_STEMS):
         return word[:-2]
@@ -48,7 +54,8 @@ class FoodTable:
         self._foods = foods
         self._sources = sources
         self._terms = [
-            {_words(term) for term in [food["name"], *food.get("aliases", [])]} - {()}
+            [(_words(term), term) for term in [food["name"], *food.get("aliases", [])]
+             if _words(term)]
             for food in foods
         ]
 
@@ -58,7 +65,10 @@ class FoodTable:
         foods, sources = data["foods"], data["sources"]
         for food in foods:
             for key, entry in food["nutrients"].items():
-                if entry["value"] is not None and entry["source_id"] not in sources:
+                if entry["value"] is None:
+                    if entry.get("source_id") is not None:
+                        raise ValueError(f"{food['id']}.{key}: null value with a source_id")
+                elif entry["source_id"] not in sources:
                     raise ValueError(
                         f"{food['id']}.{key}: unknown source_id {entry['source_id']!r}"
                     )
@@ -71,25 +81,29 @@ class FoodTable:
         ranked = []
         for index, terms in enumerate(self._terms):
             best = None
-            for term in terms:
-                if term == q:
+            for words, term in terms:
+                if words == q:
                     score = (0, 0)
-                elif _contains(term, q) or _contains(q, term):
-                    score = (1, abs(len(term) - len(q)))
+                elif _contains(words, q) or _contains(q, words):
+                    score = (1, abs(len(words) - len(q)))
                 else:
                     continue
-                best = score if best is None else min(best, score)
+                if best is None or score < best[0]:
+                    best = (score, term)
             if best is not None:
-                ranked.append((best, index))
+                ranked.append((best[0], index, best[1]))
         ranked.sort()
-        return [self._result(self._foods[index]) for _, index in ranked[:limit]]
+        return [self._result(self._foods[index], score, term)
+                for score, index, term in ranked[:limit]]
 
-    def _result(self, food: dict) -> dict:
+    def _result(self, food: dict, score: tuple, term: str) -> dict:
         nutrients = copy.deepcopy(food["nutrients"])
         used = {e["source_id"] for e in nutrients.values() if e["value"] is not None}
         return {
             "id": food["id"],
             "name": food["name"],
+            "match": "exact" if score[0] == 0 else "partial",
+            "matched_term": term,
             "aliases": list(food.get("aliases", [])),
             "serving": dict(food["serving"]),
             "nutrients": nutrients,

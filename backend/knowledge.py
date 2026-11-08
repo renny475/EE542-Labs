@@ -24,8 +24,10 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "knowledge"
 
 # Public, freely readable patient-education and drug-label hosts. HTTPS only.
-# www.upmc.com is the one academic kidney-stone host (UPMC Department of Urology,
-# University of Pittsburgh), used for the "high oxalate" mg-per-serving cutoff.
+# Two academic kidney-stone hosts: www.upmc.com (UPMC Department of Urology,
+# University of Pittsburgh) for its low-oxalate diet page, and
+# kidneystones.uchicago.edu (University of Chicago Kidney Stone Program) for the
+# article that publishes the oxalate table used by data/foods.json.
 ALLOWED_HOSTS = {
     "medlineplus.gov",
     "www.niddk.nih.gov",
@@ -33,6 +35,7 @@ ALLOWED_HOSTS = {
     "dailymed.nlm.nih.gov",
     "www.kidney.org",
     "www.upmc.com",
+    "kidneystones.uchicago.edu",
 }
 
 SCENARIO_TOPICS = (

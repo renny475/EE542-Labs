@@ -50,7 +50,10 @@
     "oxalate_mg": {
      "value": 122,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Almonds",
+     "source_serving": "1 oz or 22 kernels"
     }
    }
   },
@@ -212,7 +215,10 @@
     "oxalate_mg": {
      "value": 27,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Peanuts",
+     "source_serving": "1 oz"
     }
    }
   },
@@ -265,7 +271,10 @@
     "oxalate_mg": {
      "value": 13,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Peanut Butter",
+     "source_serving": "1 Tbs"
     }
    }
   },
@@ -320,7 +329,10 @@
     "oxalate_mg": {
      "value": 49,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Cashews",
+     "source_serving": "1 oz or 18 kernels"
     }
    }
   },
@@ -374,7 +386,10 @@
     "oxalate_mg": {
      "value": 31,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Walnuts",
+     "source_serving": "1 cup or 7 nuts"
     }
    }
   },
@@ -427,7 +442,10 @@
     "oxalate_mg": {
      "value": 10,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "High",
+     "source_food": "Pecans",
+     "source_serving": "1 oz or 15 halves"
     }
    }
   },
@@ -481,7 +499,10 @@
     "oxalate_mg": {
      "value": 14,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Pistachios",
+     "source_serving": "1 oz or 48 kernels"
     }
    }
   },
@@ -534,7 +555,10 @@
     "oxalate_mg": {
      "value": 39,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Mixed Nuts (with Peanuts)",
+     "source_serving": "1 oz"
     }
    }
   },
@@ -588,7 +612,10 @@
     "oxalate_mg": {
      "value": 16,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Tahini",
+     "source_serving": "1 Tbs"
     }
    }
   },
@@ -643,7 +670,10 @@
     "oxalate_mg": {
      "value": 656,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Spinach, raw",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -697,7 +727,10 @@
     "oxalate_mg": {
      "value": 755,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Spinach, cooked",
+     "source_serving": "1/2 cup"
     }
    }
   },
@@ -750,7 +783,10 @@
     "oxalate_mg": {
      "value": 541,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Rhubarb",
+     "source_serving": "1/2 cup"
     }
    }
   },
@@ -805,7 +841,10 @@
     "oxalate_mg": {
      "value": 76,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Beets",
+     "source_serving": "1/2 cup"
     }
    }
   },
@@ -860,7 +899,10 @@
     "oxalate_mg": {
      "value": 28,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Sweet Potatoes",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -915,7 +957,10 @@
     "oxalate_mg": {
      "value": 97,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Baked Potato with Skin",
+     "source_serving": "1 medium"
     }
    }
   },
@@ -968,7 +1013,10 @@
     "oxalate_mg": {
      "value": 29,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Mashed Potatoes",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -1022,7 +1070,10 @@
     "oxalate_mg": {
      "value": 6,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Moderate",
+     "source_food": "Broccoli",
+     "source_serving": "1/2 cup chopped"
     }
    }
   },
@@ -1077,7 +1128,10 @@
     "oxalate_mg": {
      "value": 7,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Moderate",
+     "source_food": "Carrots, cooked",
+     "source_serving": "1/2 cup sliced"
     }
    }
   },
@@ -1131,7 +1185,10 @@
     "oxalate_mg": {
      "value": 19,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Celery, raw",
+     "source_serving": "1/2 Cup"
     }
    }
   },
@@ -1185,7 +1242,10 @@
     "oxalate_mg": {
      "value": 7,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Moderate",
+     "source_food": "Tomato",
+     "source_serving": "1 med whole"
     }
    }
   },
@@ -1239,7 +1299,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Iceberg Lettuce",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -1293,7 +1356,10 @@
     "oxalate_mg": {
      "value": 15,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Red Kidney Beans",
+     "source_serving": "1/2 cup"
     }
    }
   },
@@ -1347,7 +1413,10 @@
     "oxalate_mg": {
      "value": 76,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Navy Beans",
+     "source_serving": "1/2 cup"
     }
    }
   },
@@ -1401,7 +1470,10 @@
     "oxalate_mg": {
      "value": 17,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Tomato Sauce",
+     "source_serving": "1/2 cup"
     }
    }
   },
@@ -1454,7 +1526,10 @@
     "oxalate_mg": {
      "value": 1,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Sauerkraut",
+     "source_serving": "1/2 cup"
     }
    }
   },
@@ -1563,7 +1638,10 @@
     "oxalate_mg": {
      "value": 13,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Tofu",
+     "source_serving": "3.5oz"
     }
    }
   },
@@ -1616,7 +1694,10 @@
     "oxalate_mg": {
      "value": 3,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Low",
+     "source_food": "Banana",
+     "source_serving": "1 fruit"
     }
    }
   },
@@ -1669,7 +1750,10 @@
     "oxalate_mg": {
      "value": 1,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Apples",
+     "source_serving": "1 fruit"
     }
    }
   },
@@ -1722,7 +1806,10 @@
     "oxalate_mg": {
      "value": 29,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Orange",
+     "source_serving": "1 fruit"
     }
    }
   },
@@ -1775,7 +1862,10 @@
     "oxalate_mg": {
      "value": 19,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Avocados",
+     "source_serving": "1 fruit"
     }
    }
   },
@@ -1829,7 +1919,10 @@
     "oxalate_mg": {
      "value": 1,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Grapes",
+     "source_serving": "1/2 cup or 16 seedless grapes"
     }
    }
   },
@@ -1882,7 +1975,10 @@
     "oxalate_mg": {
      "value": 2,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Low",
+     "source_food": "Strawberries",
+     "source_serving": "1/2 cup"
     }
    }
   },
@@ -1935,7 +2031,10 @@
     "oxalate_mg": {
      "value": 2,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Low",
+     "source_food": "Blueberries",
+     "source_serving": "1/2 cup"
     }
    }
   },
@@ -1988,7 +2087,10 @@
     "oxalate_mg": {
      "value": 48,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Raspberries",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -2041,7 +2143,10 @@
     "oxalate_mg": {
      "value": 3,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Low",
+     "source_food": "Raisins",
+     "source_serving": "1 oz or 1 small snack box"
     }
    }
   },
@@ -2095,7 +2200,10 @@
     "oxalate_mg": {
      "value": 16,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Kiwi",
+     "source_serving": "1 fruit"
     }
    }
   },
@@ -2148,7 +2256,10 @@
     "oxalate_mg": {
      "value": 12,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Grapefruit",
+     "source_serving": "1/2 fruit"
     }
    }
   },
@@ -2204,7 +2315,10 @@
     "oxalate_mg": {
      "value": 14,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Tea, Brewed",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -2311,7 +2425,10 @@
     "oxalate_mg": {
      "value": 1,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Coffee",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -2365,7 +2482,10 @@
     "oxalate_mg": {
      "value": 2,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Low",
+     "source_food": "Orange Juice",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -2418,7 +2538,10 @@
     "oxalate_mg": {
      "value": 2,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Low",
+     "source_food": "Apple Juice",
+     "source_serving": "6 oz"
     }
    }
   },
@@ -2471,7 +2594,10 @@
     "oxalate_mg": {
      "value": 14,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Tomato Juice",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -2524,7 +2650,10 @@
     "oxalate_mg": {
      "value": 15,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Lemonade (frozen from concentrate)",
+     "source_serving": "8 oz"
     }
    }
   },
@@ -2581,7 +2710,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Sodas (all types)",
+     "source_serving": "8 oz"
     }
    }
   },
@@ -2636,7 +2768,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Sodas (all types)",
+     "source_serving": "8 oz"
     }
    }
   },
@@ -2690,7 +2825,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Gatorade",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -2743,7 +2881,10 @@
     "oxalate_mg": {
      "value": 4,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Low",
+     "source_food": "Beer (Regular)",
+     "source_serving": "1 can"
     }
    }
   },
@@ -2797,7 +2938,10 @@
     "oxalate_mg": {
      "value": 20,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Soy Milk",
+     "source_serving": "1 Cup"
     }
    }
   },
@@ -2851,7 +2995,10 @@
     "oxalate_mg": {
      "value": 1,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Whole Milk",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -2907,7 +3054,10 @@
     "oxalate_mg": {
      "value": 1,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Fat Free Milk",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -2960,7 +3110,10 @@
     "oxalate_mg": {
      "value": 7,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Moderate",
+     "source_food": "Chocolate Milk",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -3015,7 +3168,10 @@
     "oxalate_mg": {
      "value": 2,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Low",
+     "source_food": "Plain Yogurt",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -3068,7 +3224,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Cheddar Cheese",
+     "source_serving": "1 slice"
     }
    }
   },
@@ -3122,7 +3281,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "American Cheese",
+     "source_serving": "1 slice"
     }
    }
   },
@@ -3175,7 +3337,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Mozzarella Cheese",
+     "source_serving": "1 oz"
     }
    }
   },
@@ -3228,7 +3393,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Cottage Cheese",
+     "source_serving": "1/2 cup"
     }
    }
   },
@@ -3281,7 +3449,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Ice Cream (Vanilla)",
+     "source_serving": "1/2 cup"
     }
    }
   },
@@ -3334,7 +3505,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very Low",
+     "source_food": "Eggs",
+     "source_serving": "1 medium egg"
     }
    }
   },
@@ -3388,7 +3562,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Chicken",
+     "source_serving": "3 oz"
     }
    }
   },
@@ -3443,7 +3620,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Lean Hamburg (85%)",
+     "source_serving": "3 oz"
     }
    }
   },
@@ -3496,7 +3676,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Salmon (all types)",
+     "source_serving": "4 oz"
     }
    }
   },
@@ -3550,7 +3733,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Tuna Fish (in water)",
+     "source_serving": "3.5oz"
     }
    }
   },
@@ -3603,7 +3789,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Bacon",
+     "source_serving": "2 slices"
     }
    }
   },
@@ -3659,7 +3848,10 @@
     "oxalate_mg": {
      "value": 1,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Hot Dogs",
+     "source_serving": "1 dog"
     }
    }
   },
@@ -3826,7 +4018,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Bologna",
+     "source_serving": "1 slice"
     }
    }
   },
@@ -3880,7 +4075,10 @@
     "oxalate_mg": {
      "value": 5,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Moderate",
+     "source_food": "White Bread",
+     "source_serving": "1 slice"
     }
    }
   },
@@ -3934,7 +4132,10 @@
     "oxalate_mg": {
      "value": 6,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Moderate",
+     "source_food": "Whole Wheat Bread",
+     "source_serving": "1 slice"
     }
    }
   },
@@ -3988,7 +4189,10 @@
     "oxalate_mg": {
      "value": 9,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Moderate",
+     "source_food": "Plain Bagel",
+     "source_serving": "1 bagel"
     }
    }
   },
@@ -4041,7 +4245,10 @@
     "oxalate_mg": {
      "value": 7,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Moderate",
+     "source_food": "Tortillas, Corn",
+     "source_serving": "1 tortilla"
     }
    }
   },
@@ -4095,7 +4302,10 @@
     "oxalate_mg": {
      "value": 8,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Moderate",
+     "source_food": "Tortillas, flour",
+     "source_serving": "1 tortilla"
     }
    }
   },
@@ -4149,7 +4359,10 @@
     "oxalate_mg": {
      "value": 4,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Low",
+     "source_food": "White Rice, cooked",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -4202,7 +4415,10 @@
     "oxalate_mg": {
      "value": 24,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Brown Rice, cooked",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -4257,7 +4473,10 @@
     "oxalate_mg": {
      "value": 11,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "High",
+     "source_food": "Spaghetti",
+     "source_serving": "1 cup cooked"
     }
    }
   },
@@ -4312,7 +4531,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very Low",
+     "source_food": "Oatmeal Cereal",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -4365,7 +4587,10 @@
     "oxalate_mg": {
      "value": 8,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Moderate",
+     "source_food": "Cheerios",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -4419,7 +4644,10 @@
     "oxalate_mg": {
      "value": 46,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Raisin Bran",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -4474,7 +4702,10 @@
     "oxalate_mg": {
      "value": 21,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "Potato Chips",
+     "source_serving": "1 oz"
     }
    }
   },
@@ -4528,7 +4759,10 @@
     "oxalate_mg": {
      "value": 7,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Moderate",
+     "source_food": "Tortilla Corn Chips",
+     "source_serving": "1 oz"
     }
    }
   },
@@ -4581,7 +4815,10 @@
     "oxalate_mg": {
      "value": 5,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Moderate",
+     "source_food": "Pretzels, Hard & Salted",
+     "source_serving": "1 oz"
     }
    }
   },
@@ -4637,7 +4874,10 @@
     "oxalate_mg": {
      "value": 1,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Saltines",
+     "source_serving": "1 cracker"
     }
    }
   },
@@ -4690,7 +4930,10 @@
     "oxalate_mg": {
      "value": 4,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Low",
+     "source_food": "Popcorn, air-popped",
+     "source_serving": "1 cup"
     }
    }
   },
@@ -4745,7 +4988,10 @@
     "oxalate_mg": {
      "value": 51,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very High",
+     "source_food": "French Fries (homemade or fast food)",
+     "source_serving": "4 oz or 1/2 cup"
     }
    }
   },
@@ -4800,7 +5046,10 @@
     "oxalate_mg": {
      "value": 10,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "High",
+     "source_food": "Chocolate Chip Cookies (store brand)",
+     "source_serving": "1 cookie"
     }
    }
   },
@@ -4855,7 +5104,10 @@
     "oxalate_mg": {
      "value": 5,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Moderate",
+     "source_food": "Milk Chocolate Candies",
+     "source_serving": "1 oz"
     }
    }
   },
@@ -4962,7 +5214,10 @@
     "oxalate_mg": {
      "value": 4,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Low",
+     "source_food": "Hummus",
+     "source_serving": "1 Tbs"
     }
    }
   },
@@ -5126,7 +5381,10 @@
     "oxalate_mg": {
      "value": 3,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Low",
+     "source_food": "Soy Sauce",
+     "source_serving": "1 Tbs"
     }
    }
   },
@@ -5179,7 +5437,10 @@
     "oxalate_mg": {
      "value": 1,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Little or None",
+     "source_food": "Catsup/Ketchup",
+     "source_serving": "1 packet"
     }
    }
   },
@@ -5232,7 +5493,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very Low",
+     "source_food": "Salt",
+     "source_serving": "1 tsp"
     }
    }
   },
@@ -5287,7 +5551,10 @@
     "oxalate_mg": {
      "value": 0,
      "unit": "mg",
-     "source_id": "uchicago-oxalate-table"
+     "source_id": "uchicago-oxalate-table",
+     "source_category": "Very Low",
+     "source_food": "Sugar",
+     "source_serving": "1 tsp"
     }
    }
   }
@@ -5295,7 +5562,8 @@
  "sources": {
   "uchicago-oxalate-table": {
    "title": "University of Chicago Kidney Stone Program: Updated table of oxalate foods (mg of oxalate per serving)",
-   "url": "https://docs.google.com/spreadsheets/d/1nbDZPxhAW4It-m2-c460w6eGr4dMSIeDiQdqg3MaRgQ/edit#gid=1354389148"
+   "url": "https://docs.google.com/spreadsheets/d/1nbDZPxhAW4It-m2-c460w6eGr4dMSIeDiQdqg3MaRgQ/edit#gid=1354389148",
+   "linked_from": "https://kidneystones.uchicago.edu/2015/11/16/how-to-eat-a-low-oxalate-diet/"
   },
   "fdc-170567": {
    "title": "USDA FoodData Central: Nuts, almonds (FDC ID 170567)",

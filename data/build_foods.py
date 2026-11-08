@@ -2,6 +2,7 @@
 
 Usage:
     FDC_API_KEY=... python data/build_foods.py [--cache DIR]
+    python data/build_foods.py --sr-legacy-csv DIR
 
 Each food below names one FoodData Central item (SR Legacy unless noted) and a
 patient-facing serving. The serving's gram weight comes from a portion that
@@ -11,14 +12,24 @@ serving and rounded: mg to whole numbers, g to one decimal (serving grams
 keep two decimals).
 
 FoodData Central has no oxalate data. Oxalate values come from data/oxalate.json,
-where each value is recorded with its source, the food label and serving as
-printed in that source, and any matching note. Foods not listed there get
-oxalate null ("unknown").
+where each value is recorded with its source, the food label, serving, row and
+category word as printed in that source, and any matching note. Each oxalate
+entry in foods.json carries `source_category`, `source_food` and
+`source_serving` so a patient can find the row. The category word is the
+source table's own label; it is not a mg cutoff and is never recomputed here.
+Foods not listed there get oxalate null ("unknown") and no category.
 
 Items are fetched with POST /v1/foods, 20 per request, to stay inside the
 DEMO_KEY rate limit. `--cache DIR` stores raw responses so reruns are free.
+
+`--sr-legacy-csv DIR` reads the same items offline from FoodData Central's own
+SR Legacy CSV download (FoodData_Central_sr_legacy_food_csv_2018-04.zip from
+https://fdc.nal.usda.gov/download-datasets, unzipped), for when the API rate
+limit is used up. SR Legacy is a final, unchanging release, so both paths give
+the same numbers.
 """
 import argparse
+import csv
 import json
 import os
 import sys
@@ -285,6 +296,43 @@ def fetch(ids, api_key, cache):
     return items
 
 
+def load_sr_legacy_csv(directory, ids):
+    """Return {fdc_id: item} in the API's "full" shape, from the SR Legacy CSVs."""
+    directory = Path(directory)
+    wanted = {str(i) for i in ids}
+
+    def rows(name):
+        with open(directory / name, newline="") as f:
+            yield from csv.DictReader(f)
+
+    items = {}
+    for row in rows("food.csv"):
+        if row["fdc_id"] in wanted:
+            items[int(row["fdc_id"])] = {
+                "fdcId": int(row["fdc_id"]),
+                "dataType": "SR Legacy" if row["data_type"] == "sr_legacy_food" else row["data_type"],
+                "description": row["description"],
+                "foodPortions": [],
+                "foodNutrients": [],
+            }
+    for row in rows("food_portion.csv"):
+        if row["fdc_id"] in wanted:
+            items[int(row["fdc_id"])]["foodPortions"].append({"gramWeight": float(row["gram_weight"])})
+    nutrients = {
+        row["id"]: {"number": row["nutrient_nbr"], "unitName": row["unit_name"]}
+        for row in rows("nutrient.csv")
+    }
+    for row in rows("food_nutrient.csv"):
+        if row["fdc_id"] in wanted and row["amount"] != "":
+            items[int(row["fdc_id"])]["foodNutrients"].append(
+                {"nutrient": nutrients[row["nutrient_id"]], "amount": float(row["amount"])}
+            )
+    missing = set(ids) - set(items)
+    if missing:
+        raise SystemExit(f"SR Legacy CSV does not contain: {sorted(missing)}")
+    return items
+
+
 def per_100g(item):
     out = {}
     for entry in item.get("foodNutrients", []):
@@ -299,23 +347,28 @@ def scaled(amount, grams, unit):
     return round(value) if unit == "mg" else round(value, 1)
 
 
-def build(items, oxalate):
-    ox_source_id = oxalate["source"]["id"]
-    ox_values = {v["food_id"]: v["oxalate_mg"] for v in oxalate["values"]}
-    unknown = set(ox_values) - {spec["id"] for spec in FOODS}
+def build(items, oxalate, specs=None):
+    specs = FOODS if specs is None else specs
+    ox_source = oxalate["source"]
+    ox_values = {v["food_id"]: v for v in oxalate["values"]}
+    unknown = set(ox_values) - {spec["id"] for spec in specs}
     if unknown:
         raise SystemExit(f"oxalate.json names foods not in the table: {sorted(unknown)}")
     sources = {
-        ox_source_id: {"title": oxalate["source"]["title"], "url": oxalate["source"]["url"]},
+        ox_source["id"]: {"title": ox_source["title"], "url": ox_source["url"],
+                          "linked_from": ox_source["linked_from"]},
     }
     foods = []
-    for spec in FOODS:
+    for spec in specs:
         item = items[spec["fdc_id"]]
         if item.get("dataType") not in ("SR Legacy", "Foundation"):
             raise SystemExit(f"{spec['id']}: unexpected data type {item.get('dataType')}")
         check_portion(spec, item)
         grams = serving_grams(spec)
         source_id = f"fdc-{spec['fdc_id']}"
+        # This public page is an Angular app: the server answers deep links with
+        # HTTP 404 plus the app shell, and the page renders in a browser. Scripts
+        # checking these URLs see 404; open them in a browser instead.
         sources[source_id] = {
             "title": f"USDA FoodData Central: {item['description']} (FDC ID {spec['fdc_id']})",
             "url": f"https://fdc.nal.usda.gov/food-details/{spec['fdc_id']}/nutrients",
@@ -332,9 +385,14 @@ def build(items, oxalate):
             else:
                 nutrients[key] = {"value": None, "unit": unit, "source_id": None}
         ox = ox_values.get(spec["id"])
-        nutrients["oxalate_mg"] = {
-            "value": ox, "unit": "mg", "source_id": ox_source_id if ox is not None else None,
-        }
+        if ox is None:
+            nutrients["oxalate_mg"] = {"value": None, "unit": "mg", "source_id": None}
+        else:
+            nutrients["oxalate_mg"] = {
+                "value": ox["oxalate_mg"], "unit": "mg", "source_id": ox_source["id"],
+                "source_category": ox["source_category"], "source_food": ox["source_food"],
+                "source_serving": ox["source_serving"],
+            }
         foods.append({
             "id": spec["id"],
             "name": spec["name"],
@@ -349,6 +407,8 @@ def build(items, oxalate):
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--cache", type=Path, help="directory for raw FDC responses")
+    parser.add_argument("--sr-legacy-csv", type=Path,
+                        help="read items from the unzipped SR Legacy CSV download instead of the API")
     parser.add_argument("--out", type=Path, default=HERE / "foods.json")
     args = parser.parse_args()
     if args.cache:
@@ -357,7 +417,10 @@ def main():
     if len(set(ids)) != len(ids) or len({s["id"] for s in FOODS}) != len(FOODS):
         raise SystemExit("duplicate FDC ID or food id in FOODS")
     oxalate = json.loads((HERE / "oxalate.json").read_text())
-    items = fetch(ids, os.environ.get("FDC_API_KEY") or "DEMO_KEY", args.cache)
+    if args.sr_legacy_csv:
+        items = load_sr_legacy_csv(args.sr_legacy_csv, ids)
+    else:
+        items = fetch(ids, os.environ.get("FDC_API_KEY") or "DEMO_KEY", args.cache)
     table = build(items, oxalate)
     args.out.write_text(json.dumps(table, indent=1, ensure_ascii=False) + "\n")
     print(f"wrote {len(table['foods'])} foods to {args.out}", file=sys.stderr)

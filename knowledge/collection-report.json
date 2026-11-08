@@ -130,7 +130,12 @@
     "characters": 5351
   },
   {
-    "id": "curated-high-oxalate-cutoff",
+    "id": "uchicago-low-oxalate-diet",
+    "ok": true,
+    "characters": 26261
+  },
+  {
+    "id": "curated-uchicago-oxalate-table-use",
     "ok": true,
     "skipped": "curated summary, edited by hand"
   },
