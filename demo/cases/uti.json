@@ -1,0 +1,56 @@
+{
+  "id": "uti",
+  "hospital": "Riverside Community Hospital",
+  "service": "Emergency Medicine",
+  "patient": "Casey Nguyen (fictional), 34-year-old",
+  "attending": "Dr. Samira Patel",
+  "admit_days": 1,
+  "diagnosis": "Uncomplicated urinary tract infection (bladder infection).",
+  "hospital_course": "You came to the emergency department with burning when you urinate, urgency, and lower belly discomfort. Your urine test showed infection and your kidneys were not involved. You were observed overnight, given fluids, and started on an oral antibiotic.",
+  "medications": [
+    {
+      "name": "Nitrofurantoin",
+      "dose": "100 mg",
+      "route": "by mouth",
+      "frequency": "twice daily with food",
+      "duration": "5 days",
+      "note": "Take it with meals to reduce stomach upset."
+    }
+  ],
+  "diet": [
+    "Drink 6 to 8 cups (1.5 to 2 liters) of water a day to help flush your bladder.",
+    "Limit caffeine and alcohol while you recover because they can irritate the bladder."
+  ],
+  "activity": [
+    "You may return to normal activity as you feel able.",
+    "Urinate when you feel the urge and do not hold it. Empty your bladder after sex."
+  ],
+  "care_label": "Self-care",
+  "care": [
+    "A warm heating pad on your lower belly may ease discomfort."
+  ],
+  "monitoring": [
+    "Notice whether the burning improves within 2 days of starting the antibiotic.",
+    "Check your temperature each evening for 3 days."
+  ],
+  "follow_up": [
+    {
+      "who": "Dr. Samira Patel, primary care",
+      "days": 7,
+      "purpose": "a follow-up visit and urine recheck if symptoms continue"
+    }
+  ],
+  "warning_signs": [
+    "fainting or severe weakness",
+    "confusion",
+    "trouble breathing",
+    "shaking chills with a fast heartbeat"
+  ],
+  "call_clinic": [
+    "fever of 101 F (38.3 C) or higher",
+    "pain in your back or side",
+    "vomiting so you cannot keep the antibiotic down",
+    "no improvement after 2 days"
+  ],
+  "clinic_phone": "555-0112"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "pneumonia",
+  "hospital": "Riverside Community Hospital",
+  "service": "Hospital Medicine",
+  "patient": "Morgan Ellis (fictional), 58-year-old",
+  "attending": "Dr. Neil Okafor",
+  "admit_days": 3,
+  "diagnosis": "Community-acquired pneumonia, right lower lobe.",
+  "hospital_course": "You came in with 4 days of fever, cough with yellow sputum, and shortness of breath. A chest X-ray showed pneumonia in the right lower lobe. You received IV antibiotics and oxygen, and your breathing and oxygen level are now back to normal on room air.",
+  "medications": [
+    {
+      "name": "Amoxicillin-clavulanate",
+      "dose": "875 mg/125 mg",
+      "route": "by mouth",
+      "frequency": "twice daily with meals",
+      "duration": "5 more days",
+      "note": "Finish all of the doses even if you feel better."
+    },
+    {
+      "name": "Azithromycin",
+      "dose": "250 mg",
+      "route": "by mouth",
+      "frequency": "once daily",
+      "duration": "3 more days",
+      "note": "Take it at the same time each day."
+    }
+  ],
+  "diet": [
+    "Drink plenty of fluids, about 8 cups (2 liters) of water or other non-caffeinated drinks each day, unless told otherwise.",
+    "Eat small, regular meals. Your appetite may be low for a few days."
+  ],
+  "activity": [
+    "Rest as much as you need for the first week and build up slowly. Short walks around the house are encouraged.",
+    "Do not smoke and avoid smoke from others. Return to work or school only after your follow-up visit."
+  ],
+  "care_label": "Breathing care",
+  "care": [
+    "Take 5 slow deep breaths every hour while awake to help clear your lungs.",
+    "Cough up mucus rather than suppressing it."
+  ],
+  "monitoring": [
+    "Check your temperature every evening for 7 days and write it down.",
+    "Notice whether your cough and breathing are getting better each day."
+  ],
+  "follow_up": [
+    {
+      "who": "Dr. Neil Okafor, primary care",
+      "days": 7,
+      "purpose": "a check-up and symptom review"
+    },
+    {
+      "who": "Radiology",
+      "days": 42,
+      "purpose": "a repeat chest X-ray to make sure the pneumonia has cleared"
+    }
+  ],
+  "warning_signs": [
+    "chest pain",
+    "severe trouble breathing or you cannot speak a full sentence",
+    "blue or gray lips",
+    "confusion or fainting",
+    "coughing up blood"
+  ],
+  "call_clinic": [
+    "a fever of 101 F (38.3 C) or higher after 3 days of antibiotics",
+    "your cough or shortness of breath is getting worse",
+    "you cannot keep your antibiotics down"
+  ],
+  "clinic_phone": "555-0110"
+}

@@ -1,0 +1,82 @@
+{
+  "id": "diabetes_htn",
+  "hospital": "Riverside Community Hospital",
+  "service": "Hospital Medicine",
+  "patient": "Jamie Whitaker (fictional), 61-year-old",
+  "attending": "Dr. Daniel Brooks",
+  "admit_days": 3,
+  "diagnosis": "Type 2 diabetes with high blood sugar, and high blood pressure.",
+  "hospital_course": "You came in with very high blood sugar, thirst, and frequent urination, and your blood pressure was also high. You received IV fluids and close monitoring, and your blood sugar came down. You will continue on pills at home.",
+  "medications": [
+    {
+      "name": "Metformin",
+      "dose": "500 mg",
+      "route": "by mouth",
+      "frequency": "twice daily with breakfast and dinner",
+      "duration": "ongoing",
+      "note": "Take it with food to reduce stomach upset."
+    },
+    {
+      "name": "Amlodipine",
+      "dose": "5 mg",
+      "route": "by mouth",
+      "frequency": "once daily",
+      "duration": "ongoing",
+      "note": "For blood pressure."
+    },
+    {
+      "name": "Lisinopril",
+      "dose": "10 mg",
+      "route": "by mouth",
+      "frequency": "once daily",
+      "duration": "ongoing",
+      "note": "For blood pressure and kidney protection."
+    }
+  ],
+  "diet": [
+    "Follow a diabetes meal plan. Fill half your plate with non-starchy vegetables, a quarter with lean protein, and a quarter with whole grains.",
+    "Limit sugary drinks, juice, sweets, and white bread. Limit sodium to less than 2,300 mg per day."
+  ],
+  "activity": [
+    "Aim for a 30-minute walk on most days, starting with 10 minutes.",
+    "Check your feet daily for cuts or sores."
+  ],
+  "care_label": "Foot care",
+  "care": [
+    "Wear shoes or slippers indoors and outdoors. Dry between your toes after washing."
+  ],
+  "monitoring": [
+    "Check your blood sugar before breakfast and before dinner every day and write it down. Your goal before meals is 80 to 130.",
+    "Check your blood pressure every morning for 14 days. Call if it is above 160/100."
+  ],
+  "follow_up": [
+    {
+      "who": "Dr. Daniel Brooks, primary care",
+      "days": 7,
+      "purpose": "a review of your sugar and blood pressure logs"
+    },
+    {
+      "who": "Diabetes education class",
+      "days": 14,
+      "purpose": "a class on meal planning and glucose checks"
+    },
+    {
+      "who": "Eye clinic",
+      "days": 60,
+      "purpose": "a dilated eye exam"
+    }
+  ],
+  "warning_signs": [
+    "confusion, fainting, or a seizure",
+    "trouble breathing",
+    "chest pain",
+    "fruity-smelling breath with vomiting and deep fast breathing",
+    "a blood sugar below 54 that does not rise after you take sugar"
+  ],
+  "call_clinic": [
+    "blood sugar above 300 two times in a row",
+    "blood sugar below 70 more than once",
+    "blood pressure above 160/100"
+  ],
+  "clinic_phone": "555-0115"
+}

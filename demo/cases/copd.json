@@ -1,0 +1,78 @@
+{
+  "id": "copd",
+  "hospital": "Riverside Community Hospital",
+  "service": "Pulmonary Medicine",
+  "patient": "Riley Sanders (fictional), 67-year-old",
+  "attending": "Dr. Henry Zhao",
+  "admit_days": 4,
+  "diagnosis": "COPD exacerbation (flare-up).",
+  "hospital_course": "You came in with worsening shortness of breath, more cough, and more mucus than usual. You received steroids, breathing treatments, and oxygen. Your breathing has improved and you no longer need oxygen at rest.",
+  "medications": [
+    {
+      "name": "Prednisone",
+      "dose": "40 mg",
+      "route": "by mouth",
+      "frequency": "once daily with breakfast",
+      "duration": "5 more days",
+      "note": "Then stop. Do not stop it early."
+    },
+    {
+      "name": "Albuterol inhaler (Ventolin HFA)",
+      "dose": "90 mcg per puff, 2 puffs",
+      "route": "inhaled",
+      "frequency": "every 4 to 6 hours as needed",
+      "duration": "ongoing",
+      "note": "Use it for wheezing or shortness of breath."
+    },
+    {
+      "name": "Tiotropium (Spiriva HandiHaler)",
+      "dose": "18 mcg, 1 capsule",
+      "route": "inhaled",
+      "frequency": "once daily",
+      "duration": "ongoing",
+      "note": "Inhale the capsule powder with the HandiHaler device. Do not swallow the capsule."
+    }
+  ],
+  "diet": [
+    "Eat smaller meals more often if you feel short of breath when full.",
+    "Drink fluids to keep mucus thin unless told otherwise."
+  ],
+  "activity": [
+    "Walk a little more each day, resting when you need to. Try pursed-lip breathing during activity.",
+    "Do not smoke. Avoid smoke, strong fumes, and very cold air."
+  ],
+  "care_label": "Inhaler care",
+  "care": [
+    "Rinse your mouth with water after using the Spiriva HandiHaler.",
+    "Keep a list of how many puffs of albuterol you use each day."
+  ],
+  "monitoring": [
+    "Count how often you use your albuterol inhaler each day for 7 days and bring the list to your visit.",
+    "Check your temperature every evening for 7 days."
+  ],
+  "follow_up": [
+    {
+      "who": "Dr. Henry Zhao, Pulmonary Clinic",
+      "days": 7,
+      "purpose": "a flare-up follow-up and an inhaler technique check"
+    },
+    {
+      "who": "Pulmonary rehabilitation",
+      "days": 21,
+      "purpose": "an intake visit for a breathing exercise program"
+    }
+  ],
+  "warning_signs": [
+    "severe trouble breathing or you cannot speak in full sentences",
+    "chest pain",
+    "blue or gray lips or fingertips",
+    "confusion or extreme sleepiness",
+    "fainting"
+  ],
+  "call_clinic": [
+    "you need albuterol more often than every 4 hours",
+    "your mucus turns green or bloody",
+    "a fever of 101 F (38.3 C) or higher"
+  ],
+  "clinic_phone": "555-0113"
+}

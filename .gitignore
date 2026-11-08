@@ -3,7 +3,6 @@ graft/
 .env
 .venv/
 __pycache__/
-demo/out/
 *.sqlite3-journal
 .pytest_cache/
 aftercare-dev.sqlite3

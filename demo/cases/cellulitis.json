@@ -1,0 +1,63 @@
+{
+  "id": "cellulitis",
+  "hospital": "Riverside Community Hospital",
+  "service": "Hospital Medicine",
+  "patient": "Taylor Brooks (fictional), 46-year-old",
+  "attending": "Dr. Alicia Moreno",
+  "admit_days": 3,
+  "diagnosis": "Cellulitis of the left lower leg.",
+  "hospital_course": "You came in with a red, warm, painful left lower leg and fever. Blood tests and an ultrasound showed an infection of the skin without a blood clot. You received IV antibiotics, the redness has started to shrink, and your fever is gone.",
+  "medications": [
+    {
+      "name": "Cephalexin",
+      "dose": "500 mg",
+      "route": "by mouth",
+      "frequency": "every 6 hours (4 times a day)",
+      "duration": "7 days",
+      "note": "Take it even if the leg looks better."
+    }
+  ],
+  "diet": [
+    "Eat a normal, balanced diet with enough protein to help your skin heal.",
+    "Drink plenty of water."
+  ],
+  "activity": [
+    "Keep your left leg raised on pillows above heart level when you sit or lie down.",
+    "Walk short distances every few hours. Avoid standing for long periods."
+  ],
+  "care_label": "Wound care",
+  "care": [
+    "Wash the area gently with soap and water once a day and pat it dry.",
+    "Moisturize the dry skin around the area, but not on any open sore.",
+    "Wear clean, loose socks and shoes that do not rub."
+  ],
+  "monitoring": [
+    "Use a pen to mark the edge of the redness today. Check the mark every morning and evening for 7 days to see if the redness spreads.",
+    "Check your temperature every evening for 7 days."
+  ],
+  "follow_up": [
+    {
+      "who": "Dr. Alicia Moreno, primary care",
+      "days": 3,
+      "purpose": "a skin check and to review the redness"
+    },
+    {
+      "who": "Wound care clinic",
+      "days": 14,
+      "purpose": "a final skin check"
+    }
+  ],
+  "warning_signs": [
+    "trouble breathing",
+    "fainting or confusion",
+    "a fast heartbeat with shaking chills",
+    "skin turning purple or black, or blisters filling with dark fluid",
+    "severe pain far worse than the way the leg looks"
+  ],
+  "call_clinic": [
+    "redness spreading past the line you drew",
+    "a fever of 101 F (38.3 C) or higher",
+    "pus or drainage from the area"
+  ],
+  "clinic_phone": "555-0111"
+}

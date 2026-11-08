@@ -19,7 +19,9 @@ import sys
 from datetime import date, timedelta
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "backend"))
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "backend"))
+sys.path.insert(0, str(ROOT / "demo"))
 
 from sqlalchemy import delete, select  # noqa: E402
 
@@ -32,104 +34,75 @@ from models import (  # noqa: E402
     DischargeDocument, ExtractedItem, User,
 )
 import routes_documents  # noqa: E402
+from generate_demo import load_case, long_date, render_text  # noqa: E402
 
 USERNAME = "demo"
 PASSWORD = "demo-password-1"
 
 
-def long_date(d: date) -> str:
-    return f"{d:%B} {d.day}, {d.year}"
-
-
 def demo_text(discharge: date) -> str:
-    admitted = discharge - timedelta(days=2)
-    procedure = discharge - timedelta(days=1)
-    return f"""FICTIONAL - FOR DEMO
-
-Riverside Community Hospital - Discharge Summary
-Patient: Jordan Avery (fictional)
-Admission date: {long_date(admitted)}
-Discharge date: {long_date(discharge)}
-Attending: Dr. Priya Raman, Urology
-
-Diagnosis: Left ureteral stone (6 mm), treated with ureteroscopy and laser lithotripsy. A temporary left ureteral stent was placed.
-
-Hospital course: You came to the emergency department with severe left flank pain and nausea. A CT scan showed a 6 mm stone in the left ureter. On {long_date(procedure)} you had ureteroscopy. The stone was broken up and removed, and a stent was placed. Your pain is now controlled with oral medicine and you are eating and drinking normally.
-
-Medications:
-Tamsulosin 0.4 mg by mouth once daily at bedtime for 14 days. This relaxes the ureter and eases stent discomfort.
-Potassium citrate 15 mEq by mouth twice daily with breakfast and dinner. Continue until your follow-up visit.
-Ibuprofen 600 mg by mouth every 8 hours as needed for pain. Take with food.
-
-Diet: Drink enough fluid to make at least 2.5 liters of urine per day. For most people this means about 3 liters (12 cups) of fluid daily, mostly water. Limit high-oxalate foods such as spinach, rhubarb, almonds, and beets. Keep sodium under 2,300 mg per day. Do not cut back on calcium from food.
-
-Activity: You may walk and do light activity right away. No heavy lifting over 10 pounds until your stent is removed.
-
-Stent care: You may shower; no baths or swimming while the stent is in place. It is normal to have some pink urine, urgency, or mild flank discomfort while the stent is in place.
-
-Monitoring: Strain all of your urine through the strainer provided and save any stone pieces in the container. Bring them to your follow-up visit. Check your temperature every evening for 7 days.
-
-Follow-up: See Dr. Priya Raman in Urology Clinic in 7 days for stent removal. The clinic will call you with the time. Schedule a visit with your primary care provider to discuss a 24-hour urine test.
-
-When to get help: Call 911 or go to the nearest emergency department if you have a fever of 101 F (38.3 C) or higher with chills, cannot keep fluids down, or have severe pain that your medicine does not control. Call the urology clinic at 555-0142 if you cannot urinate or you see heavy bleeding or clots.
-
-FICTIONAL - FOR DEMO"""
+    """Same document as demo/out/kidney_stones.txt (one source: demo/cases)."""
+    return render_text(load_case("kidney_stones"), discharge)
 
 
-ITEMS = [
-    ("medication", "Take tamsulosin 0.4 mg by mouth once a day at bedtime for 14 days.",
-     "Tamsulosin 0.4 mg by mouth once daily at bedtime for 14 days.",
-     {"name": "Tamsulosin", "dose": "0.4 mg", "route": "by mouth",
-      "frequency_text": "once daily at bedtime", "times_of_day": ["bedtime"],
-      "times_per_day": 1, "interval_hours": None, "as_needed": False,
-      "duration_days": 14, "instructions": "at bedtime"}),
-    ("medication", "Take potassium citrate 15 mEq twice a day, with breakfast and with dinner.",
-     "Potassium citrate 15 mEq by mouth twice daily with breakfast and dinner.",
-     {"name": "Potassium citrate", "dose": "15 mEq", "route": "by mouth",
-      "frequency_text": "twice daily", "times_of_day": ["morning", "evening"],
-      "times_per_day": 2, "interval_hours": None, "as_needed": False,
-      "duration_days": None, "instructions": "with breakfast and dinner"}),
-    ("medication", "Take ibuprofen 600 mg with food, up to every 8 hours, only if you need it for pain.",
-     "Ibuprofen 600 mg by mouth every 8 hours as needed for pain. Take with food.",
-     {"name": "Ibuprofen", "dose": "600 mg", "route": "by mouth",
-      "frequency_text": "every 8 hours as needed", "times_of_day": [],
-      "times_per_day": None, "interval_hours": 8, "as_needed": True,
-      "duration_days": None, "instructions": "with food"}),
-    ("diet", "Drink about 3 liters (12 cups) of fluid a day, mostly water.",
-     "about 3 liters (12 cups) of fluid daily, mostly water", {}),
-    ("diet", "Eat less of high-oxalate foods such as spinach, rhubarb, almonds, and beets.",
-     "Limit high-oxalate foods such as spinach, rhubarb, almonds, and beets.", {}),
-    ("diet", "Keep salt (sodium) under 2,300 mg a day.",
-     "Keep sodium under 2,300 mg per day.", {}),
-    ("activity", "Do not lift anything heavier than 10 pounds until your stent is removed.",
-     "No heavy lifting over 10 pounds until your stent is removed.", {}),
-    ("wound_or_device_care", "Showers are fine. No baths or swimming while the stent is in.",
-     "You may shower; no baths or swimming while the stent is in place.",
-     {"times_per_day": None, "times_of_day": [], "duration_days": None}),
-    ("monitoring", "Strain all of your urine and save any stone pieces for your follow-up visit.",
-     "Strain all of your urine through the strainer provided and save any stone pieces",
-     {"times_per_day": None, "times_of_day": [], "duration_days": None}),
-    ("monitoring", "Check your temperature every evening for 7 days.",
-     "Check your temperature every evening for 7 days.",
-     {"times_per_day": 1, "times_of_day": ["evening"], "duration_days": 7}),
-    ("follow_up", "See Dr. Priya Raman at the Urology Clinic in about 7 days to remove the stent.",
-     "See Dr. Priya Raman in Urology Clinic in 7 days for stent removal.",
-     {"who": "Dr. Priya Raman, Urology Clinic", "when_text": "in 7 days",
-      "date": None, "days_after_discharge": 7}),
-    ("follow_up", "Schedule a visit with your primary care provider to talk about a 24-hour urine test.",
-     "Schedule a visit with your primary care provider to discuss a 24-hour urine test.",
-     {"who": "Primary care provider", "when_text": None, "date": None,
-      "days_after_discharge": None}),
-    ("warning_signs",
-     "Call 911 or go to the emergency department for a fever of 101 F or higher with chills, "
-     "if you cannot keep fluids down, or for severe pain your medicine does not control.",
-     "Call 911 or go to the nearest emergency department if you have a fever of 101 F (38.3 C) "
-     "or higher with chills, cannot keep fluids down, or have severe pain that your medicine does not control.",
-     {}),
-    ("warning_signs", "Call the urology clinic if you cannot urinate or you see heavy bleeding or clots.",
-     "Call the urology clinic at 555-0142 if you cannot urinate or you see heavy bleeding or clots.",
-     {}),
-]
+NO_SCHEDULE = {"times_per_day": None, "times_of_day": [], "duration_days": None}
+
+
+def build_items(discharge: date) -> list[tuple[str, str, str, dict]]:
+    """(category, plain-language text, verbatim source_quote, details)."""
+    visit = long_date(discharge + timedelta(days=7))
+    return [
+        ("medication", "Take tamsulosin 0.4 mg by mouth once a day at bedtime for 14 days.",
+         "Tamsulosin 0.4 mg by mouth once daily at bedtime for 14 days.",
+         {"name": "Tamsulosin", "dose": "0.4 mg", "route": "by mouth",
+          "frequency_text": "once daily at bedtime", "times_of_day": ["bedtime"],
+          "times_per_day": 1, "interval_hours": None, "as_needed": False,
+          "duration_days": 14, "instructions": "at bedtime"}),
+        ("medication", "Take ibuprofen 600 mg with food, up to every 8 hours, only if you need it for pain.",
+         "Ibuprofen 600 mg by mouth every 8 hours as needed for pain. Take with food.",
+         {"name": "Ibuprofen", "dose": "600 mg", "route": "by mouth",
+          "frequency_text": "every 8 hours as needed", "times_of_day": [],
+          "times_per_day": None, "interval_hours": 8, "as_needed": True,
+          "duration_days": None, "instructions": "with food"}),
+        ("diet", "Drink enough fluids to make at least 2.5 liters of urine a day.",
+         "drink enough fluids to make at least 2.5 liters of urine a day", {}),
+        ("diet", "Avoid high-oxalate foods such as nuts, spinach, and rhubarb.",
+         "avoid high-oxalate foods such as nuts, spinach, and rhubarb", {}),
+        ("diet", "Keep salt (sodium) under 2,300 mg a day.",
+         "limit sodium to less than 2,300 mg per day", {}),
+        ("activity", "Do not lift anything heavier than 10 pounds until your stent is removed.",
+         "No heavy lifting over 10 pounds until your stent is removed.", {}),
+        ("wound_or_device_care", "Showers are fine. No baths or swimming while the stent is in.",
+         "You may shower; no baths or swimming while the stent is in place.", dict(NO_SCHEDULE)),
+        ("monitoring", "Strain all of your urine and save any stone pieces for your follow-up visit.",
+         "Strain all of your urine through the strainer provided and save any stone pieces",
+         dict(NO_SCHEDULE)),
+        ("monitoring", "Check your temperature every evening for 7 days.",
+         "Check your temperature every evening for 7 days.",
+         {"times_per_day": 1, "times_of_day": ["evening"], "duration_days": 7}),
+        ("follow_up", f"See Dr. Priya Raman at the Urology Clinic on {visit} to remove the stent.",
+         f"See Dr. Priya Raman, Urology Clinic on {visit} (7 days after discharge) for stent removal.",
+         {"who": "Dr. Priya Raman, Urology Clinic", "when_text": visit,
+          "date": None, "days_after_discharge": 7}),
+        ("follow_up", "See your primary care provider in about 14 days to talk about a 24-hour urine test.",
+         f"See your primary care provider on {long_date(discharge + timedelta(days=14))} "
+         "(14 days after discharge) for a discussion of a 24-hour urine test.",
+         {"who": "Primary care provider", "when_text": long_date(discharge + timedelta(days=14)),
+          "date": None, "days_after_discharge": 14}),
+        ("warning_signs", "Call 911 or go to the ER for a fever of 101 F or higher with chills.",
+         "a fever of 101 F (38.3 C) or higher with chills", {}),
+        ("warning_signs", "Call 911 or go to the ER if you cannot keep fluids down.",
+         "you cannot keep fluids down", {}),
+        ("warning_signs", "Call 911 or go to the ER for severe pain that your medicine does not control.",
+         "severe pain that your medicine does not control", {}),
+        ("warning_signs", "Call 911 or go to the ER for chest pain, trouble breathing, or fainting.",
+         "chest pain, trouble breathing, or fainting", {}),
+        ("warning_signs", "Call the clinic if you cannot urinate.",
+         "you cannot urinate", {}),
+        ("warning_signs", "Call the clinic if you see heavy bleeding or clots.",
+         "you see heavy bleeding or clots", {}),
+    ]
+
 
 # Shown in the "could not be verified" list: the document never says this.
 UNVERIFIED = [{"category": "diet", "text": "Avoid all dairy products."}]
@@ -161,7 +134,8 @@ async def seed(confirm: bool) -> None:
     discharge = date.today() - timedelta(days=2)
     text = demo_text(discharge)
     paras = paragraphs(text)
-    for _, _, quote, _ in ITEMS:
+    items = build_items(discharge)
+    for _, _, quote, _ in items:
         if not any(quote in p for p in paras):
             raise SystemExit(f"Quote is not inside one paragraph: {quote!r}")
 
@@ -184,13 +158,13 @@ async def seed(confirm: bool) -> None:
             session.add_all(
                 ExtractedItem(document_id=doc.id, category=c, text=t, source_quote=q,
                               details=d, status="active")
-                for c, t, q, d in ITEMS
+                for c, t, q, d in items
             )
             await session.commit()
             if confirm:
                 await routes_documents.confirm(user=user, session=session)
         state = "confirmed" if confirm else "pending review"
-        print(f"Seeded user '{USERNAME}' with a {state} demo document ({len(ITEMS)} items).")
+        print(f"Seeded user '{USERNAME}' with a {state} demo document ({len(items)} items).")
     finally:
         await engine.dispose()
 

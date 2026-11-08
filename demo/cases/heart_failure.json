@@ -1,0 +1,77 @@
+{
+  "id": "heart_failure",
+  "hospital": "Riverside Community Hospital",
+  "service": "Cardiology",
+  "patient": "Avery Sullivan (fictional), 72-year-old",
+  "attending": "Dr. Maria Castillo",
+  "admit_days": 5,
+  "diagnosis": "Acute on chronic heart failure with reduced ejection fraction.",
+  "hospital_course": "You came in with leg swelling, weight gain, and shortness of breath when lying flat. You received IV water pills and lost about 6 pounds of fluid. Your breathing is now comfortable and your discharge weight is 168 pounds.",
+  "medications": [
+    {
+      "name": "Furosemide",
+      "dose": "40 mg",
+      "route": "by mouth",
+      "frequency": "once daily in the morning",
+      "duration": "ongoing",
+      "note": "This is a water pill. Take it in the morning so you are not up at night."
+    },
+    {
+      "name": "Lisinopril",
+      "dose": "10 mg",
+      "route": "by mouth",
+      "frequency": "once daily",
+      "duration": "ongoing",
+      "note": "Do not use potassium salt substitutes."
+    },
+    {
+      "name": "Metoprolol succinate",
+      "dose": "50 mg",
+      "route": "by mouth",
+      "frequency": "once daily",
+      "duration": "ongoing",
+      "note": "Do not crush or chew it. Do not stop it suddenly."
+    }
+  ],
+  "diet": [
+    "Limit sodium to less than 2,000 mg per day. Avoid canned soups, deli meats, and fast food.",
+    "Limit fluids to 64 ounces (about 2 liters) per day, including soup, ice, and coffee."
+  ],
+  "activity": [
+    "Walk 10 to 15 minutes twice a day and rest when tired. Raise your legs when sitting.",
+    "No lifting over 10 pounds for 2 weeks."
+  ],
+  "care_label": "Daily weights",
+  "care": [
+    "Weigh yourself every morning after you urinate, before you eat, in the same clothes, and write it down."
+  ],
+  "monitoring": [
+    "Call us if you gain more than 3 pounds in 1 day or 5 pounds in 1 week.",
+    "Check your blood pressure and pulse every morning for 7 days."
+  ],
+  "follow_up": [
+    {
+      "who": "Dr. Maria Castillo, Heart Failure Clinic",
+      "days": 7,
+      "purpose": "a post-hospital visit, weight check, and blood tests"
+    },
+    {
+      "who": "Primary care",
+      "days": 14,
+      "purpose": "a medication review"
+    }
+  ],
+  "warning_signs": [
+    "chest pain or pressure",
+    "severe trouble breathing, especially when lying down",
+    "fainting",
+    "a very fast or irregular heartbeat",
+    "coughing up pink, frothy mucus"
+  ],
+  "call_clinic": [
+    "weight gain of more than 3 pounds in 1 day or 5 pounds in 1 week",
+    "more swelling in your legs or belly",
+    "dizziness when you stand up"
+  ],
+  "clinic_phone": "555-0114"
+}
