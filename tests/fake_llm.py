@@ -8,9 +8,14 @@ class FakeLLM:
 
     DIM = 64
 
-    def __init__(self):
+    def __init__(self, embedding_model: str = "fake-bag-of-words-64"):
         self.queue: list[dict] = []
         self.calls: list[tuple] = []
+        self._embedding_model = embedding_model
+
+    @property
+    def embedding_model(self) -> str:
+        return self._embedding_model
 
     def script(self, *messages: dict) -> None:
         self.queue.extend(messages)

@@ -1,0 +1,502 @@
+[
+  {
+    "id": "medlineplus-pneumonia",
+    "title": "MedlinePlus: Pneumonia",
+    "topic": "Pneumonia",
+    "url": "https://medlineplus.gov/pneumonia.html",
+    "selector": "#topic-summary"
+  },
+  {
+    "id": "medlineplus-cellulitis",
+    "title": "MedlinePlus: Cellulitis",
+    "topic": "Cellulitis",
+    "url": "https://medlineplus.gov/cellulitis.html",
+    "selector": "#topic-summary"
+  },
+  {
+    "id": "medlineplus-uti",
+    "title": "MedlinePlus: Urinary Tract Infections",
+    "topic": "Urinary tract infection",
+    "url": "https://medlineplus.gov/urinarytractinfections.html",
+    "selector": "#topic-summary"
+  },
+  {
+    "id": "medlineplus-copd",
+    "title": "MedlinePlus: COPD",
+    "topic": "COPD",
+    "url": "https://medlineplus.gov/copd.html",
+    "selector": "#topic-summary"
+  },
+  {
+    "id": "medlineplus-heart-failure",
+    "title": "MedlinePlus: Heart Failure",
+    "topic": "Heart failure",
+    "url": "https://medlineplus.gov/heartfailure.html",
+    "selector": "#topic-summary"
+  },
+  {
+    "id": "medlineplus-sodium",
+    "title": "MedlinePlus: Sodium",
+    "topic": "Heart failure",
+    "url": "https://medlineplus.gov/sodium.html",
+    "selector": "#topic-summary"
+  },
+  {
+    "id": "medlineplus-diabetes-type-2",
+    "title": "MedlinePlus: Diabetes Type 2",
+    "topic": "Diabetes and hypertension",
+    "url": "https://medlineplus.gov/diabetestype2.html",
+    "selector": "#topic-summary"
+  },
+  {
+    "id": "medlineplus-diabetic-diet",
+    "title": "MedlinePlus: Diabetic Diet",
+    "topic": "Diabetes and hypertension",
+    "url": "https://medlineplus.gov/diabeticdiet.html",
+    "selector": "#topic-summary"
+  },
+  {
+    "id": "medlineplus-high-blood-pressure",
+    "title": "MedlinePlus: High Blood Pressure",
+    "topic": "Diabetes and hypertension",
+    "url": "https://medlineplus.gov/highbloodpressure.html",
+    "selector": "#topic-summary"
+  },
+  {
+    "id": "medlineplus-kidney-stones",
+    "title": "MedlinePlus: Kidney Stones",
+    "topic": "Kidney stones",
+    "url": "https://medlineplus.gov/kidneystones.html",
+    "selector": "#topic-summary"
+  },
+  {
+    "id": "cdc-pneumonia",
+    "title": "CDC: About Pneumonia",
+    "topic": "Pneumonia",
+    "url": "https://www.cdc.gov/pneumonia/about/index.html",
+    "exclude": [
+      ".noindex",
+      ".page-mobile-bar",
+      ".on-this-page",
+      ".dfe-block--keep_reading",
+      "figure",
+      "sup",
+      ".cdc-references-cite"
+    ]
+  },
+  {
+    "id": "cdc-cellulitis",
+    "title": "CDC: About Cellulitis",
+    "topic": "Cellulitis",
+    "url": "https://www.cdc.gov/group-a-strep/about/cellulitis.html",
+    "exclude": [
+      ".noindex",
+      ".page-mobile-bar",
+      ".on-this-page",
+      ".dfe-block--keep_reading",
+      "figure",
+      "sup",
+      ".cdc-references-cite"
+    ]
+  },
+  {
+    "id": "cdc-group-a-strep-prevention",
+    "title": "CDC: Preventing Group A Strep Infection (including wound care)",
+    "topic": "Cellulitis",
+    "url": "https://www.cdc.gov/group-a-strep/prevention/index.html",
+    "exclude": [
+      ".noindex",
+      ".page-mobile-bar",
+      ".on-this-page",
+      ".dfe-block--keep_reading",
+      "figure",
+      "sup",
+      ".cdc-references-cite"
+    ]
+  },
+  {
+    "id": "cdc-uti",
+    "title": "CDC: About Urinary Tract Infection",
+    "topic": "Urinary tract infection",
+    "url": "https://www.cdc.gov/uti/about/index.html",
+    "exclude": [
+      ".noindex",
+      ".page-mobile-bar",
+      ".on-this-page",
+      ".dfe-block--keep_reading",
+      "figure",
+      "sup",
+      ".cdc-references-cite"
+    ]
+  },
+  {
+    "id": "cdc-copd",
+    "title": "CDC: About COPD",
+    "topic": "COPD",
+    "url": "https://www.cdc.gov/copd/about/index.html",
+    "exclude": [
+      ".noindex",
+      ".page-mobile-bar",
+      ".on-this-page",
+      ".dfe-block--keep_reading",
+      "figure",
+      "sup",
+      ".cdc-references-cite"
+    ]
+  },
+  {
+    "id": "cdc-heart-failure",
+    "title": "CDC: About Heart Failure",
+    "topic": "Heart failure",
+    "url": "https://www.cdc.gov/heart-disease/about/heart-failure.html",
+    "exclude": [
+      ".noindex",
+      ".page-mobile-bar",
+      ".on-this-page",
+      ".dfe-block--keep_reading",
+      "figure",
+      "sup",
+      ".cdc-references-cite"
+    ]
+  },
+  {
+    "id": "cdc-sodium",
+    "title": "CDC: About Sodium and Health",
+    "topic": "Heart failure",
+    "url": "https://www.cdc.gov/salt/about/index.html",
+    "exclude": [
+      ".noindex",
+      ".page-mobile-bar",
+      ".on-this-page",
+      ".dfe-block--keep_reading",
+      "figure",
+      "sup",
+      ".cdc-references-cite",
+      "table"
+    ]
+  },
+  {
+    "id": "cdc-high-blood-pressure-prevention",
+    "title": "CDC: Preventing High Blood Pressure",
+    "topic": "Diabetes and hypertension",
+    "url": "https://www.cdc.gov/high-blood-pressure/prevention/index.html",
+    "exclude": [
+      ".noindex",
+      ".page-mobile-bar",
+      ".on-this-page",
+      ".dfe-block--keep_reading",
+      "figure",
+      "sup",
+      ".cdc-references-cite"
+    ]
+  },
+  {
+    "id": "cdc-diabetes-meal-planning",
+    "title": "CDC: Diabetes Meal Planning",
+    "topic": "Diabetes and hypertension",
+    "url": "https://www.cdc.gov/diabetes/healthy-eating/diabetes-meal-planning.html",
+    "exclude": [
+      ".noindex",
+      ".page-mobile-bar",
+      ".on-this-page",
+      ".dfe-block--keep_reading",
+      "figure",
+      "sup",
+      ".cdc-references-cite"
+    ]
+  },
+  {
+    "id": "niddk-uti-treatment",
+    "title": "NIDDK: Treatment for Bladder Infection (UTI) in Adults",
+    "topic": "Urinary tract infection",
+    "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults/treatment",
+    "selector": ".health-detail-content",
+    "exclude": [
+      ".figure",
+      "sup",
+      "p:has(> b:-soup-contains('On this page'))",
+      "p:has(> b:-soup-contains('On this page')) + ul"
+    ]
+  },
+  {
+    "id": "niddk-kidney-stones-diet",
+    "title": "NIDDK: Eating, Diet, & Nutrition for Kidney Stones",
+    "topic": "Kidney stones",
+    "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-stones/eating-diet-nutrition",
+    "selector": ".health-detail-content",
+    "exclude": [
+      ".figure",
+      "sup",
+      "p:has(> b:-soup-contains('On this page'))",
+      "p:has(> b:-soup-contains('On this page')) + ul"
+    ]
+  },
+  {
+    "id": "niddk-kidney-stones-treatment",
+    "title": "NIDDK: Treatment for Kidney Stones",
+    "topic": "Kidney stones",
+    "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-stones/treatment",
+    "selector": ".health-detail-content",
+    "exclude": [
+      ".figure",
+      "sup",
+      "p:has(> b:-soup-contains('On this page'))",
+      "p:has(> b:-soup-contains('On this page')) + ul"
+    ]
+  },
+  {
+    "id": "niddk-healthy-living-diabetes",
+    "title": "NIDDK: Healthy Living with Diabetes",
+    "topic": "Diabetes and hypertension",
+    "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/healthy-living-with-diabetes",
+    "selector": ".health-detail-content",
+    "exclude": [
+      ".figure",
+      "sup",
+      "p:has(> b:-soup-contains('On this page'))",
+      "p:has(> b:-soup-contains('On this page')) + ul"
+    ]
+  },
+  {
+    "id": "nkf-kidney-stones",
+    "title": "National Kidney Foundation: Kidney Stones",
+    "topic": "Kidney stones",
+    "url": "https://www.kidney.org/kidney-topics/kidney-stones",
+    "selector": "#block-nephron-content",
+    "exclude": [
+      ".no-print",
+      ".promo-banner",
+      ".rating-block",
+      "#back-to-top"
+    ]
+  },
+  {
+    "id": "nkf-kidney-stone-diet",
+    "title": "National Kidney Foundation: Kidney Stone Diet Plan and Prevention",
+    "topic": "Kidney stones",
+    "url": "https://www.kidney.org/kidney-topics/kidney-stone-diet-plan-and-prevention",
+    "selector": "#block-nephron-content",
+    "exclude": [
+      ".no-print",
+      ".promo-banner",
+      ".rating-block",
+      "#back-to-top"
+    ]
+  },
+  {
+    "id": "upmc-low-oxalate-diet",
+    "title": "UPMC Urology: Help Prevent Kidney Stones with a Low-Oxalate Diet",
+    "topic": "Kidney stones",
+    "url": "https://www.upmc.com/healthbeat/urology/help-prevent-kidney-stones-with-a-low-oxalate-diet",
+    "selector": ".blog-article-container"
+  },
+  {
+    "id": "curated-high-oxalate-cutoff",
+    "title": "Curated summary: What counts as a high-oxalate food",
+    "topic": "Kidney stones",
+    "url": "https://www.upmc.com/healthbeat/urology/help-prevent-kidney-stones-with-a-low-oxalate-diet",
+    "curated": true
+  },
+  {
+    "id": "curated-kidney-stones-diet",
+    "title": "Curated summary: Kidney stone diet basics (fluids, oxalate, calcium, sodium)",
+    "topic": "Kidney stones",
+    "url": "https://www.kidney.org/kidney-topics/kidney-stone-diet-plan-and-prevention",
+    "curated": true
+  },
+  {
+    "id": "curated-heart-failure-sodium-fluids",
+    "title": "Curated summary: Heart failure sodium, fluids, and symptom checks",
+    "topic": "Heart failure",
+    "url": "https://medlineplus.gov/heartfailure.html",
+    "curated": true
+  },
+  {
+    "id": "curated-copd-activity",
+    "title": "Curated summary: COPD and physical activity",
+    "topic": "COPD",
+    "url": "https://medlineplus.gov/copd.html",
+    "curated": true
+  },
+  {
+    "id": "curated-diabetes-diet-basics",
+    "title": "Curated summary: Diabetes eating basics (plate method and carbs)",
+    "topic": "Diabetes and hypertension",
+    "url": "https://www.cdc.gov/diabetes/healthy-eating/diabetes-meal-planning.html",
+    "curated": true
+  },
+  {
+    "id": "curated-cellulitis-wound-care",
+    "title": "Curated summary: Caring for skin wounds with or after cellulitis",
+    "topic": "Cellulitis",
+    "url": "https://www.cdc.gov/group-a-strep/prevention/index.html",
+    "curated": true
+  },
+  {
+    "id": "dailymed-amoxicillin-clavulanate",
+    "title": "DailyMed label: Amoxicillin and Clavulanate Potassium Tablets (Aurobindo)",
+    "topic": "Medications",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ffb158a1-83ba-4100-9221-175aa986dc3e",
+    "label_sections": [
+      "34076-0",
+      "42230-3",
+      "42231-1",
+      "34068-7"
+    ]
+  },
+  {
+    "id": "dailymed-azithromycin",
+    "title": "DailyMed label: Azithromycin Tablets (Teva)",
+    "topic": "Medications",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f6a52c0b-45db-422e-8c22-e867a11b4439",
+    "label_sections": [
+      "34076-0",
+      "42230-3",
+      "42231-1",
+      "34068-7"
+    ]
+  },
+  {
+    "id": "dailymed-cephalexin",
+    "title": "DailyMed label: Cephalexin Capsules (Teva)",
+    "topic": "Medications",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=19307ff0-71de-477b-965d-ea243e5ede3a",
+    "label_sections": [
+      "34076-0",
+      "42230-3",
+      "42231-1",
+      "34068-7"
+    ]
+  },
+  {
+    "id": "dailymed-nitrofurantoin",
+    "title": "DailyMed label: Macrobid (nitrofurantoin monohydrate/macrocrystals) Capsules",
+    "topic": "Medications",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8f270a9f-12a1-44d4-bc7e-873613555801",
+    "label_sections": [
+      "34076-0",
+      "42230-3",
+      "42231-1",
+      "34068-7"
+    ]
+  },
+  {
+    "id": "dailymed-prednisone",
+    "title": "DailyMed label: Prednisone Tablets (Mylan)",
+    "topic": "Medications",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=fec09050-5ac2-451b-a2b9-5a21b2def212",
+    "label_sections": [
+      "34076-0",
+      "42230-3",
+      "42231-1",
+      "34068-7"
+    ]
+  },
+  {
+    "id": "dailymed-albuterol-inhaler",
+    "title": "DailyMed label: Ventolin HFA (albuterol sulfate) Inhalation Aerosol",
+    "topic": "Medications",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d92c5d6b-ff10-4087-36a2-1cfc464cb967",
+    "label_sections": [
+      "34076-0",
+      "42230-3",
+      "42231-1",
+      "34068-7"
+    ]
+  },
+  {
+    "id": "dailymed-tiotropium",
+    "title": "DailyMed label: Spiriva HandiHaler (tiotropium bromide) Inhalation Powder",
+    "topic": "Medications",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=820839ef-e53d-47e8-a3b9-d911ff92e6a9",
+    "label_sections": [
+      "34076-0",
+      "42230-3",
+      "42231-1",
+      "34068-7"
+    ]
+  },
+  {
+    "id": "dailymed-furosemide",
+    "title": "DailyMed label: Lasix (furosemide) Tablets",
+    "topic": "Medications",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2c9b4d8f-0770-482d-a9e6-9c616a440b1a",
+    "label_sections": [
+      "34076-0",
+      "42230-3",
+      "42231-1",
+      "34068-7"
+    ]
+  },
+  {
+    "id": "dailymed-lisinopril",
+    "title": "DailyMed label: Lisinopril Tablets (Aurobindo)",
+    "topic": "Medications",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0e6364a4-6d66-4151-8197-d45e2a762895",
+    "label_sections": [
+      "34076-0",
+      "42230-3",
+      "42231-1",
+      "34068-7"
+    ]
+  },
+  {
+    "id": "dailymed-metoprolol-succinate",
+    "title": "DailyMed label: Toprol-XL (metoprolol succinate) Extended-Release Tablets",
+    "topic": "Medications",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=496ddfaa-7c9c-4888-b747-a210249b367a",
+    "label_sections": [
+      "34076-0",
+      "42230-3",
+      "42231-1",
+      "34068-7"
+    ]
+  },
+  {
+    "id": "dailymed-metformin",
+    "title": "DailyMed label: Metformin Hydrochloride Tablets (Aurobindo)",
+    "topic": "Medications",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4ac6d01a-af26-44e7-ae2e-3618de0080aa",
+    "label_sections": [
+      "34076-0",
+      "42230-3",
+      "42231-1",
+      "34068-7"
+    ]
+  },
+  {
+    "id": "dailymed-amlodipine",
+    "title": "DailyMed label: Amlodipine Besylate Tablets (Lupin)",
+    "topic": "Medications",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=003dd1ec-16f8-4f96-b6a8-c4689d35892a",
+    "label_sections": [
+      "34076-0",
+      "42230-3",
+      "42231-1",
+      "34068-7"
+    ]
+  },
+  {
+    "id": "dailymed-tamsulosin",
+    "title": "DailyMed label: Tamsulosin Hydrochloride Capsules (Sandoz)",
+    "topic": "Medications",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=fb120098-b007-4a33-80b8-b7279c7668ee",
+    "label_sections": [
+      "34076-0",
+      "42230-3",
+      "42231-1",
+      "34068-7"
+    ]
+  },
+  {
+    "id": "dailymed-ibuprofen",
+    "title": "DailyMed label: Advil (ibuprofen) Tablets, Drug Facts",
+    "topic": "Medications",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1a665e64-9f30-be37-4a83-38789f1f1e89",
+    "label_sections": [
+      "34067-9",
+      "34071-1",
+      "34068-7"
+    ]
+  }
+]

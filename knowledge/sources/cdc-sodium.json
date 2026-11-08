@@ -1,0 +1,20 @@
+{
+  "id": "cdc-sodium",
+  "title": "CDC: About Sodium and Health",
+  "topic": "Heart failure",
+  "url": "https://www.cdc.gov/salt/about/index.html",
+  "exclude": [
+    ".noindex",
+    ".page-mobile-bar",
+    ".on-this-page",
+    ".dfe-block--keep_reading",
+    "figure",
+    "sup",
+    ".cdc-references-cite",
+    "table"
+  ],
+  "collected_at": "2026-11-08T02:17:38.516016+00:00",
+  "sha256": "e940912cb19b47f499d37239ed11756b36b1de99f8603f4d3960f5e89102db9b",
+  "text": "About Sodium and Health\nKey points\nYour body needs a small amount of sodium to work properly, but too much sodium is bad for your health.\nWhile sodium has many forms, most sodium we consume is from salt.\nMost Americans consume too much sodium.\nMost sodium comes from processed and restaurant foods.\nHealth risks\nEating too much sodium can increase your blood pressure and your risk for heart disease and stroke. Together, heart disease and stroke kill more Americans each year than any other cause.\nMost people eat too much sodium\nYour body needs a small amount of sodium to work properly, but too much sodium is bad for your health. Americans consume more than 3,300 milligrams (mg) of sodium per day, on average. This is well above the federal recommendation of less than 2,300 mg of sodium daily for teens and adults as part of a healthy eating pattern.\nSodium in everyday foods adds up\nSodium is found in foods from almost all food categories. Some of the top sources of sodium for U.S. adults and children ages 1 and older are listed in the following table:\nTop Sources of Sodium*\nSource: National Health and Nutrition Examination Survey, unpublished data, 2021\u20132023.\nSodium or salt?\nSalt and sodium are not the same. Salt is sodium chloride, which is table salt. Sodium chloride is 40% sodium and 60% chloride. One teaspoon of table salt contains about 2,400 mg of sodium.\nSodium is a mineral found in many ingredients in common foods:\nMonosodium glutamate (MSG).\nSodium bicarbonate (baking soda).\nSodium nitrate (a preservative).\nResources\nReading the Nutrition Facts Label\nSodium Reduction Resources for Health Professionals",
+  "reviewed": true
+}

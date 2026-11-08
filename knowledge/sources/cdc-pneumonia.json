@@ -1,0 +1,19 @@
+{
+  "id": "cdc-pneumonia",
+  "title": "CDC: About Pneumonia",
+  "topic": "Pneumonia",
+  "url": "https://www.cdc.gov/pneumonia/about/index.html",
+  "exclude": [
+    ".noindex",
+    ".page-mobile-bar",
+    ".on-this-page",
+    ".dfe-block--keep_reading",
+    "figure",
+    "sup",
+    ".cdc-references-cite"
+  ],
+  "collected_at": "2026-11-08T02:17:36.951267+00:00",
+  "sha256": "13bd9ce97b071509432b81799d82665ef6cc2d9f5385c1a4bd5a18997b184cce",
+  "text": "About Pneumonia\nKey points\nBacteria and viruses are common causes of pneumonia (a lung infection).\nFungi and parasites are less common causes.\nGerms that commonly cause pneumonia in the community are different from those in healthcare settings.\nClinicians aren't always able to find out which germ caused someone to get sick with pneumonia.\nTalk to a healthcare provider if you have concerns about pneumonia.\nOverview\nPneumonia is an infection of the lungs. Many germs (bacteria, fungi, parasites, and viruses) can cause pneumonia.\nTypes\nPeople in the community and people in healthcare settings may be exposed to different types of bacteria and viruses.\nDefining types of pneumonia\nCommunity-acquired pneumonia is when someone develops pneumonia in the community (not in a hospital).\nHealthcare-acquired pneumonia is when someone develops pneumonia during or following a stay in a healthcare setting.\nVentilator-associated pneumonia is when someone gets pneumonia after being on a ventilator, a machine that supports breathing.\nSymptoms\nCommon symptoms of pneumonia include:\nChest pain when breathing or coughing\nAltered mental status (confusion)\nCough\nFatigue (feeling tired)\nFever or chills\nNausea, vomiting, or diarrhea\nShortness of breath\nWho is at risk\nSome people are at increased risk for pneumonia due to age, other health conditions, and certain behaviors.\nCauses\nBacterial infections\nBacterial infections that are common causes of community-acquired pneumonia include:\nMycoplasma pneumoniae infection\nPneumococcal disease\nThe following bacterial infections can cause pneumonia, but are less common causes:\nChlamydia pneumoniae infection\nHaemophilus influenzae disease\nLegionella infection (Legionnaires' disease and Pontiac Fever)\nPertussis (whooping cough)\nPsittacosis\nFungal infections\nIn general, fungal infections are a less common cause of pneumonia.\nViral infections\nViral infections that commonly cause pneumonia include\nCOVID-19\nHuman metapneumovirus (HMPV) infection\nHuman parainfluenza virus (HPIV) infection\nInfluenza (flu)\nRespiratory syncytial virus (RSV) infection\nRhinovirus infection\nThe following viral infections can cause pneumonia, but are a less common cause:\nAdenovirus infection\nChickenpox\nMeasles\nSometimes the cause of pneumonia is unknown\u200e\nHealthcare providers aren't always able to find out which germ caused someone to get sick with pneumonia.\nPrevention\nPneumonia affects millions of people worldwide each year.\nPeople can lower their risk of pneumonia with immunizations and other healthy living practices.\nResources\nHealthcare-associated infections",
+  "reviewed": true
+}

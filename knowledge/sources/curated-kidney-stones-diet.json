@@ -1,0 +1,13 @@
+{
+  "id": "curated-kidney-stones-diet",
+  "title": "Curated summary: Kidney stone diet basics (fluids, oxalate, calcium, sodium)",
+  "topic": "Kidney stones",
+  "url": "https://www.kidney.org/kidney-topics/kidney-stone-diet-plan-and-prevention",
+  "curated": true,
+  "summarized_source_id": "nkf-kidney-stone-diet",
+  "collected_at": "2026-11-08T02:17:51.817166+00:00",
+  "sha256": "37113c74c358efc0d0c36fc7e921b86a0db443170df9c8668992e53e85a8049c",
+  "text": "Kidney stone diet basics: fluids, oxalate, calcium, and sodium. Curated summary of the National Kidney Foundation page \"Kidney Stone Diet Plan and Prevention\".\nFluids: drink plenty of fluid, 2-3 quarts a day (8-12 cups), so that you make a good amount of urine, at least 2.5L/day. Water, coffee, and lemonade all count. The page says to avoid grapefruit juice and soda. Drink more when you sweat, for example with saunas, hot yoga, heavy exercise, or hot weather. (Page sections: \"What is the most important factor to prevent kidney stone formation?\" and \"General Recommendations\".)\nOxalate: if you form calcium oxalate stones, limit foods with high oxalate content. The page names spinach, many berries, chocolate, wheat bran, nuts, beets, tea, and rhubarb, and also peanuts, Swiss chard, and sweet potatoes. Eat calcium foods such as milk, yogurt, or some cheese at the same meal as oxalate-rich foods, so the calcium and oxalate bind before they reach the kidneys. (Page sections: \"1. Calcium Oxalate Stones: most common stones\" and \"General Recommendations\".)\nCalcium: do not cut calcium. A diet low in calcium actually increases the chance of kidney stones. The recommended calcium intake to prevent calcium stones is 1000-1200 mg per day, for example 3 servings of dairy with meals. Avoid extra calcium supplements unless your physician or kidney dietitian recommends them. (Page sections: \"1. Calcium Oxalate Stones: most common stones\" and \"General Recommendations\".)\nSodium: cut back on sodium. Extra sodium makes you lose more calcium in your urine, which raises the chance of another stone. Hidden sodium is common in canned and processed foods and in restaurant and fast foods. (Page section: \"1. Calcium Oxalate Stones: most common stones\".)\nAlso: eat a moderate amount of protein, and avoid high-dose vitamin C supplements, because 1000mg/day or more may produce more oxalate in the body. (Page section: \"General Recommendations\".)\nDiet plans are individualized by stone type. Follow the limits your care team gave you.",
+  "reviewed": true,
+  "curation_note": "Team-written summary of the linked public page. Every number appears on that page; page sections are named in the text. Checked against snapshot nkf-kidney-stone-diet."
+}

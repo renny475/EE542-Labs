@@ -1,0 +1,19 @@
+{
+  "id": "cdc-heart-failure",
+  "title": "CDC: About Heart Failure",
+  "topic": "Heart failure",
+  "url": "https://www.cdc.gov/heart-disease/about/heart-failure.html",
+  "exclude": [
+    ".noindex",
+    ".page-mobile-bar",
+    ".on-this-page",
+    ".dfe-block--keep_reading",
+    "figure",
+    "sup",
+    ".cdc-references-cite"
+  ],
+  "collected_at": "2026-11-08T02:17:38.215341+00:00",
+  "sha256": "d0e1a488765d7f289aff2b7b8eb0ea310ad9d59a4c480e072d93d4cec567bceb",
+  "text": "About Heart Failure\nKey points\nHeart failure happens when the heart cannot pump enough blood and oxygen to support other organs in your body.\nCertain medical conditions can increase your risk for heart failure.\nOverview\nHeart failure happens when the heart cannot pump enough blood and oxygen to support other organs in your body. Heart failure is a serious condition, but it does not mean that the heart has stopped beating.\nFacts about heart failure in the United States\nIn the United States, nearly 6.7 million adults 20 years old or older have heart failure.\nIn 2023, heart failure was mentioned on 452,573 death certificates (and responsible for 14.6% of all causes of death).\nHeart failure cost the nation an estimated $30.7 billion in 2012. This total includes the cost of health care services, medicines to treat heart failure, and missed days of work.\nDeaths from heart failure vary by geography\nHeart failure is more common in some areas of the United States than in others. Below is a map showing the rate of death from heart failure by county.\nSymptoms\nCommon symptoms of heart failure include:\nShortness of breath during daily activities.\nTrouble breathing when lying down.\nWeight gain with swelling in the feet, legs, ankles, or stomach.\nGenerally feeling tired or weak.\nRisk factors\nCertain medical conditions can increase your risk for heart failure, including:\nCoronary artery disease (CAD) (the most common type of heart disease) and heart attacks.\nDiabetes\nHigh blood pressure\nObesity\nOther conditions related to heart disease\nHeart valve disease\nUnhealthy behaviors can also increase your risk for heart failure, especially for people who have one of the conditions listed above. Unhealthy behaviors include:\nSmoking tobacco.\nEating foods high in fat, cholesterol, and sodium (salt).\nNot getting enough physical activity.\nExcessive alcohol intake.\nTreatment and recovery\nEarly diagnosis and treatment can improve quality and length of life for people who have heart failure. Treatment usually involves the following:\nTaking medicines.\nReducing sodium in the diet.\nDrinking less liquids.\nUsing devices that remove excess salt and water from the blood.\nHaving heart transplant and other surgeries.\nGetting daily physical activity.\nPeople with heart failure also track their symptoms each day so that they can discuss these symptoms with their health care team.\nResources\nMillion Hearts\nMedlinePlus\nNational Heart, Lung, and Blood Institute\nHeart Failure Society of America",
+  "reviewed": true
+}

@@ -25,3 +25,11 @@ async def test_embed_is_deterministic_normalized_and_meaningful():
     assert abs(dot(a, a) - 1) < 1e-9
     assert a == b
     assert dot(a, c) < 0.5
+
+
+def test_embedding_model_name_is_configurable_and_read_only():
+    assert FakeLLM().embedding_model == "fake-bag-of-words-64"
+    fake = FakeLLM(embedding_model="other-model")
+    assert fake.embedding_model == "other-model"
+    with pytest.raises(AttributeError):
+        fake.embedding_model = "changed"

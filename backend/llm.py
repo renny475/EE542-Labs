@@ -18,6 +18,11 @@ class LLMClient:
         self.settings = settings
         self.transport = transport
 
+    @property
+    def embedding_model(self) -> str:
+        """Name recorded with every stored vector so a model change forces a re-index."""
+        return self.settings.embedding_model
+
     async def _post(self, url: str, api_key: str, payload: dict) -> dict:
         headers = {"Authorization": f"Bearer {api_key}"}
         try:

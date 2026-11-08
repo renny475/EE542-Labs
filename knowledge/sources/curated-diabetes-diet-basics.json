@@ -1,0 +1,13 @@
+{
+  "id": "curated-diabetes-diet-basics",
+  "title": "Curated summary: Diabetes eating basics (plate method and carbs)",
+  "topic": "Diabetes and hypertension",
+  "url": "https://www.cdc.gov/diabetes/healthy-eating/diabetes-meal-planning.html",
+  "curated": true,
+  "summarized_source_id": "cdc-diabetes-meal-planning",
+  "collected_at": "2026-11-08T02:17:51.818097+00:00",
+  "sha256": "fc0b829f2df48a9ab6a212e6136a38a4c2d9a031479861d9ce35f5247e5b18bd",
+  "text": "Diabetes eating basics: carbs, regular meals, and the plate method. Curated summary of the CDC page \"Diabetes Meal Planning\".\nCarbs: carbohydrates in food raise blood sugar. Drinking fruit juice raises blood sugar faster than eating whole fruit, and eating carbs with protein, fat, or fiber slows the rise. (Page section: \"Why a meal plan is important\".)\nRegular meals: plan regular, balanced meals to avoid high or low blood sugar. Eating about the same amount of carbs at each meal can help. (Page section: \"Why a meal plan is important\".)\nPlate method: start with a 9-inch dinner plate. Fill half with nonstarchy vegetables such as salad, green beans, and broccoli. Fill one quarter with a lean protein such as chicken, beans, tofu, or eggs. Fill one quarter with carb foods. Choose water or a low-calorie drink such as unsweetened iced tea. (Page section: \"The plate method\".)\nCarb foods include grains, starchy vegetables such as potatoes and peas, rice, pasta, beans, fruit, and yogurt. A cup of milk also counts as a carb food. (Page section: \"The plate method\".)\nA good meal plan includes more nonstarchy vegetables, fewer added sugars and refined grains such as white bread, rice, and pasta, and whole foods instead of highly processed foods. (Page section: \"Why a meal plan is important\".)\nAsk your doctor or a registered dietitian how many carbs you should aim for at each meal. (Page section: \"Counting carbs\".)",
+  "reviewed": true,
+  "curation_note": "Team-written summary of the linked public page. Every number appears on that page; page sections are named in the text. Checked against snapshot cdc-diabetes-meal-planning."
+}

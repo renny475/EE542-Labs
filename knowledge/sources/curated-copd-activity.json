@@ -1,0 +1,13 @@
+{
+  "id": "curated-copd-activity",
+  "title": "Curated summary: COPD and physical activity",
+  "topic": "COPD",
+  "url": "https://medlineplus.gov/copd.html",
+  "curated": true,
+  "summarized_source_id": "medlineplus-copd",
+  "collected_at": "2026-11-08T02:17:51.817778+00:00",
+  "sha256": "7b1ac400cfc2853c96570f30d789c01f08b0260b19e7b9a86dceadfb80ab6cc1",
+  "text": "COPD and physical activity. Curated summary of the MedlinePlus page \"COPD\" (summary from the NIH National Heart, Lung, and Blood Institute).\nActivity: increase your physical activity as your condition allows, and ask your provider how much physical activity you can do. Physical activity can strengthen the muscles that help you breathe and improve your overall wellness. (Page section: \"What are the treatments for COPD?\".)\nPulmonary rehabilitation: a program that helps people with chronic breathing problems. It may include an exercise program, disease management training, nutritional counseling, and psychological counseling. (Page section: \"What are the treatments for COPD?\".)\nSmoke and irritants: quitting smoking is the most important step you can take to treat COPD. Avoid secondhand smoke and places where you might breathe in other lung irritants. (Page section: \"What are the treatments for COPD?\".)\nWhen to get help: get emergency care if you have severe symptoms, such as trouble catching your breath or talking. Call your provider if your symptoms are getting worse or if you have signs of an infection, such as a fever. (Page section: \"What are the treatments for COPD?\".)",
+  "reviewed": true,
+  "curation_note": "Team-written summary of the linked public page. Every number appears on that page; page sections are named in the text. Checked against snapshot medlineplus-copd."
+}

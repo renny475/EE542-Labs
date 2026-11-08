@@ -1,0 +1,13 @@
+{
+  "id": "curated-heart-failure-sodium-fluids",
+  "title": "Curated summary: Heart failure sodium, fluids, and symptom checks",
+  "topic": "Heart failure",
+  "url": "https://medlineplus.gov/heartfailure.html",
+  "curated": true,
+  "summarized_source_id": "medlineplus-heart-failure",
+  "collected_at": "2026-11-08T02:17:51.817465+00:00",
+  "sha256": "f9c9e7d1e5750f269e3aa5c13276fcc65ed1829d21a796b94184b5c05f0a3b07",
+  "text": "Heart failure: sodium, fluids, and watching your symptoms. Curated summary of the MedlinePlus page \"Heart Failure\" (summary from the NIH National Heart, Lung, and Blood Institute).\nSodium and fluids: most heart failure treatment plans include eating less sodium and drinking less liquid to control fluid buildup. (Page section: \"What are the treatments for heart failure?\".)\nWhy: when blood moves through the heart too slowly, fluid can leak from blood vessels and collect in the body. This causes swelling and weight gain in the ankles, lower legs, or belly, shortness of breath, and trouble sleeping when lying flat. (Page section: \"What are the symptoms of heart failure?\".)\nWatch your symptoms: pay close attention to your symptoms, because heart failure can worsen suddenly. Treatment plans also include taking medicine and getting as much physical activity as your provider recommends. (Page section: \"What are the treatments for heart failure?\".)\nThe page does not set a specific daily sodium or fluid amount. Your heart failure care team sets those limits; follow the limits in your discharge instructions.",
+  "reviewed": true,
+  "curation_note": "Team-written summary of the linked public page. Every number appears on that page; page sections are named in the text. Checked against snapshot medlineplus-heart-failure."
+}

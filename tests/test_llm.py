@@ -109,3 +109,10 @@ async def test_embed_rejects_incomplete_batch():
 
     with pytest.raises(LLMError):
         await make_client(handler).embed(["a", "b"])
+
+
+def test_embedding_model_is_exposed_read_only():
+    client = make_client(lambda request: httpx.Response(500))
+    assert client.embedding_model == "embed-model"
+    with pytest.raises(AttributeError):
+        client.embedding_model = "other"

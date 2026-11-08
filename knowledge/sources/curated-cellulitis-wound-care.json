@@ -1,0 +1,13 @@
+{
+  "id": "curated-cellulitis-wound-care",
+  "title": "Curated summary: Caring for skin wounds with or after cellulitis",
+  "topic": "Cellulitis",
+  "url": "https://www.cdc.gov/group-a-strep/prevention/index.html",
+  "curated": true,
+  "summarized_source_id": "cdc-group-a-strep-prevention",
+  "collected_at": "2026-11-08T02:17:51.818367+00:00",
+  "sha256": "189cefb3c0807b5434490cee54f11f29ec524f0d2fa301be10f8e3ee8066a0b6",
+  "text": "Caring for skin wounds during and after cellulitis. Curated summary of the CDC page \"Preventing Group A Strep Infection\". Group A strep is one of the most common causes of cellulitis.\nWound care (page section: \"Wound care tips\"):\nStep 1: wash your hands with soap and water, or use an alcohol-based hand rub if washing isn't possible.\nStep 2: clean all minor cuts and injuries that break the skin, like blisters and scrapes, with soap and water.\nStep 3: after cleaning, cover draining or open wounds with clean, dry bandages. Change the bandages at least every few days until the wounds heal. Don't scratch or pick at the scab.\nSee a healthcare provider for punctures and other deep or serious wounds.\nProtect wounds: if you have an open wound or skin infection, avoid hot tubs, swimming pools, and natural bodies of water such as lakes, rivers, and oceans. (Page section: \"Protect wounds and infections\".)\nAntibiotics: take antibiotics as prescribed by your healthcare provider. (Page section: \"Treat infections\".)\nDiabetes: if you have diabetes, check your feet daily for injuries or signs of infection. (Page section: \"Limit exposure and spread of bacteria\".)",
+  "reviewed": true,
+  "curation_note": "Team-written summary of the linked public page. Every number appears on that page; page sections are named in the text. Checked against snapshot cdc-group-a-strep-prevention."
+}

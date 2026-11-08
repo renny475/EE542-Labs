@@ -1,0 +1,232 @@
+[
+  {
+    "id": "medlineplus-pneumonia",
+    "ok": true,
+    "characters": 6090
+  },
+  {
+    "id": "medlineplus-cellulitis",
+    "ok": true,
+    "characters": 615
+  },
+  {
+    "id": "medlineplus-uti",
+    "ok": true,
+    "characters": 909
+  },
+  {
+    "id": "medlineplus-copd",
+    "ok": true,
+    "characters": 6294
+  },
+  {
+    "id": "medlineplus-heart-failure",
+    "ok": true,
+    "characters": 6660
+  },
+  {
+    "id": "medlineplus-sodium",
+    "ok": true,
+    "characters": 1051
+  },
+  {
+    "id": "medlineplus-diabetes-type-2",
+    "ok": true,
+    "characters": 4352
+  },
+  {
+    "id": "medlineplus-diabetic-diet",
+    "ok": true,
+    "characters": 4239
+  },
+  {
+    "id": "medlineplus-high-blood-pressure",
+    "ok": true,
+    "characters": 2996
+  },
+  {
+    "id": "medlineplus-kidney-stones",
+    "ok": true,
+    "characters": 965
+  },
+  {
+    "id": "cdc-pneumonia",
+    "ok": true,
+    "characters": 2590
+  },
+  {
+    "id": "cdc-cellulitis",
+    "ok": true,
+    "characters": 3739
+  },
+  {
+    "id": "cdc-group-a-strep-prevention",
+    "ok": true,
+    "characters": 3702
+  },
+  {
+    "id": "cdc-uti",
+    "ok": true,
+    "characters": 5660
+  },
+  {
+    "id": "cdc-copd",
+    "ok": true,
+    "characters": 3363
+  },
+  {
+    "id": "cdc-heart-failure",
+    "ok": true,
+    "characters": 2490
+  },
+  {
+    "id": "cdc-sodium",
+    "ok": true,
+    "characters": 1632
+  },
+  {
+    "id": "cdc-high-blood-pressure-prevention",
+    "ok": true,
+    "characters": 2188
+  },
+  {
+    "id": "cdc-diabetes-meal-planning",
+    "ok": true,
+    "characters": 4102
+  },
+  {
+    "id": "niddk-uti-treatment",
+    "ok": true,
+    "characters": 3461
+  },
+  {
+    "id": "niddk-kidney-stones-diet",
+    "ok": true,
+    "characters": 6670
+  },
+  {
+    "id": "niddk-kidney-stones-treatment",
+    "ok": true,
+    "characters": 6759
+  },
+  {
+    "id": "niddk-healthy-living-diabetes",
+    "ok": true,
+    "characters": 16319
+  },
+  {
+    "id": "nkf-kidney-stones",
+    "ok": true,
+    "characters": 12591
+  },
+  {
+    "id": "nkf-kidney-stone-diet",
+    "ok": true,
+    "characters": 7238
+  },
+  {
+    "id": "upmc-low-oxalate-diet",
+    "ok": true,
+    "characters": 5351
+  },
+  {
+    "id": "curated-high-oxalate-cutoff",
+    "ok": true,
+    "skipped": "curated summary, edited by hand"
+  },
+  {
+    "id": "curated-kidney-stones-diet",
+    "ok": true,
+    "skipped": "curated summary, edited by hand"
+  },
+  {
+    "id": "curated-heart-failure-sodium-fluids",
+    "ok": true,
+    "skipped": "curated summary, edited by hand"
+  },
+  {
+    "id": "curated-copd-activity",
+    "ok": true,
+    "skipped": "curated summary, edited by hand"
+  },
+  {
+    "id": "curated-diabetes-diet-basics",
+    "ok": true,
+    "skipped": "curated summary, edited by hand"
+  },
+  {
+    "id": "curated-cellulitis-wound-care",
+    "ok": true,
+    "skipped": "curated summary, edited by hand"
+  },
+  {
+    "id": "dailymed-amoxicillin-clavulanate",
+    "ok": true,
+    "characters": 9482
+  },
+  {
+    "id": "dailymed-azithromycin",
+    "ok": true,
+    "characters": 18310
+  },
+  {
+    "id": "dailymed-cephalexin",
+    "ok": true,
+    "characters": 4600
+  },
+  {
+    "id": "dailymed-nitrofurantoin",
+    "ok": true,
+    "characters": 1705
+  },
+  {
+    "id": "dailymed-prednisone",
+    "ok": true,
+    "characters": 10725
+  },
+  {
+    "id": "dailymed-albuterol-inhaler",
+    "ok": true,
+    "characters": 17082
+  },
+  {
+    "id": "dailymed-tiotropium",
+    "ok": true,
+    "characters": 13795
+  },
+  {
+    "id": "dailymed-furosemide",
+    "ok": true,
+    "characters": 3532
+  },
+  {
+    "id": "dailymed-lisinopril",
+    "ok": true,
+    "characters": 6545
+  },
+  {
+    "id": "dailymed-metoprolol-succinate",
+    "ok": true,
+    "characters": 3907
+  },
+  {
+    "id": "dailymed-metformin",
+    "ok": true,
+    "characters": 18211
+  },
+  {
+    "id": "dailymed-amlodipine",
+    "ok": true,
+    "characters": 7025
+  },
+  {
+    "id": "dailymed-tamsulosin",
+    "ok": true,
+    "characters": 10469
+  },
+  {
+    "id": "dailymed-ibuprofen",
+    "ok": true,
+    "characters": 3893
+  }
+]
