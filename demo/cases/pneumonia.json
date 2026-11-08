@@ -2,7 +2,7 @@
   "id": "pneumonia",
   "hospital": "Riverside Community Hospital",
   "service": "Hospital Medicine",
-  "patient": "Morgan Ellis (fictional), 58-year-old",
+  "patient": "Morgan Ellis (fictional), 58-year-old adult",
   "attending": "Dr. Neil Okafor",
   "admit_days": 3,
   "diagnosis": "Community-acquired pneumonia, right lower lobe.",

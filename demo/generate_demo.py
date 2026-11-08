@@ -117,6 +117,17 @@ class DemoPDF(FPDF):
         self.set_text_color(0, 0, 0)
 
 
+def bold_prefix(line: str) -> str:
+    """The part of a line drawn in bold: a whole section heading ("Diet:", "Call 911
+    or return to the ER if:"), or the label of a "Label: value" line."""
+    if line.startswith("- "):
+        return ""
+    if line.endswith(":"):
+        return line
+    match = LABEL.match(line)
+    return match.group(0) if match else ""
+
+
 def draw_block(pdf: FPDF, block: str, is_title_block: bool) -> None:
     line_h = 4.3
     for line_no, line in enumerate(block.splitlines()):
@@ -134,13 +145,14 @@ def draw_block(pdf: FPDF, block: str, is_title_block: bool) -> None:
             pdf.set_x(pdf.l_margin + 4)
             pdf.multi_cell(0, line_h, line, new_x="LMARGIN", new_y="NEXT")
             continue
-        match = LABEL.match(line)
-        if match:
+        bold = bold_prefix(line)
+        if bold:
             pdf.set_font("Helvetica", "B", 9.5)
-            pdf.write(line_h, match.group(0))
-            line = line[match.end():]
-        pdf.set_font("Helvetica", "", 9.5)
-        pdf.write(line_h, line)
+            pdf.write(line_h, bold)
+            line = line[len(bold):]
+        if line:
+            pdf.set_font("Helvetica", "", 9.5)
+            pdf.write(line_h, line)
         pdf.ln(line_h)
     pdf.ln(2)
 

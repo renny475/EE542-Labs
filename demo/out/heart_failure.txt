@@ -1,7 +1,7 @@
 FICTIONAL - FOR DEMO
 
 Riverside Community Hospital - Discharge Summary
-Patient: Avery Sullivan (fictional), 72-year-old
+Patient: Avery Sullivan (fictional), 72-year-old adult
 Admission date: October 31, 2026
 Discharge date: November 5, 2026
 Attending: Dr. Maria Castillo, Cardiology

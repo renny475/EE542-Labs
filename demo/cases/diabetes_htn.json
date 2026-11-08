@@ -2,7 +2,7 @@
   "id": "diabetes_htn",
   "hospital": "Riverside Community Hospital",
   "service": "Hospital Medicine",
-  "patient": "Jamie Whitaker (fictional), 61-year-old",
+  "patient": "Jamie Whitaker (fictional), 61-year-old adult",
   "attending": "Dr. Daniel Brooks",
   "admit_days": 3,
   "diagnosis": "Type 2 diabetes with high blood sugar, and high blood pressure.",

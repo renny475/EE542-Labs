@@ -1,7 +1,7 @@
 FICTIONAL - FOR DEMO
 
 Riverside Community Hospital - Discharge Summary
-Patient: Jordan Avery (fictional), 39-year-old
+Patient: Jordan Avery (fictional), 39-year-old adult
 Admission date: November 3, 2026
 Discharge date: November 5, 2026
 Attending: Dr. Priya Raman, Urology

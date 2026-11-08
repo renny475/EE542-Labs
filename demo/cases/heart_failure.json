@@ -2,7 +2,7 @@
   "id": "heart_failure",
   "hospital": "Riverside Community Hospital",
   "service": "Cardiology",
-  "patient": "Avery Sullivan (fictional), 72-year-old",
+  "patient": "Avery Sullivan (fictional), 72-year-old adult",
   "attending": "Dr. Maria Castillo",
   "admit_days": 5,
   "diagnosis": "Acute on chronic heart failure with reduced ejection fraction.",

@@ -1,7 +1,7 @@
 FICTIONAL - FOR DEMO
 
 Riverside Community Hospital - Discharge Summary
-Patient: Taylor Brooks (fictional), 46-year-old
+Patient: Taylor Brooks (fictional), 46-year-old adult
 Admission date: November 2, 2026
 Discharge date: November 5, 2026
 Attending: Dr. Alicia Moreno, Hospital Medicine

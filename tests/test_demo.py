@@ -2,6 +2,7 @@ import io
 import json
 import re
 import sys
+from datetime import date
 from pathlib import Path
 
 import pytest
@@ -11,8 +12,10 @@ from documents import paragraphs, read_upload
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "demo"))
+sys.path.insert(0, str(ROOT / "scripts"))
 
 import generate_demo  # noqa: E402
+import seed_demo  # noqa: E402
 
 # Binding medication list per case: the education library only has labels for these.
 ALLOWED_MEDS = {
@@ -88,3 +91,36 @@ def test_kidney_stones_required_wording(out_dir):
     assert "drink enough fluids to make at least 2.5 liters of urine a day" in text
     assert "tamsulosin 0.4 mg by mouth once daily at bedtime for 14 days" in text.lower()
     assert "ibuprofen" in text.lower() and "as needed" in text
+
+
+@pytest.mark.parametrize("line, bold", [
+    ("Diet:", "Diet:"),
+    ("Call 911 or return to the ER if:", "Call 911 or return to the ER if:"),
+    ("Call the clinic at 555-0142 if:", "Call the clinic at 555-0142 if:"),
+    ("Patient: Jordan Avery (fictional), 39-year-old adult", "Patient:"),
+    ("- you cannot urinate", ""),
+    ("Take with food.", ""),
+])
+def test_section_headings_and_labels_are_bold(line, bold):
+    assert generate_demo.bold_prefix(line) == bold
+
+
+@pytest.mark.parametrize("case_id", sorted(ALLOWED_MEDS))
+def test_patient_line_reads_as_a_complete_phrase(case_id):
+    patient = generate_demo.load_case(case_id)["patient"]
+    assert re.fullmatch(r"[A-Z][a-z]+ [A-Z][a-z]+ \(fictional\), \d+-year-old adult", patient)
+
+
+def test_seed_quotes_and_follow_up_dates_match_the_document():
+    discharge = date(2026, 11, 5)
+    text = seed_demo.demo_text(discharge)
+    paras = paragraphs(text)
+    items = seed_demo.build_items(discharge)
+    for _, _, quote, _ in items:
+        assert any(quote in p for p in paras), quote
+    follow_ups = [d for c, _, _, d in items if c == "follow_up"]
+    assert len(follow_ups) == 2
+    for details in follow_ups:
+        when = date.fromisoformat(details["date"])
+        assert generate_demo.long_date(when) in text
+        assert (when - discharge).days == details["days_after_discharge"]

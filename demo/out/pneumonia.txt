@@ -1,7 +1,7 @@
 FICTIONAL - FOR DEMO
 
 Riverside Community Hospital - Discharge Summary
-Patient: Morgan Ellis (fictional), 58-year-old
+Patient: Morgan Ellis (fictional), 58-year-old adult
 Admission date: November 2, 2026
 Discharge date: November 5, 2026
 Attending: Dr. Neil Okafor, Hospital Medicine

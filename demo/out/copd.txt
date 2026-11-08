@@ -1,7 +1,7 @@
 FICTIONAL - FOR DEMO
 
 Riverside Community Hospital - Discharge Summary
-Patient: Riley Sanders (fictional), 67-year-old
+Patient: Riley Sanders (fictional), 67-year-old adult
 Admission date: November 1, 2026
 Discharge date: November 5, 2026
 Attending: Dr. Henry Zhao, Pulmonary Medicine

@@ -1,7 +1,7 @@
 FICTIONAL - FOR DEMO
 
 Riverside Community Hospital - Discharge Summary
-Patient: Casey Nguyen (fictional), 34-year-old
+Patient: Casey Nguyen (fictional), 34-year-old adult
 Admission date: November 4, 2026
 Discharge date: November 5, 2026
 Attending: Dr. Samira Patel, Emergency Medicine

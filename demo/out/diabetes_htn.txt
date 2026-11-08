@@ -1,7 +1,7 @@
 FICTIONAL - FOR DEMO
 
 Riverside Community Hospital - Discharge Summary
-Patient: Jamie Whitaker (fictional), 61-year-old
+Patient: Jamie Whitaker (fictional), 61-year-old adult
 Admission date: November 2, 2026
 Discharge date: November 5, 2026
 Attending: Dr. Daniel Brooks, Hospital Medicine

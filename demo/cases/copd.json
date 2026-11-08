@@ -2,7 +2,7 @@
   "id": "copd",
   "hospital": "Riverside Community Hospital",
   "service": "Pulmonary Medicine",
-  "patient": "Riley Sanders (fictional), 67-year-old",
+  "patient": "Riley Sanders (fictional), 67-year-old adult",
   "attending": "Dr. Henry Zhao",
   "admit_days": 4,
   "diagnosis": "COPD exacerbation (flare-up).",

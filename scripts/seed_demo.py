@@ -83,12 +83,13 @@ def build_items(discharge: date) -> list[tuple[str, str, str, dict]]:
         ("follow_up", f"See Dr. Priya Raman at the Urology Clinic on {visit} to remove the stent.",
          f"See Dr. Priya Raman, Urology Clinic on {visit} for stent removal.",
          {"who": "Dr. Priya Raman, Urology Clinic", "when_text": visit,
-          "date": None, "days_after_discharge": 7}),
-        ("follow_up", "See your primary care provider in about 14 days to talk about a 24-hour urine test.",
+          "date": (discharge + timedelta(days=7)).isoformat(), "days_after_discharge": 7}),
+        ("follow_up", f"See your primary care provider on {long_date(discharge + timedelta(days=14))} "
+         "to talk about a 24-hour urine test.",
          f"See your primary care provider on {long_date(discharge + timedelta(days=14))} "
          "for a discussion of a 24-hour urine test.",
          {"who": "Primary care provider", "when_text": long_date(discharge + timedelta(days=14)),
-          "date": None, "days_after_discharge": 14}),
+          "date": (discharge + timedelta(days=14)).isoformat(), "days_after_discharge": 14}),
         ("warning_signs", "Call 911 or go to the ER for a fever of 101 F or higher with chills.",
          "a fever of 101 F (38.3 C) or higher with chills", {}),
         ("warning_signs", "Call 911 or go to the ER if you cannot keep fluids down.",
