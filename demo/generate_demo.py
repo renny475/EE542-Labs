@@ -5,7 +5,10 @@
 Reads demo/cases/*.json and writes <case>.pdf and <case>.txt per case. The TXT
 and the PDF carry the same text (the PDF adds a "FICTIONAL - FOR DEMO" page
 header and footer). The discharge date is today minus --days-ago; follow-ups
-are written as absolute dates. All people and events are invented.
+are written as absolute dates, so the committed files in demo/out are dated
+relative to the day they were generated: regenerate before a demo. Every logical
+line is one sentence and fits on one PDF line, and the document fits one page, so
+the app's reader (pypdf + paragraphs) yields the same units as the TXT. All people and events are invented.
 
 render_text() is also used by scripts/seed_demo.py, so the kidney-stones case
 has a single source of truth in demo/cases/kidney_stones.json.
@@ -51,6 +54,17 @@ def medication_line(med: dict) -> str:
     return line
 
 
+SENTENCE_END = re.compile(r"(?<=[.!?])(?<!Dr\.) (?=[A-Z])")
+
+
+def one_sentence_per_line(block: str) -> str:
+    """Split each line at sentence ends so no logical line has to wrap in the PDF."""
+    lines: list[str] = []
+    for line in block.splitlines():
+        lines.extend(SENTENCE_END.split(line) if not line.startswith("- ") else [line])
+    return "\n".join(lines)
+
+
 def body_blocks(case: dict, discharge: date) -> list[str]:
     """The document as paragraph blocks (no banner)."""
     admitted = discharge - timedelta(days=case["admit_days"])
@@ -63,22 +77,21 @@ def body_blocks(case: dict, discharge: date) -> list[str]:
             f"Discharge date: {long_date(discharge)}",
             f"Attending: {case['attending']}, {case['service']}",
         ]),
-        f"Diagnosis: {case['diagnosis']}",
-        f"Hospital course: {course}",
+        f"Diagnosis:\n{case['diagnosis']}",
+        f"Hospital course:\n{course}",
         "\n".join(["Medications:"] + [medication_line(m) for m in case["medications"]]),
         "\n".join(["Diet:"] + case["diet"]),
         "\n".join(["Activity:"] + case["activity"]),
         "\n".join([f"{case['care_label']}:"] + case["care"]),
         "\n".join(["Monitoring:"] + case["monitoring"]),
         "\n".join(["Follow-up:"] + [
-            f"See {f['who']} on {long_date(discharge + timedelta(days=f['days']))} "
-            f"({f['days']} days after discharge) for {f['purpose']}."
+            f"See {f['who']} on {long_date(discharge + timedelta(days=f['days']))} for {f['purpose']}."
             for f in case["follow_up"]
         ]),
         "\n".join(["Call 911 or return to the ER if:"] + [f"- {s}" for s in case["warning_signs"]]),
         "\n".join([f"Call the clinic at {case['clinic_phone']} if:"] + [f"- {s}" for s in case["call_clinic"]]),
     ]
-    return blocks
+    return [one_sentence_per_line(b) for b in blocks]
 
 
 def render_text(case: dict, discharge: date, banner: bool = True) -> str:
@@ -105,33 +118,37 @@ class DemoPDF(FPDF):
 
 
 def draw_block(pdf: FPDF, block: str, is_title_block: bool) -> None:
-    line_h = 5.6
+    line_h = 4.3
     for line_no, line in enumerate(block.splitlines()):
+        pdf.set_font("Helvetica", "B" if is_title_block and line_no == 0 else "", 15 if is_title_block and line_no == 0 else 9.5)
+        # Bold labels are wider than regular text, so measure with a small safety margin.
+        if pdf.get_string_width(line) * 1.03 > pdf.w - pdf.l_margin - pdf.r_margin - 4:
+            raise ValueError(f"Line would wrap in the PDF, shorten it: {line!r}")
         if is_title_block and line_no == 0:
             pdf.set_font("Helvetica", "B", 15)
             pdf.multi_cell(0, 8, line, new_x="LMARGIN", new_y="NEXT")
             pdf.ln(1)
             continue
         if line.startswith("- "):
-            pdf.set_font("Helvetica", "", 11)
+            pdf.set_font("Helvetica", "", 9.5)
             pdf.set_x(pdf.l_margin + 4)
             pdf.multi_cell(0, line_h, line, new_x="LMARGIN", new_y="NEXT")
             continue
         match = LABEL.match(line)
         if match:
-            pdf.set_font("Helvetica", "B", 11)
+            pdf.set_font("Helvetica", "B", 9.5)
             pdf.write(line_h, match.group(0))
             line = line[match.end():]
-        pdf.set_font("Helvetica", "", 11)
+        pdf.set_font("Helvetica", "", 9.5)
         pdf.write(line_h, line)
         pdf.ln(line_h)
-    pdf.ln(6)
+    pdf.ln(2)
 
 
 def render_pdf(case: dict, discharge: date) -> bytes:
     pdf = DemoPDF(format="Letter")
-    pdf.set_margins(20, 18, 20)
-    pdf.set_auto_page_break(True, margin=20)
+    pdf.set_margins(16, 14, 16)
+    pdf.set_auto_page_break(True, margin=16)
     pdf.add_page()
     for index, block in enumerate(body_blocks(case, discharge)):
         # Keep each section on one page so a paragraph is never split by the footer.

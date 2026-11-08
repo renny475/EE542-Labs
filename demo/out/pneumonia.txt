@@ -6,21 +6,30 @@ Admission date: November 2, 2026
 Discharge date: November 5, 2026
 Attending: Dr. Neil Okafor, Hospital Medicine
 
-Diagnosis: Community-acquired pneumonia, right lower lobe.
+Diagnosis:
+Community-acquired pneumonia, right lower lobe.
 
-Hospital course: You came in with 4 days of fever, cough with yellow sputum, and shortness of breath. A chest X-ray showed pneumonia in the right lower lobe. You received IV antibiotics and oxygen, and your breathing and oxygen level are now back to normal on room air.
+Hospital course:
+You came in with 4 days of fever, cough with yellow sputum, and shortness of breath.
+A chest X-ray showed pneumonia in the right lower lobe.
+You received IV antibiotics and oxygen, and your breathing and oxygen level are now back to normal on room air.
 
 Medications:
-Amoxicillin-clavulanate 875 mg/125 mg by mouth twice daily with meals for 5 more days. Finish all of the doses even if you feel better.
-Azithromycin 250 mg by mouth once daily for 3 more days. Take it at the same time each day.
+Amoxicillin-clavulanate 875 mg/125 mg by mouth twice daily with meals for 5 more days.
+Finish all of the doses even if you feel better.
+Azithromycin 250 mg by mouth once daily for 3 more days.
+Take it at the same time each day.
 
 Diet:
 Drink plenty of fluids, about 8 cups (2 liters) of water or other non-caffeinated drinks each day, unless told otherwise.
-Eat small, regular meals. Your appetite may be low for a few days.
+Eat small, regular meals.
+Your appetite may be low for a few days.
 
 Activity:
-Rest as much as you need for the first week and build up slowly. Short walks around the house are encouraged.
-Do not smoke and avoid smoke from others. Return to work or school only after your follow-up visit.
+Rest as much as you need for the first week and build up slowly.
+Short walks around the house are encouraged.
+Do not smoke and avoid smoke from others.
+Return to work or school only after your follow-up visit.
 
 Breathing care:
 Take 5 slow deep breaths every hour while awake to help clear your lungs.
@@ -31,8 +40,8 @@ Check your temperature every evening for 7 days and write it down.
 Notice whether your cough and breathing are getting better each day.
 
 Follow-up:
-See Dr. Neil Okafor, primary care on November 12, 2026 (7 days after discharge) for a check-up and symptom review.
-See Radiology on December 17, 2026 (42 days after discharge) for a repeat chest X-ray to make sure the pneumonia has cleared.
+See Dr. Neil Okafor, primary care on November 12, 2026 for a check-up and symptom review.
+See Radiology on December 17, 2026 for a repeat chest X-ray to make sure the pneumonia has cleared.
 
 Call 911 or return to the ER if:
 - chest pain

@@ -6,12 +6,17 @@ Admission date: November 2, 2026
 Discharge date: November 5, 2026
 Attending: Dr. Alicia Moreno, Hospital Medicine
 
-Diagnosis: Cellulitis of the left lower leg.
+Diagnosis:
+Cellulitis of the left lower leg.
 
-Hospital course: You came in with a red, warm, painful left lower leg and fever. Blood tests and an ultrasound showed an infection of the skin without a blood clot. You received IV antibiotics, the redness has started to shrink, and your fever is gone.
+Hospital course:
+You came in with a red, warm, painful left lower leg and fever.
+Blood tests and an ultrasound showed an infection of the skin without a blood clot.
+You received IV antibiotics, the redness has started to shrink, and your fever is gone.
 
 Medications:
-Cephalexin 500 mg by mouth every 6 hours (4 times a day) for 7 days. Take it even if the leg looks better.
+Cephalexin 500 mg by mouth every 6 hours (4 times a day) for 7 days.
+Take it even if the leg looks better.
 
 Diet:
 Eat a normal, balanced diet with enough protein to help your skin heal.
@@ -19,7 +24,8 @@ Drink plenty of water.
 
 Activity:
 Keep your left leg raised on pillows above heart level when you sit or lie down.
-Walk short distances every few hours. Avoid standing for long periods.
+Walk short distances every few hours.
+Avoid standing for long periods.
 
 Wound care:
 Wash the area gently with soap and water once a day and pat it dry.
@@ -27,12 +33,13 @@ Moisturize the dry skin around the area, but not on any open sore.
 Wear clean, loose socks and shoes that do not rub.
 
 Monitoring:
-Use a pen to mark the edge of the redness today. Check the mark every morning and evening for 7 days to see if the redness spreads.
+Use a pen to mark the edge of the redness today.
+Check the mark every morning and evening for 7 days to see if the redness spreads.
 Check your temperature every evening for 7 days.
 
 Follow-up:
-See Dr. Alicia Moreno, primary care on November 8, 2026 (3 days after discharge) for a skin check and to review the redness.
-See Wound care clinic on November 19, 2026 (14 days after discharge) for a final skin check.
+See Dr. Alicia Moreno, primary care on November 8, 2026 for a skin check and to review the redness.
+See Wound care clinic on November 19, 2026 for a final skin check.
 
 Call 911 or return to the ER if:
 - trouble breathing

@@ -6,16 +6,27 @@ Admission date: November 3, 2026
 Discharge date: November 5, 2026
 Attending: Dr. Priya Raman, Urology
 
-Diagnosis: Left ureteral stone (6 mm), treated with ureteroscopy and laser lithotripsy. A temporary left ureteral stent was placed.
+Diagnosis:
+Left ureteral stone (6 mm), treated with ureteroscopy and laser lithotripsy.
+A temporary left ureteral stent was placed.
 
-Hospital course: You came to the emergency department with severe left flank pain and nausea. A CT scan showed a 6 mm stone in the left ureter. On November 4, 2026 you had ureteroscopy. The stone was broken up and removed, and a stent was placed. Your pain is now controlled with oral medicine and you are eating and drinking normally.
+Hospital course:
+You came to the emergency department with severe left flank pain and nausea.
+A CT scan showed a 6 mm stone in the left ureter.
+On November 4, 2026 you had ureteroscopy.
+The stone was broken up and removed, and a stent was placed.
+Your pain is now controlled with oral medicine and you are eating and drinking normally.
 
 Medications:
-Tamsulosin 0.4 mg by mouth once daily at bedtime for 14 days. This relaxes the ureter and eases stent discomfort.
-Ibuprofen 600 mg by mouth every 8 hours as needed for pain. Take with food. This is available over the counter.
+Tamsulosin 0.4 mg by mouth once daily at bedtime for 14 days.
+This relaxes the ureter and eases stent discomfort.
+Ibuprofen 600 mg by mouth every 8 hours as needed for pain.
+Take with food.
+This is available over the counter.
 
 Diet:
-You should drink enough fluids to make at least 2.5 liters of urine a day. For most people this means about 3 liters (12 cups) of fluid daily, mostly water.
+You should drink enough fluids to make at least 2.5 liters of urine a day.
+For most people this means about 3 liters (12 cups) of fluid daily, mostly water.
 Please avoid high-oxalate foods such as nuts, spinach, and rhubarb.
 You should limit sodium to less than 2,300 mg per day.
 Do not cut back on calcium from food.
@@ -29,12 +40,13 @@ You may shower; no baths or swimming while the stent is in place.
 It is normal to have some pink urine, urgency, or mild flank discomfort while the stent is in place.
 
 Monitoring:
-Strain all of your urine through the strainer provided and save any stone pieces in the container. Bring them to your follow-up visit.
+Strain all of your urine through the strainer provided and save any stone pieces in the container.
+Bring them to your follow-up visit.
 Check your temperature every evening for 7 days.
 
 Follow-up:
-See Dr. Priya Raman, Urology Clinic on November 12, 2026 (7 days after discharge) for stent removal.
-See your primary care provider on November 19, 2026 (14 days after discharge) for a discussion of a 24-hour urine test.
+See Dr. Priya Raman, Urology Clinic on November 12, 2026 for stent removal.
+See your primary care provider on November 19, 2026 for a discussion of a 24-hour urine test.
 
 Call 911 or return to the ER if:
 - a fever of 101 F (38.3 C) or higher with chills

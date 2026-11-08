@@ -6,21 +6,32 @@ Admission date: October 31, 2026
 Discharge date: November 5, 2026
 Attending: Dr. Maria Castillo, Cardiology
 
-Diagnosis: Acute on chronic heart failure with reduced ejection fraction.
+Diagnosis:
+Acute on chronic heart failure with reduced ejection fraction.
 
-Hospital course: You came in with leg swelling, weight gain, and shortness of breath when lying flat. You received IV water pills and lost about 6 pounds of fluid. Your breathing is now comfortable and your discharge weight is 168 pounds.
+Hospital course:
+You came in with leg swelling, weight gain, and shortness of breath when lying flat.
+You received IV water pills and lost about 6 pounds of fluid.
+Your breathing is now comfortable and your discharge weight is 168 pounds.
 
 Medications:
-Furosemide 40 mg by mouth once daily in the morning, ongoing. This is a water pill. Take it in the morning so you are not up at night.
-Lisinopril 10 mg by mouth once daily, ongoing. Do not use potassium salt substitutes.
-Metoprolol succinate 50 mg by mouth once daily, ongoing. Do not crush or chew it. Do not stop it suddenly.
+Furosemide 40 mg by mouth once daily in the morning, ongoing.
+This is a water pill.
+Take it in the morning so you are not up at night.
+Lisinopril 10 mg by mouth once daily, ongoing.
+Do not use potassium salt substitutes.
+Metoprolol succinate 50 mg by mouth once daily, ongoing.
+Do not crush or chew it.
+Do not stop it suddenly.
 
 Diet:
-Limit sodium to less than 2,000 mg per day. Avoid canned soups, deli meats, and fast food.
+Limit sodium to less than 2,000 mg per day.
+Avoid canned soups, deli meats, and fast food.
 Limit fluids to 64 ounces (about 2 liters) per day, including soup, ice, and coffee.
 
 Activity:
-Walk 10 to 15 minutes twice a day and rest when tired. Raise your legs when sitting.
+Walk 10 to 15 minutes twice a day and rest when tired.
+Raise your legs when sitting.
 No lifting over 10 pounds for 2 weeks.
 
 Daily weights:
@@ -31,8 +42,8 @@ Call us if you gain more than 3 pounds in 1 day or 5 pounds in 1 week.
 Check your blood pressure and pulse every morning for 7 days.
 
 Follow-up:
-See Dr. Maria Castillo, Heart Failure Clinic on November 12, 2026 (7 days after discharge) for a post-hospital visit, weight check, and blood tests.
-See Primary care on November 19, 2026 (14 days after discharge) for a medication review.
+See Dr. Maria Castillo, Heart Failure Clinic on November 12, 2026 for a weight check and blood tests.
+See Primary care on November 19, 2026 for a medication review.
 
 Call 911 or return to the ER if:
 - chest pain or pressure

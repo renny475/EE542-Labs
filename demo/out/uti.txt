@@ -6,12 +6,17 @@ Admission date: November 4, 2026
 Discharge date: November 5, 2026
 Attending: Dr. Samira Patel, Emergency Medicine
 
-Diagnosis: Uncomplicated urinary tract infection (bladder infection).
+Diagnosis:
+Uncomplicated urinary tract infection (bladder infection).
 
-Hospital course: You came to the emergency department with burning when you urinate, urgency, and lower belly discomfort. Your urine test showed infection and your kidneys were not involved. You were observed overnight, given fluids, and started on an oral antibiotic.
+Hospital course:
+You came to the emergency department with burning when you urinate, urgency, and lower belly discomfort.
+Your urine test showed infection and your kidneys were not involved.
+You were observed overnight, given fluids, and started on an oral antibiotic.
 
 Medications:
-Nitrofurantoin 100 mg by mouth twice daily with food for 5 days. Take it with meals to reduce stomach upset.
+Nitrofurantoin 100 mg by mouth twice daily with food for 5 days.
+Take it with meals to reduce stomach upset.
 
 Diet:
 Drink 6 to 8 cups (1.5 to 2 liters) of water a day to help flush your bladder.
@@ -19,7 +24,8 @@ Limit caffeine and alcohol while you recover because they can irritate the bladd
 
 Activity:
 You may return to normal activity as you feel able.
-Urinate when you feel the urge and do not hold it. Empty your bladder after sex.
+Urinate when you feel the urge and do not hold it.
+Empty your bladder after sex.
 
 Self-care:
 A warm heating pad on your lower belly may ease discomfort.
@@ -29,7 +35,7 @@ Notice whether the burning improves within 2 days of starting the antibiotic.
 Check your temperature each evening for 3 days.
 
 Follow-up:
-See Dr. Samira Patel, primary care on November 12, 2026 (7 days after discharge) for a follow-up visit and urine recheck if symptoms continue.
+See Dr. Samira Patel, primary care on November 12, 2026 for a follow-up visit.
 
 Call 911 or return to the ER if:
 - fainting or severe weakness
