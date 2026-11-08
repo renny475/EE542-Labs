@@ -5,7 +5,7 @@ from pydantic import BaseModel, StringConstraints
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from agent import HISTORY_LIMIT, run_agent
+from agent import HISTORY_LIMIT, emergency_result, run_agent
 from auth import current_user
 from db import get_session
 from llm import LLMError
@@ -52,23 +52,30 @@ async def ask(
     session: AsyncSession = Depends(get_session),
 ):
     doc = await confirmed_document(session, user)
+    items = await load_items(session, doc)
+    # The backstop runs first on every message; the emergency path never depends
+    # on the model (R19).
+    terms = detect_emergency(body.question, warning_terms(items))
     llm = request.app.state.llm
     if llm is None:
-        raise HTTPException(status_code=503, detail="The language model is not configured.")
-    items = await load_items(session, doc)
-    history = await recent_history(session, doc.id)
-    # The backstop runs on every message; the banner never depends on the model.
-    terms = detect_emergency(body.question, warning_terms(items))
-    await session.commit()  # end the read transaction before the slow model calls
-    try:
-        result = await run_agent(
-            llm, request.app.state.store, request.app.state.foods,
-            doc, items, history, body.question, terms,
-        )
-    except LLMError as exc:
-        raise HTTPException(
-            status_code=502, detail="The language model could not answer right now. Try again."
-        ) from exc
+        if not terms:
+            raise HTTPException(status_code=503, detail="The language model is not configured.")
+        result = emergency_result()
+    else:
+        history = await recent_history(session, doc.id)
+        await session.commit()  # end the read transaction before the slow model calls
+        try:
+            result = await run_agent(
+                llm, request.app.state.store, request.app.state.foods,
+                doc, items, history, body.question, terms,
+            )
+        except LLMError as exc:
+            if not terms:
+                raise HTTPException(
+                    status_code=502,
+                    detail="The assistant could not answer right now. Please try again.",
+                ) from exc
+            result = emergency_result()
 
     payload = {
         "kind": result.kind,
@@ -78,7 +85,7 @@ async def ask(
             for e in result.sources
         ],
         "flagged": result.flagged,
-        "emergency": {"terms": terms, "banner": bool(terms)},
+        "emergency": {"terms": terms, "banner": bool(terms) or result.kind == "emergency"},
     }
     session.add(ChatMessage(document_id=doc.id, role="user", content=body.question))
     session.add(ChatMessage(document_id=doc.id, role="assistant", content=result.answer,

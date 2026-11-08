@@ -179,6 +179,7 @@ async def test_ask_llm_error_502(client, fake_llm):
     fake_llm.chat = broken
     resp = await post_ask(client, h, "How often?")
     assert resp.status_code == 502
+    assert resp.json()["detail"] == "The assistant could not answer right now. Please try again."
     assert (await client.get("/api/conversation", headers=h)).json() == {"messages": []}
 
 
@@ -221,3 +222,90 @@ def test_create_app_builds_llm_client_and_store_from_settings(tmp_path):
     assert isinstance(app.state.store, KnowledgeStore)
     assert app.state.store.path == tmp_path / "index.sqlite3"
     assert app.state.foods.lookup("almonds")[0]["name"] == "Almonds"
+
+
+# ---------- the emergency path never depends on the model (R19) ----------
+
+EMERGENCY_ANSWER_COPY = (
+    "If you are having this symptom now, call 911 or follow the emergency instructions "
+    "in your discharge document."
+)
+
+
+def assert_emergency_payload(body, terms):
+    assert body["kind"] == "emergency"
+    assert body["answer"] == EMERGENCY_ANSWER_COPY
+    assert body["sources"] == []
+    assert body["emergency"] == {"terms": terms, "banner": True}
+
+
+async def assert_saved(client, h, question, body):
+    messages = (await client.get("/api/conversation", headers=h)).json()["messages"]
+    assert [(m["role"], m["content"]) for m in messages] == [
+        ("user", question), ("assistant", EMERGENCY_ANSWER_COPY),
+    ]
+    assert messages[1]["payload"] == body
+
+
+async def test_ask_without_llm_still_answers_emergency(app_and_client, fake_llm):
+    app, client = app_and_client
+    h = await confirmed(client, fake_llm)
+    app.state.llm = None
+    question = "I have chest pain right now"
+    resp = await post_ask(client, h, question)
+    assert resp.status_code == 200, resp.text
+    body = resp.json()
+    assert_emergency_payload(body, ["chest pain"])
+    await assert_saved(client, h, question, body)
+
+
+async def test_ask_llm_error_still_answers_emergency(client, fake_llm):
+    h = await confirmed(client, fake_llm)
+
+    async def broken(messages, tools=None, json_mode=False):
+        raise LLMError("down")
+
+    fake_llm.chat = broken
+    question = "My chest pain is getting worse"
+    resp = await post_ask(client, h, question)
+    assert resp.status_code == 200, resp.text
+    body = resp.json()
+    assert_emergency_payload(body, ["chest pain"])
+    await assert_saved(client, h, question, body)
+
+
+async def test_emergency_kind_with_uncited_number_becomes_emergency_answer(client, fake_llm):
+    h = await confirmed(client, fake_llm)
+    fake_llm.script(answer("Call 911 now. If you have a fever over 104 F, go to the ER.", [],
+                           kind="emergency"))
+    question = "I have chest pain and a fever"
+    resp = await post_ask(client, h, question)
+    assert resp.status_code == 200, resp.text
+    body = resp.json()
+    assert_emergency_payload(body, ["chest pain"])
+    await assert_saved(client, h, question, body)
+
+
+async def test_fallback_with_matched_terms_becomes_emergency_answer(client, fake_llm):
+    h = await confirmed(client, fake_llm)
+    fake_llm.script({"content": "not json"})
+    resp = await post_ask(client, h, "I have chest pain")
+    assert resp.status_code == 200, resp.text
+    assert_emergency_payload(resp.json(), ["chest pain"])
+
+
+async def test_model_emergency_kind_without_terms_sets_banner(client, fake_llm):
+    h = await confirmed(client, fake_llm)
+    fake_llm.script(answer("Call 911 now.", [], kind="emergency"))
+    body = (await post_ask(client, h, "I feel really strange and scared")).json()
+    assert body["kind"] == "emergency"
+    assert body["emergency"] == {"terms": [], "banner": True}
+
+
+async def test_emergency_kind_invalid_without_terms_is_emergency_fallback(client, fake_llm):
+    h = await confirmed(client, fake_llm)
+    fake_llm.script(answer("Call the clinic at 555 0142 now.", [], kind="emergency"))
+    body = (await post_ask(client, h, "I feel really strange and scared")).json()
+    assert body["kind"] == "emergency"
+    assert body["answer"] == EMERGENCY_ANSWER_COPY
+    assert body["emergency"] == {"terms": [], "banner": True}

@@ -32,6 +32,12 @@ FALLBACK = (
     "sources, so I added it to your questions for your care team."
 )
 FALLBACK_REASON = "The assistant could not give a verified answer."
+# The fixed answer for an emergency the model could not handle (no model, a model
+# error, or an answer that failed validation). Same copy as the page's banner.
+EMERGENCY_ANSWER = (
+    "If you are having this symptom now, call 911 or follow the emergency instructions "
+    "in your discharge document."
+)
 NOT_COVERED_REASON = "Not answered by the discharge document or approved sources."
 FLAGGED_REASON = "The assistant flagged this question for the care team."
 
@@ -439,7 +445,27 @@ class _Turn:
         return await method(*(v.strip() for v in values))
 
 
-def _fallback(question: str) -> AgentResult:
+def emergency_result() -> AgentResult:
+    """The answer when the backstop or the model saw an emergency but no verified
+    model answer exists. Seek care now, never "ask at your next visit"."""
+    return AgentResult(
+        kind="emergency", answer=EMERGENCY_ANSWER, sources=[], flagged=False,
+        care_team_question=None,
+    )
+
+
+def _claimed_kind(raw: str) -> Optional[str]:
+    """The kind the model's final message claims, read before any other check."""
+    try:
+        data = json.loads(_strip_fences(raw))
+    except json.JSONDecodeError:
+        return None
+    return data.get("kind") if isinstance(data, dict) else None
+
+
+def _fallback(question: str, emergency: bool = False) -> AgentResult:
+    if emergency:
+        return emergency_result()
     return AgentResult(
         kind="not_covered", answer=FALLBACK, sources=[], flagged=True,
         care_team_question=question, care_team_reason=FALLBACK_REASON,
@@ -459,6 +485,10 @@ async def run_agent(
     max_rounds: int = 6,
 ) -> AgentResult:
     """Answer one patient question. LLMError from chat propagates.
+
+    When validation fails, the answer is the fixed emergency answer if the
+    backstop matched terms or the model claimed kind "emergency", else the
+    care-team fallback.
 
     The model gets up to `max_rounds` rounds with tools. If it is still calling
     tools after that, one last call without tools asks for the final JSON, so a
@@ -485,12 +515,13 @@ async def run_agent(
         reply = await llm.chat(list(messages), tools=None if last_call else TOOLS)
         calls = reply.get("tool_calls") or []
         if not calls:
+            raw = reply.get("content") or ""
             try:
-                kind, answer, cited, final_question = validate(
-                    reply.get("content") or "", turn.evidence
-                )
+                kind, answer, cited, final_question = validate(raw, turn.evidence)
             except ValueError:
-                return _fallback(question)
+                return _fallback(
+                    question, bool(emergency_terms) or _claimed_kind(raw) == "emergency"
+                )
             if turn.care_team is not None:
                 care_question, reason = turn.care_team
             elif final_question:
@@ -514,4 +545,4 @@ async def run_agent(
             result = await turn.call(call)
             messages.append({"role": "tool", "tool_call_id": call["id"],
                              "content": json.dumps(result)})
-    return _fallback(question)
+    return _fallback(question, bool(emergency_terms))

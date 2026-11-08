@@ -4,8 +4,8 @@ import {api, escapeHtml, registerTab} from '/static/api.js';
 const esc = escapeHtml;
 
 const EMERGENCY_COPY = 'If you are having this symptom now, call 911 or follow the emergency instructions in your discharge document.';
-const UNAVAILABLE = 'The assistant is not available yet.';
 const UNCONFIGURED = 'The assistant is not configured on this server yet.';
+const TEMPORARY = 'The assistant could not answer right now. Please try again.';
 const MAX_QUESTION = 2000;
 const SUGGESTIONS = [
   'What warning signs should I watch for?',
@@ -20,7 +20,7 @@ const view = {
   status: 'idle',    // 'idle' | 'loading' | 'ready' | 'failed'
   messages: [],      // [{role, content, payload}]
   busy: false,
-  notice: null,      // {kind: 'unavailable' | 'unconfigured' | 'error', text}
+  notice: null,      // {kind: 'unconfigured' | 'error', text}
   draft: '',
   open: new Set(),   // 'messageIndex:sourceNumber' of expanded sources
 };
@@ -50,8 +50,8 @@ const isVisible = () => panelRef && !panelRef.hidden && panelRef.querySelector('
 // ---------- requests ----------
 
 function noticeFor(error) {
-  if (error.status === 404 || error.status === 501) return {kind: 'unavailable', text: UNAVAILABLE};
-  if (error.status === 502 || error.status === 503) return {kind: 'unconfigured', text: UNCONFIGURED};
+  if (error.status === 503) return {kind: 'unconfigured', text: UNCONFIGURED};
+  if (error.status === 502) return {kind: 'error', text: TEMPORARY};
   return {kind: 'error', text: error.message};
 }
 
@@ -67,9 +67,7 @@ async function loadConversation(docId) {
   } catch (error) {
     if (view.docId !== docId) return;
     view.notice = noticeFor(error);
-    // Without a conversation endpoint there is nothing to retry; a model
-    // problem does not stop the patient from asking.
-    view.status = view.notice.kind === 'error' ? 'failed' : 'ready';
+    view.status = 'failed';
   }
   update();
   if (view.messages.length) scrollToLatest('auto');
@@ -80,7 +78,7 @@ async function ask(question) {
   const pending = {role: 'user', content: question};
   view.messages.push(pending);
   view.busy = true;
-  if (view.notice && view.notice.kind !== 'unavailable') view.notice = null;
+  view.notice = null;
   view.draft = '';
   update({clearInput: true});
   scrollToLatest('smooth');
@@ -201,7 +199,11 @@ function assistantHtml(message, index) {
   const sources = Array.isArray(payload.sources) ? payload.sources : [];
   const numbers = new Set(sources.map(s => Number(s.number)));
   const flagged = payload.kind === 'not_covered' || payload.flagged === true;
-  const emergency = payload.emergency && payload.emergency.banner;
+  const emergency = payload.kind === 'emergency' || !!(payload.emergency && payload.emergency.banner);
+  // The server's fixed emergency answer is the banner copy itself; the banner alone says it.
+  if (emergency && String(payload.answer || '').trim() === EMERGENCY_COPY && !sources.length) {
+    return `<li class="msg msg-assistant" data-index="${index}">${emergencyHtml()}</li>`;
+  }
   return `
     <li class="msg msg-assistant" data-index="${index}">
       ${emergency ? emergencyHtml() : ''}
@@ -268,7 +270,7 @@ function submit() {
   ask(question);
 }
 
-const inputLocked = () => view.status !== 'ready' || (view.notice && view.notice.kind === 'unavailable');
+const inputLocked = () => view.status !== 'ready';
 
 function autosize(input) {
   input.style.height = 'auto';
@@ -286,7 +288,6 @@ function bodyHtml() {
   }
   if (view.status === 'failed') return '';
   if (!view.messages.length && !view.busy) {
-    if (inputLocked()) return '';  // the notice explains why nothing can be asked
     return `
       <div class="card ask-empty">
         <h2 class="section-title">Ask anything about your discharge instructions</h2>
