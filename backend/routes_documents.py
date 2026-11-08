@@ -217,14 +217,27 @@ async def re_extract(
     request: Request, user: User = Depends(current_user), session: AsyncSession = Depends(get_session)
 ):
     doc = await pending_document(session, user)
+    doc_id = doc.id
     extraction = await run_extraction(request, doc.text)
     await lock_user(session, user)
     doc = await pending_document(session, user)  # re-check under the lock
+    if doc.id != doc_id:  # replaced by a new upload during extraction
+        raise HTTPException(status_code=409, detail="This document was replaced")
+    await session.refresh(doc)  # the identity map would otherwise keep the stale status
+    if doc.status != "pending_review":
+        raise HTTPException(status_code=409, detail="This document is already confirmed")
+    # Conditional touch of the document: 409 if it left pending_review meanwhile.
+    touched = await session.execute(
+        update(DischargeDocument)
+        .where(DischargeDocument.id == doc.id, DischargeDocument.status == "pending_review")
+        .values(discharge_date=extraction.discharge_date, unverified=extraction.unverified)
+    )
+    if touched.rowcount != 1:
+        raise HTTPException(status_code=409, detail="This document is already confirmed")
     await session.execute(delete(ExtractedItem).where(ExtractedItem.document_id == doc.id))
     session.add_all(new_items(doc.id, extraction))
-    doc.discharge_date = extraction.discharge_date
-    doc.unverified = extraction.unverified
     await session.commit()
+    await session.refresh(doc)
     return document_view(doc, await load_items(session, doc))
 
 

@@ -321,3 +321,29 @@ async def test_re_extract_drops_rejected_items_but_keeps_their_questions(client,
     again = (await client.post("/api/documents/active/re-extract", headers=h)).json()
     assert all(i["status"] == "active" for i in again["items"])
     assert len((await client.get("/api/care-team", headers=h)).json()["questions"]) == 1
+
+
+async def test_re_extract_409_when_confirmed_during_extraction(client, fake_llm, monkeypatch):
+    import routes_documents
+
+    h = await auth_headers(client)
+    before = (await upload_text(client, h, fake_llm)).json()
+    real_extract = routes_documents.extract
+
+    async def confirm_then_extract(llm, text):
+        result = await real_extract(llm, text)
+        confirmed = await client.post("/api/documents/active/confirm", headers=h)
+        assert confirmed.status_code == 200
+        return result
+
+    monkeypatch.setattr(routes_documents, "extract", confirm_then_extract)
+    fake_llm.script(extraction(items=[{
+        "category": "activity", "text": "No heavy lifting.",
+        "source_quote": "Call your doctor if your fever", "details": {},
+    }]))
+    resp = await client.post("/api/documents/active/re-extract", headers=h)
+    assert resp.status_code == 409
+    after = (await client.get("/api/documents/active", headers=h)).json()
+    assert after["status"] == "confirmed"
+    assert after["items"] == before["items"]
+    assert after["unverified"] == before["unverified"]
