@@ -116,7 +116,7 @@ async def test_conversation_scoped_to_active_document(client, fake_llm):
 
 async def test_history_sends_last_six_messages(client, fake_llm):
     h = await confirmed(client, fake_llm)
-    words = ["one", "two", "three", "four"]
+    words = ["alpha", "beta", "gamma", "delta"]  # number words would need grounding
     for word in words:
         fake_llm.script(answer(f"Answer {word} [2].", [2]))
         assert (await post_ask(client, h, f"Question {word}")).status_code == 200

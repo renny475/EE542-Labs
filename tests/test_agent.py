@@ -437,6 +437,47 @@ def test_validate_compares_number_tokens_not_substrings(foods):
         validate(raw(answer="There are 2024 tips [1].", citations=[1]), library)
 
 
+@pytest.mark.parametrize("answer, evidence_text", [
+    ("Avoid more than 2 mg of vitamin C [1].", "Avoid more than 2,000 mg of vitamin C per day."),
+    ("Avoid more than 0 mg of vitamin C [1].", "Avoid more than 2,000 mg of vitamin C per day."),
+    ("Limit sodium to 200 mg [1].", "Limit sodium to 1,200 mg."),
+    ("Take 0 tablets [1].", "Take your pill at 8:00 each morning."),
+    ("Take 12 tablets [1].", "Take vitamin B12 daily."),
+    ("Wait 19 days [1].", "You were treated for COVID-19."),
+    ("Take 20 mg [1].", "Your next visit is on 11/20/2026."),
+    ("Take 2 tablets [1].", "Discharge date: 2026-03-02"),
+    ("Eat \u00bd cup [1].", "Eat 1 cup of rice."),
+    ("Take it twice a day [1].", "Take it once a day."),
+])
+def test_validate_rejects_number_fragments(answer, evidence_text):
+    with pytest.raises(ValueError):
+        validate(raw(answer=answer, citations=[1]), evidence(evidence_text))
+
+
+@pytest.mark.parametrize("answer, evidence_text", [
+    ("Avoid more than 2000 mg of vitamin C [1].", "Avoid more than 2,000 mg of vitamin C per day."),
+    ("Avoid more than 2,000 mg of vitamin C [1].", "Avoid more than 2,000 mg of vitamin C per day."),
+    ("Take 0.5 tablet [1].", "Take .5 tablet at night."),
+    ("Take your pill at 8:00 [1].", "Take your pill at 8:00 each morning."),
+    ("Take it twice a day [1].", "Take it Twice daily."),
+    ("Walk 10-20 minutes [1].", "Walk 10 to 20 minutes a day."),
+    ("Walk 10 - 20 minutes [1].", "Walk 10 to 20 minutes a day."),
+    ("You were treated for COVID-19 [1].", "You were treated for COVID-19."),
+    ("Eat \u00bd cup [1].", "Eat \u00bd cup of rice."),
+])
+def test_validate_accepts_grounded_numbers(answer, evidence_text):
+    assert validate(raw(answer=answer, citations=[1]), evidence(evidence_text))[0] == "answer"
+
+
+def test_validate_uncited_number_words_and_9_1_1():
+    ev = evidence("Rest at home.")
+    with pytest.raises(ValueError):
+        validate(raw(kind="out_of_scope", answer="I can only answer two kinds of questions."), ev)
+    with pytest.raises(ValueError):
+        validate(raw(kind="not_covered", answer="Eat \u00bd cup less."), ev)
+    assert validate(raw(kind="emergency", answer="Call 9-1-1 now."), ev)[0] == "emergency"
+
+
 def test_validate_normalizes_marker_whitespace():
     ev = evidence("Drink 2 liters of water.", "Walk 10 minutes twice a day.")
     kind, answer, cited, _ = validate(

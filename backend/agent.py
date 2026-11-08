@@ -3,15 +3,16 @@
 Every document paragraph, library passage and food entry the model sees gets an
 evidence number for this request. The model's final message is JSON with [n]
 citation markers, and `validate` checks it on the server: citations must exist,
-markers must match citations, and every number in the answer must equal a number
-in the cited evidence's values (compared as numbers, not substrings; an answer
-that cites nothing may not state numbers at all). Anything that fails becomes
-the safe fallback answer plus a care-team question. Sources shown to the patient are built from server-side
-Evidence, never from model text.
+markers must match citations, and every quantity in the answer must be stated by
+the cited evidence's values (whole tokens, see number_tokens; an answer that
+cites nothing may not state quantities at all). Anything that fails becomes the
+safe fallback answer plus a care-team question. Sources shown to the patient are
+built from server-side Evidence, never from model text.
 """
 import json
 import re
 import secrets
+import unicodedata
 from dataclasses import dataclass, field
 from decimal import Decimal
 from typing import NamedTuple, Optional
@@ -35,10 +36,22 @@ NOT_COVERED_REASON = "Not answered by the discharge document or approved sources
 FLAGGED_REASON = "The assistant flagged this question for the care team."
 
 # "911" is the emergency number the app itself shows; it never needs a citation.
-ALWAYS_ALLOWED_NUMBERS = frozenset({Decimal("911")})
+ALWAYS_ALLOWED_NUMBERS = frozenset({("number", Decimal("911"))})
 MARKER = re.compile(r"\[\s*(\d+(?:\s*,\s*\d+)*)\s*\]")
 URL = re.compile(r"https?://\S+")
-NUMBER = re.compile(r"\d+(?:\.\d+)?")
+# Number grounding tokens (see number_tokens). ASCII digits only: \d would also
+# match other scripts' digits.
+PLAIN_NUMBER = re.compile(r"[0-9]+(?:\.[0-9]+)?|\.[0-9]+")
+GROUPED_NUMBER = re.compile(r"[0-9]{1,3}(?:,[0-9]{3})+(?:\.[0-9]+)?")
+DIGIT = re.compile(r"[0-9]")
+LETTERS = re.compile(r"[A-Za-z]+")
+LEADING_PUNCT = "([{\"'"
+TRAILING_PUNCT = ".,;:!?)]}\"'"
+NUMBER_WORDS = frozenset(
+    "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen "
+    "fifteen sixteen seventeen eighteen nineteen twenty thirty forty fifty sixty seventy "
+    "eighty ninety hundred thousand dozen half once twice single double triple".split()
+)
 CODE_FENCE = re.compile(r"^```(?:json)?\s*(.*?)\s*```$", re.DOTALL)
 
 FINAL_NUDGE = (
@@ -77,6 +90,7 @@ Output contract: when you are done with tools, reply with only one JSON object a
 - kind "answer" must cite at least one evidence number.
 - Every number in the answer (amounts, servings, doses, days, times) must appear as a value in the evidence cited in that answer. Do not convert units, round, or compute new numbers. An answer that cites nothing must not contain any numbers, except 911.
 - Write every quantity, dose, time and count with Arabic numerals (for example 2, not "two"). Never write numbers as words.
+- Write each number exactly as the evidence writes it, with a space before its unit (500 mg, not 500mg). Avoid words such as once, twice, half, single or double unless the cited evidence uses the same word.
 - "care_team_question" is the question you added for the care team, or null.
 - Write plain, short English the patient can follow."""
 
@@ -168,9 +182,58 @@ def strip_markers(text: str) -> str:
     return re.sub(r"[ \t]{2,}", " ", text).strip()
 
 
-def number_tokens(text: str) -> set[Decimal]:
-    """Numeric values in `text`, so 6 and 6.0 compare equal and 12 never matches 122."""
-    return {Decimal(token) for token in NUMBER.findall(text)}
+def _part_tokens(part: str):
+    part = part.lstrip(LEADING_PUNCT).rstrip(TRAILING_PUNCT)
+    if not DIGIT.search(part):
+        for word in LETTERS.findall(part):
+            if word.lower() in NUMBER_WORDS:
+                yield ("word", word.lower())
+    elif PLAIN_NUMBER.fullmatch(part):
+        yield ("number", Decimal(part))
+    elif GROUPED_NUMBER.fullmatch(part):
+        yield ("number", Decimal(part.replace(",", "")))
+    else:
+        # Times, slash forms and digits touching letters ("8:00", "1/2", "B12",
+        # "2nd") compare whole and never lend their fragments.
+        yield ("compound", part.lower())
+
+
+def _chunk_tokens(chunk: str):
+    chunk = chunk.replace("\u2013", "-").lstrip(LEADING_PUNCT).rstrip(TRAILING_PUNCT)
+    if chunk == "9-1-1":
+        yield ("number", Decimal("911"))
+        return
+    parts = chunk.split("-")
+    if len(parts) >= 3 and all(PLAIN_NUMBER.fullmatch(p) for p in parts):
+        yield ("compound", chunk)  # a date such as 2026-03-02
+        return
+    index = 0
+    while index < len(parts):
+        part = parts[index]
+        following = parts[index + 1] if index + 1 < len(parts) else ""
+        if LETTERS.fullmatch(part.lstrip(LEADING_PUNCT)) and DIGIT.match(following):
+            yield ("compound", f"{part}-{following}".lower())  # "COVID-19"
+            index += 2
+            continue
+        if part:
+            yield from _part_tokens(part)  # a range "10-20" yields 10 and 20
+        index += 1
+
+
+def number_tokens(text: str) -> set[tuple]:
+    """The quantities `text` states, as comparable tokens. Answer and evidence go
+    through this same function. "2,000" == "2000", "6" == "6.0", ".5" == "0.5";
+    compound forms compare whole; "9-1-1" is 911; number words and Unicode
+    numerals (fractions, superscripts) are tokens of their own."""
+    tokens: set[tuple] = set()
+    for chunk in text.split():
+        tokens.update(_chunk_tokens(chunk))
+    tokens.update(
+        ("unicode", ch)
+        for ch in text
+        if not ch.isascii() and unicodedata.numeric(ch, None) is not None
+    )
+    return tokens
 
 
 def validate(raw: str, evidence: dict[int, Evidence]) -> tuple[str, str, list[int], Optional[str]]:
@@ -212,7 +275,8 @@ def validate(raw: str, evidence: dict[int, Evidence]) -> tuple[str, str, list[in
     )
     unsupported = number_tokens(MARKER.sub(" ", answer)) - allowed
     if unsupported:
-        raise ValueError(f"Numbers not in the cited evidence: {sorted(unsupported)}.")
+        shown = sorted(str(value) for _, value in unsupported)
+        raise ValueError(f"Numbers not in the cited evidence: {shown}.")
     return kind, answer, sorted(cited), question
 
 
