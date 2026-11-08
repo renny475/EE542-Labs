@@ -77,6 +77,16 @@ async def active_document(session: AsyncSession, user: User) -> DischargeDocumen
     return doc
 
 
+async def confirmed_document(session: AsyncSession, user: User) -> DischargeDocument:
+    try:
+        doc = await active_document(session, user)
+    except HTTPException:
+        doc = None
+    if doc is None or doc.status != "confirmed":
+        raise HTTPException(status_code=409, detail="Confirm your discharge document first.")
+    return doc
+
+
 async def pending_document(session: AsyncSession, user: User) -> DischargeDocument:
     doc = await active_document(session, user)
     if doc.status != "pending_review":

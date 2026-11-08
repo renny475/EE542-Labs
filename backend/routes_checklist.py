@@ -10,7 +10,7 @@ from auth import current_user
 from checklist import SLOT_ORDER
 from db import get_session
 from models import ChecklistCompletion, ChecklistItem, DischargeDocument, ExtractedItem, User
-from routes_documents import active_document
+from routes_documents import confirmed_document
 
 router = APIRouter()
 
@@ -18,16 +18,6 @@ router = APIRouter()
 class CompletionBody(BaseModel):
     date: date
     done: bool
-
-
-async def confirmed_document(session: AsyncSession, user: User) -> DischargeDocument:
-    try:
-        doc = await active_document(session, user)
-    except HTTPException:
-        doc = None
-    if doc is None or doc.status != "confirmed":
-        raise HTTPException(status_code=409, detail="Confirm your discharge document first.")
-    return doc
 
 
 def scheduled_on(day: date):
