@@ -196,6 +196,19 @@ def strip_markers(text: str) -> str:
     return re.sub(r"[ \t]{2,}", " ", text).strip()
 
 
+# A bare "F" or "C" suffix is a temperature only in body-temperature range;
+# otherwise "12F stent" or "6F" (catheter sizes) would lend 12 or 6.
+_TEMPERATURE_RANGE = {"F": (Decimal(90), Decimal(110)), "C": (Decimal(32), Decimal(44))}
+
+
+def _plausible_unit(match) -> bool:
+    bounds = _TEMPERATURE_RANGE.get(match.group(0)[len(match.group(1)):])
+    if bounds is None:
+        return True
+    value = Decimal(match.group(1).replace(",", ""))
+    return bounds[0] <= value <= bounds[1]
+
+
 def _part_tokens(part: str):
     part = part.lstrip(LEADING_PUNCT).rstrip(TRAILING_PUNCT)
     if not DIGIT.search(part):
@@ -206,7 +219,7 @@ def _part_tokens(part: str):
         yield ("number", Decimal(part))
     elif GROUPED_NUMBER.fullmatch(part):
         yield ("number", Decimal(part.replace(",", "")))
-    elif match := NUMBER_WITH_UNIT.fullmatch(part):
+    elif (match := NUMBER_WITH_UNIT.fullmatch(part)) and _plausible_unit(match):
         yield ("number", Decimal(match.group(1).replace(",", "")))
     else:
         # Times, slash forms and digits touching letters ("8:00", "1/2", "B12",

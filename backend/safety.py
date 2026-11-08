@@ -113,6 +113,10 @@ _PATTERNS: dict[str, str] = {
         r"\b(?:lips?|face|skin|fingers?)\s+(?:\w+\s+){0,2}(?:blue|bluish|purple|grey|gray)"
     ),
     "heart attack": r"\bheart\s+attack|\bcardiac\s+arrest",
+    "fast or irregular heartbeat": (
+        r"\b(?:fast|rapid|racing|pounding|irregular|skipping)\s+(?:heart\s*beats?|heart\s*rate|pulse)"
+        r"|\bheart\s+(?:is\s+)?(?:racing|pounding|skipping)"
+    ),
     "vomiting that won't stop": (
         r"\bkeep\w*\s+(?:on\s+)?(?:throw\w*\s+up|vomit\w*|puk\w*)"
         rf"|\b{_CANT}\s+(?:\w+\s+)?stop\s+(?:throw\w*\s+up|vomit\w*|puk\w*)"
@@ -157,7 +161,10 @@ STOP_WORDS = frozenset(
     experience develop start starts started feel feels felt""".split()
 )
 # Words that must match but do not make a phrase specific on their own.
-WEAK_WORDS = frozenset({"not", "keep", "down", "up", "stop", "come", "make", "take"})
+# Modifiers that carry no symptom on their own: a fragment such as "a very fast"
+# (from "a very fast or irregular heartbeat") must not fire on "How fast should I walk?".
+WEAK_WORDS = frozenset({"not", "keep", "down", "up", "stop", "come", "make", "take",
+                        "very", "fast", "slow", "rapid", "irregular", "pressure", "belly"})
 NEGATIONS = frozenset({"no", "not", "never", "cannot", "unable", "cant", "wont", "dont",
                        "doesnt", "didnt", "isnt", "couldnt", "wouldnt", "arent"})
 

@@ -215,3 +215,7 @@ def test_bad_date_falls_back_to_relative():
     it = item("follow_up", {"date": "garbage", "days_after_discharge": 7})
     (spec,) = build_checklist([it], ANCHOR)
     assert spec.approximate and spec.start_date == date(2026, 11, 12)
+
+
+def test_daily_target_in_singular_glass():
+    assert len(build_checklist([diet("Drink 1 glass of water every day.")], ANCHOR)) == 1

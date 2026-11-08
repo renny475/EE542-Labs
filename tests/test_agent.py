@@ -1,10 +1,11 @@
 import json
 import re
+from decimal import Decimal
 
 import pytest
 
 import agent
-from agent import FALLBACK, Evidence, render_food, run_agent, validate
+from agent import FALLBACK, Evidence, number_tokens, render_food, run_agent, validate
 from fake_llm import FakeLLM
 from foods import FoodTable
 from knowledge import KnowledgeStore
@@ -561,3 +562,12 @@ async def test_food_titles_name_sources_and_mark_closest_entries(foods):
         "Banana (USDA FoodData Central)",
         "Almonds, closest entry (USDA FoodData Central; University of Chicago Kidney Stone Program)",
     ]
+
+
+def test_bare_f_and_c_suffix_only_counts_as_a_temperature():
+    # "12F stent" / "6F" are catheter sizes, not 12 or 6 of anything.
+    assert ("number", Decimal("12")) not in set(number_tokens("A 12F stent was placed."))
+    assert ("number", Decimal("6")) not in set(number_tokens("6F catheter"))
+    assert ("number", Decimal("12")) not in set(number_tokens("12C"))
+    assert ("number", Decimal("101")) in set(number_tokens("a fever of 101F"))
+    assert ("number", Decimal("38.3")) in set(number_tokens("(38.3C)"))

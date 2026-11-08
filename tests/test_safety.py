@@ -213,3 +213,14 @@ def test_document_hit_reports_the_phrase_once():
     hits = detect_emergency("I see heavy bleeding and clots", terms)
     # "clots" alone is covered by the longer document phrase that matched.
     assert hits == ["heavy bleeding", "you see heavy bleeding or clots"]
+
+
+def test_modifier_fragments_of_a_warning_line_do_not_fire_alone():
+    # "a very fast or irregular heartbeat" splits on "or"; the fragment "a very
+    # fast" must not turn "fast" into a trigger for everyday questions.
+    terms = warning_terms([item("Call 911 for a very fast or irregular heartbeat")])
+    for message in ("How fast should I walk?", "What does fast food do to me?",
+                    "Is blood pressure medicine ok with coffee?"):
+        assert detect_emergency(message, terms) == [], message
+    assert detect_emergency("my heartbeat is irregular", terms)
+    assert detect_emergency("I have a very fast heartbeat", terms)

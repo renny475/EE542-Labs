@@ -19,7 +19,7 @@ MAX_DAYS = 3650  # ten years; anything larger is treated as garbage
 # patient acts on every day, so it becomes one "any time" daily item. Diet
 # restrictions ("avoid", "limit", "under 2,300 mg a day") stay off the checklist.
 _VOLUME = re.compile(
-    r"\b\d+(?:[.,]\d+)?\s*(?:liters?|litres?|l|ml|milliliters?|millilitres?|cups?|glasses"
+    r"\b\d+(?:[.,]\d+)?\s*(?:liters?|litres?|l|ml|milliliters?|millilitres?|cups?|glass(?:es)?"
     r"|ounces?|oz|quarts?)\b",
     re.IGNORECASE,
 )
