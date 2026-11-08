@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth import current_user
 from db import get_session
-from documents import paragraphs, read_upload
+from documents import normalize_text, paragraphs, read_upload
 from extraction import extract
 from llm import LLMError
 from checklist import build_checklist
@@ -166,7 +166,7 @@ async def upload_document(
     else:
         if len(text) > MAX_TEXT_CHARS:
             raise HTTPException(status_code=413, detail="Pasted text is too long.")
-        body, filename = text.strip(), None
+        body, filename = normalize_text(text.strip()), None
 
     # Extract before touching the database: on failure nothing changes and the
     # previous active document stays active.

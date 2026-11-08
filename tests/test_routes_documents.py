@@ -347,3 +347,10 @@ async def test_re_extract_409_when_confirmed_during_extraction(client, fake_llm,
     assert after["status"] == "confirmed"
     assert after["items"] == before["items"]
     assert after["unverified"] == before["unverified"]
+
+
+async def test_pasted_text_ligatures_normalized(client, fake_llm):
+    h = await auth_headers(client)
+    resp = await upload_text(client, h, fake_llm, text="Conﬁrm the ﬂuid plan.\n\n" + DOC)
+    assert resp.status_code == 200, resp.text
+    assert resp.json()["paragraphs"][0] == "Confirm the fluid plan."
