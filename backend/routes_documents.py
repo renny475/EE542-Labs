@@ -12,7 +12,8 @@ from db import get_session
 from documents import paragraphs, read_upload
 from extraction import extract
 from llm import LLMError
-from models import DischargeDocument, ExtractedItem, User
+from checklist import build_checklist
+from models import ChecklistItem, DischargeDocument, ExtractedItem, User
 from routes_care_team import add_question
 
 router = APIRouter()
@@ -110,9 +111,24 @@ def new_items(document_id: int, extraction) -> list[ExtractedItem]:
 
 
 async def generate_checklist(session: AsyncSession, doc: DischargeDocument) -> None:
-    """Hook called when a document is confirmed. Task 5 fills this in with
-    checklist.build_checklist; until then a confirmed document has no checklist."""
-    return None
+    """Create the checklist rows for a just-confirmed document. Flushes only;
+    the confirm transaction commits."""
+    items = await load_items(session, doc)
+    for spec in build_checklist(items, doc.anchor_date):
+        session.add(
+            ChecklistItem(
+                document_id=doc.id,
+                extracted_item_id=spec.extracted_item_id,
+                label=spec.label[:500],
+                slot=spec.slot,
+                start_date=spec.start_date,
+                end_date=spec.end_date,
+                one_time=spec.one_time,
+                approximate=spec.approximate,
+                undated=spec.undated,
+            )
+        )
+    await session.flush()
 
 
 @router.post("/api/documents")

@@ -7,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 
 import auth
 import routes_care_team
+import routes_checklist
 import routes_documents
 from config import PROJECT_DIR, Settings, get_settings
 from db import init_db, make_engine, make_session_factory
@@ -35,6 +36,7 @@ def create_app(settings: Optional[Settings] = None, llm=None) -> FastAPI:
     app.include_router(auth.router)
     app.include_router(routes_documents.router)
     app.include_router(routes_care_team.router)
+    app.include_router(routes_checklist.router)
 
     def page(name: str):
         async def handler():
