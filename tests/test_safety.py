@@ -61,6 +61,40 @@ def test_realistic_phrasings_detected(msg):
     assert detect_emergency(msg, []), msg
 
 
+@pytest.mark.parametrize(
+    "msg",
+    [
+        "my lips are turning blue", "my lips are blue", "I can hardly breathe",
+        "breathing is hard", "I am choking", "I collapsed",
+        "there is blood in my vomit", "blood wont stop coming out",
+        "I am bleeding through the bandage", "swallowed too many pills",
+        "i dont want to be here anymore", "I want to end it",
+        "hives and trouble swallowing", "sudden vision loss", "face is numb",
+    ],
+)
+def test_more_realistic_phrasings_detected(msg):
+    assert detect_emergency(msg, []), msg
+
+
+@pytest.mark.parametrize(
+    "msg",
+    [
+        "I have a little pain at the incision",
+        "when can I take a deep breath of fresh air outside",
+        "is it ok to feel tired",
+        "when can I take a shower",
+        "my incision is sore",
+    ],
+)
+def test_benign_probes_negative(msg):
+    assert detect_emergency(msg, []) == [], msg
+
+
+def test_alias_labels_deduped():
+    assert detect_emergency("I am short of breath", []) == ["shortness of breath"]
+    assert detect_emergency("I cannot breathe", []) == ["can't breathe"]
+
+
 def test_hit_returns_readable_terms():
     assert detect_emergency("the seizures are back", []) == ["seizure"]
 
