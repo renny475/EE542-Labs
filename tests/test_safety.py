@@ -1,11 +1,27 @@
+import sys
+from datetime import date
+from pathlib import Path
+
 import pytest
 
 from models import ExtractedItem
 from safety import EMERGENCY_TERMS, detect_emergency, warning_terms
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 
-def item(text, category="warning_signs", status="active"):
-    return ExtractedItem(category=category, text=text, source_quote=text, status=status)
+import seed_demo  # noqa: E402
+
+
+def item(text, category="warning_signs", status="active", quote=None):
+    return ExtractedItem(category=category, text=text, source_quote=quote or text, status=status)
+
+
+def kidney_stone_warning_items():
+    return [
+        item(text, quote=quote)
+        for category, text, quote, _ in seed_demo.build_items(date(2026, 11, 5))
+        if category == "warning_signs"
+    ]
 
 
 def test_detects_chest_pain_any_case():
@@ -129,4 +145,71 @@ def test_warning_terms_split_filter_dedupe_and_ignore_rejected():
         item("Call 911 for severe pain", status="rejected"),
         item("take aspirin", category="medications"),
     ]
-    assert warning_terms(items) == ["pus at the wound", "confusion"]
+    assert warning_terms(items) == [
+        "redness, swelling; or pus at the wound", "pus at the wound",
+        "redness and confusion", "confusion",
+    ]
+
+
+# ---------- the document's own warning signs (kidney-stone seed) ----------
+
+@pytest.mark.parametrize(
+    "msg",
+    [
+        "I cannot keep fluids down",
+        "I can't keep fluids down since this morning",
+        "I have a fever of 102 and chills",
+        "fever of 102 and chills",
+        "the pain my medicine does not control",
+        "my pain is severe and the medicine doesn't control it",
+        "I cannot urinate",
+        "I see clots in my urine",
+    ],
+)
+def test_kidney_stone_document_warning_signs_detected(msg):
+    terms = warning_terms(kidney_stone_warning_items())
+    assert detect_emergency(msg, terms), (msg, terms)
+
+
+@pytest.mark.parametrize(
+    "msg",
+    [
+        "I keep throwing up",
+        "I can't stop vomiting",
+        "the vomiting will not stop",
+        "I can't keep anything down",
+        "I cannot pee",
+    ],
+)
+def test_static_vomiting_and_urination_rules(msg):
+    assert detect_emergency(msg, []), msg
+
+
+@pytest.mark.parametrize(
+    "msg",
+    [
+        "How much fluid should I drink?",
+        "Can I take my medicine with food?",
+        "Is it normal to urinate often with the stent?",
+        "I keep fluids by my bed",
+        "What does my document say about fever?",
+        "When do I call the clinic?",
+        "My medicine controls the pain well",
+        "I threw up once yesterday after a big meal",
+    ],
+)
+def test_kidney_stone_document_terms_do_not_fire_on_generic_words(msg):
+    terms = warning_terms(kidney_stone_warning_items())
+    assert detect_emergency(msg, terms) == [], (msg, detect_emergency(msg, terms))
+
+
+def test_warning_terms_use_source_quote_too():
+    terms = warning_terms([item("Go to the ER if you vomit a lot.", quote="persistent emesis")])
+    assert detect_emergency("I have persistent emesis", terms)
+
+
+def test_document_hit_reports_the_phrase_once():
+    terms = warning_terms(kidney_stone_warning_items())
+    hits = detect_emergency("I see heavy bleeding and clots", terms)
+    # "clots" alone is covered by the longer document phrase that matched.
+    assert hits == ["heavy bleeding", "you see heavy bleeding or clots"]

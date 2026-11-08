@@ -1,7 +1,9 @@
 """Server-side emergency term detection for patient chat messages.
 
-False positives are acceptable; missed emergencies are not. No negation or
-question-form parsing is attempted.
+False positives are acceptable; missed emergencies are not. No question-form
+parsing is attempted. Document warning signs match by content words (stop
+words dropped, crude stemming, negations folded to "not"), so the document's
+"you cannot keep fluids down" matches "I can't keep fluids down".
 """
 
 import re
@@ -13,6 +15,7 @@ _BREATH_TAIL = (
     r"(?:\w+\s+)?(?:breath\w*|catch\s+(?:my|a|your)\s+breath|get\s+(?:any\s+)?air)"
 )
 _CHEST = r"(?:my\s+|the\s+)?chest"
+_CANT = r"(?:can'?t|can\s?not|couldn'?t|unable\s+to|not\s+able\s+to)"
 
 # label -> regex, matched against the canonical (lowercase, punctuation-free)
 # message. Patterns use a leading word boundary and stems (seiz\w*, faint\w*)
@@ -110,6 +113,14 @@ _PATTERNS: dict[str, str] = {
         r"\b(?:lips?|face|skin|fingers?)\s+(?:\w+\s+){0,2}(?:blue|bluish|purple|grey|gray)"
     ),
     "heart attack": r"\bheart\s+attack|\bcardiac\s+arrest",
+    "vomiting that won't stop": (
+        r"\bkeep\w*\s+(?:on\s+)?(?:throw\w*\s+up|vomit\w*|puk\w*)"
+        rf"|\b{_CANT}\s+(?:\w+\s+)?stop\s+(?:throw\w*\s+up|vomit\w*|puk\w*)"
+        r"|\b(?:vomit\w*|throw\w*\s+up|puk\w*)\s+(?:\w+\s+){0,3}(?:won'?t|will\s+not|"
+        r"doesn'?t|does\s+not|not|isn'?t)\s+(?:\w+\s+)?stop\w*"
+    ),
+    "can't keep fluids down": rf"\b{_CANT}\s+keep\s+(?:\w+\s+){{0,3}}down\b",
+    "can't urinate": rf"\b{_CANT}\s+(?:\w+\s+)?(?:urinat\w*|pee|void|pass\s+urine)\b",
 }
 _PATTERNS["cannot breathe"] = _PATTERNS["can't breathe"]
 _PATTERNS["throat closing"] = _PATTERNS["swelling of the throat"]
@@ -117,11 +128,11 @@ _PATTERNS["short of breath"] = _PATTERNS["shortness of breath"]
 _COMPILED = {label: re.compile(rx) for label, rx in _PATTERNS.items()}
 EMERGENCY_TERMS: tuple[str, ...] = tuple(_PATTERNS)
 
-# Generic single words that appear in nearly every discharge sheet. As
-# document-derived terms they would banner almost every message, so they are
-# dropped (multi-word phrases are kept). Trade-off: a patient writing only
-# "pain" or "fever" will not be flagged via the document; real emergencies
-# are still caught by the static patterns above, which are unaffected.
+# Generic words that appear in nearly every discharge sheet. A document phrase
+# made of only one of them would banner almost every message, so it is dropped
+# (the static patterns above still catch real emergencies). A phrase needs a
+# specific word ("clots", "urinate") or at least two generic ones ("fever ...
+# chills") to count.
 GENERIC_SINGLE_WORDS = frozenset(
     {
         "pain", "fever", "call", "doctor", "symptoms", "symptom", "swelling",
@@ -131,9 +142,29 @@ GENERIC_SINGLE_WORDS = frozenset(
     }
 )
 
+# Words that carry no symptom of their own in a warning-sign line: function
+# words, the "call 911 / go to the ER / call the clinic" frame, and intensity
+# words a patient may leave out ("severe pain that your medicine does not
+# control" must match "the pain my medicine does not control").
+STOP_WORDS = frozenset(
+    """a an the and or of to for if in on at with by from as into about over under than then
+    so is are was were be been being am i you your my me we our us he she they it its this
+    that these those there here which who what when where while do does did doing have has
+    had having can could will would should may might must shall get gets got very really too
+    also just still now any some all more most much many such severe severely high higher
+    low lower heavy heavily new sudden suddenly mild bad call go return er emergency room
+    clinic doctor provider office hospital right away immediately please see notice
+    experience develop start starts started feel feels felt""".split()
+)
+# Words that must match but do not make a phrase specific on their own.
+WEAK_WORDS = frozenset({"not", "keep", "down", "up", "stop", "come", "make", "take"})
+NEGATIONS = frozenset({"no", "not", "never", "cannot", "unable", "cant", "wont", "dont",
+                       "doesnt", "didnt", "isnt", "couldnt", "wouldnt", "arent"})
+
 _MIN_CHARS = 4
-_MAX_WORDS = 6
-_SPLIT = re.compile(r"[,;]|\bor\b|\band\b", re.IGNORECASE)
+_SPLIT_CLAUSES = re.compile(r"[,;]")
+_SPLIT_WORDS = re.compile(r"[,;]|\bor\b|\band\b", re.IGNORECASE)
+_LEADING = re.compile(r"^(?:or|and|if|for)\s+", re.IGNORECASE)
 
 
 def _canon(s: str) -> str:
@@ -143,29 +174,85 @@ def _canon(s: str) -> str:
     return s.replace("\0", "'").strip()
 
 
+def _stem(word: str) -> str:
+    """A crude suffix strip, applied the same way to document and message words, so
+    "fluids" == "fluid", "urinating" == "urinate", "chills" == "chill"."""
+    if word.endswith("ies") and len(word) > 4:
+        word = word[:-3] + "y"
+    for suffix in ("ing", "ed", "es", "s", "e"):
+        if word.endswith(suffix) and len(word) - len(suffix) >= 3:
+            word = word[: -len(suffix)]
+            break
+    if len(word) > 3 and word[-1] == word[-2]:
+        word = word[:-1]  # "controlled" -> "control", like "control"
+    return word
+
+
+def _words(text: str) -> list[str]:
+    """Stemmed words with every negation folded to "not"."""
+    out = []
+    for word in _canon(text).split():
+        if word.endswith("n't") or word in NEGATIONS:
+            out.append("not")
+        else:
+            out.append(_stem(word.replace("'", "")))
+    return out
+
+
+_GENERIC_STEMS = frozenset(_stem(w) for w in GENERIC_SINGLE_WORDS)
+_STOP_STEMS = frozenset(STOP_WORDS | {_stem(w) for w in STOP_WORDS})
+_WEAK_STEMS = frozenset(_stem(w) for w in WEAK_WORDS)
+
+
+def _content(phrase: str) -> frozenset[str]:
+    """The words a message must contain to match `phrase`: no stop words, no
+    numbers or one-letter units (a patient's "102" need not equal the
+    document's "101 F")."""
+    return frozenset(
+        w for w in _words(phrase)
+        if len(w) > 1 and not any(c.isdigit() for c in w) and w not in _STOP_STEMS
+    )
+
+
+def _specific_enough(content: frozenset[str]) -> bool:
+    strong = content - _GENERIC_STEMS - _WEAK_STEMS
+    generic = content & _GENERIC_STEMS
+    return any(len(w) >= _MIN_CHARS for w in strong) or len(strong) >= 2 or len(generic) >= 2
+
+
+def _phrases(text: str):
+    """The whole line, its clauses (split on , ;) and its parts (also split on or/and)."""
+    yield text
+    yield from _SPLIT_CLAUSES.split(text)
+    yield from _SPLIT_WORDS.split(text)
+
+
 def warning_terms(items: list[ExtractedItem]) -> list[str]:
-    """Key phrases from active warning_signs items, deduplicated in order."""
+    """Key phrases from active warning_signs items, from the document's own bullet
+    (source_quote) first and then the plain-language text. One phrase per distinct
+    set of content words, in order."""
     out: list[str] = []
-    seen: set[str] = set()
+    seen: set[frozenset[str]] = set()
     for it in items:
         if it.category != "warning_signs" or it.status == "rejected":
             continue
-        for part in _SPLIT.split(it.text):
-            phrase = part.strip(" \t\n.:")
-            words = phrase.split()
-            if not (1 <= len(words) <= _MAX_WORDS) or len(phrase) < _MIN_CHARS:
-                continue
-            key = _canon(phrase)
-            if len(words) == 1 and key in GENERIC_SINGLE_WORDS:
-                continue
-            if key and key not in seen:
-                seen.add(key)
+        for line in (it.source_quote or "", it.text or ""):
+            for part in _phrases(line):
+                phrase = _LEADING.sub("", part.strip(" \t\n.:")).strip()
+                content = _content(phrase)
+                if not content or content in seen or not _specific_enough(content):
+                    continue
+                seen.add(content)
                 out.append(phrase)
     return out
 
 
 def detect_emergency(message: str, extra_terms: list[str]) -> list[str]:
-    """Return matched human-readable terms (deduplicated, static terms first)."""
+    """Return matched human-readable terms (deduplicated, static terms first).
+
+    A document term matches when every one of its content words is in the
+    message, in any order. A term whose words are all covered by a longer term
+    that already matched is not reported again."""
     text = _canon(message)
     hits: list[str] = []
     seen_patterns: set[str] = set()
@@ -174,10 +261,14 @@ def detect_emergency(message: str, extra_terms: list[str]) -> list[str]:
         if rx.pattern not in seen_patterns and rx.search(text):
             seen_patterns.add(rx.pattern)
             hits.append(label)
-    for term in extra_terms:
-        needle = _canon(term)
-        if not needle or needle in hits:
+    words = set(_words(message))
+    matched: list[frozenset[str]] = []
+    terms = [(term, _content(term)) for term in extra_terms]
+    for term, content in sorted(terms, key=lambda t: -len(t[1])):
+        if not content or not content <= words or any(content <= m for m in matched):
             continue
-        if re.search(rf"(?<!\w){re.escape(needle)}(?!\w)", text):
-            hits.append(needle)
+        matched.append(content)
+        label = _canon(term)
+        if label not in hits:
+            hits.append(label)
     return hits
