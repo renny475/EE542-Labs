@@ -1,17 +1,23 @@
 import httpx
+import pytest
 import pytest_asyncio
 from config import Settings
 from app import create_app
+from fake_llm import FakeLLM
+
+
+@pytest.fixture
+def fake_llm():
+    return FakeLLM()
 
 
 @pytest_asyncio.fixture
-async def client():
+async def client(fake_llm):
     settings = Settings(
         database_url="sqlite+aiosqlite:///:memory:",
         jwt_secret="test-secret-not-for-production",
     )
-    # Task 2 replaces llm=None with a FakeLLM.
-    app = create_app(settings, llm=None)
+    app = create_app(settings, llm=fake_llm)
     async with app.router.lifespan_context(app):
         transport = httpx.ASGITransport(app=app)
         async with httpx.AsyncClient(transport=transport, base_url="http://test") as c:
