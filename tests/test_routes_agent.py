@@ -124,7 +124,7 @@ async def test_history_sends_last_six_messages(client, fake_llm):
     await post_ask(client, h, "Last question")
     history = [m["content"] for m in fake_llm.calls[-1][0][1:-1]]
     assert history == [
-        f"{prefix} {word}" + (" [2]." if prefix == "Answer" else "")
+        f"{prefix} {word}" + ("." if prefix == "Answer" else "")  # markers stripped
         for word in words[1:] for prefix in ("Question", "Answer")
     ]
 

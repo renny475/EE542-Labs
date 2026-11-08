@@ -3,15 +3,18 @@
 Every document paragraph, library passage and food entry the model sees gets an
 evidence number for this request. The model's final message is JSON with [n]
 citation markers, and `validate` checks it on the server: citations must exist,
-markers must match citations, and every number in the answer must appear in the
-cited evidence. Anything that fails becomes the safe fallback answer plus a
-care-team question. Sources shown to the patient are built from server-side
+markers must match citations, and every number in the answer must equal a number
+in the cited evidence's values (compared as numbers, not substrings; an answer
+that cites nothing may not state numbers at all). Anything that fails becomes
+the safe fallback answer plus a care-team question. Sources shown to the patient are built from server-side
 Evidence, never from model text.
 """
 import json
 import re
-from dataclasses import dataclass
-from typing import Optional
+import secrets
+from dataclasses import dataclass, field
+from decimal import Decimal
+from typing import NamedTuple, Optional
 
 from documents import paragraphs
 from knowledge import KnowledgeError
@@ -32,10 +35,15 @@ NOT_COVERED_REASON = "Not answered by the discharge document or approved sources
 FLAGGED_REASON = "The assistant flagged this question for the care team."
 
 # "911" is the emergency number the app itself shows; it never needs a citation.
-ALWAYS_ALLOWED_NUMBERS = frozenset({"911"})
-MARKER = re.compile(r"\[(\d+(?:\s*,\s*\d+)*)\]")
+ALWAYS_ALLOWED_NUMBERS = frozenset({Decimal("911")})
+MARKER = re.compile(r"\[\s*(\d+(?:\s*,\s*\d+)*)\s*\]")
+URL = re.compile(r"https?://\S+")
 NUMBER = re.compile(r"\d+(?:\.\d+)?")
 CODE_FENCE = re.compile(r"^```(?:json)?\s*(.*?)\s*```$", re.DOTALL)
+
+FINAL_NUDGE = (
+    "You have used all tool calls for this question. Reply now with only the final JSON object."
+)
 
 OXALATE_KEY = "oxalate_mg"
 OXALATE_TABLE = "UChicago table"
@@ -67,7 +75,8 @@ Output contract: when you are done with tools, reply with only one JSON object a
 {"kind": "answer" | "not_covered" | "emergency" | "out_of_scope", "answer": "...", "citations": [evidence numbers], "care_team_question": string or null}
 - Put a marker such as [2] or [2, 5] right after each statement it supports. "citations" must list exactly the numbers used in the markers.
 - kind "answer" must cite at least one evidence number.
-- Every number in the answer (amounts, servings, doses, days) must appear in the evidence cited in that answer. Do not convert units, round, or compute new numbers.
+- Every number in the answer (amounts, servings, doses, days, times) must appear as a value in the evidence cited in that answer. Do not convert units, round, or compute new numbers. An answer that cites nothing must not contain any numbers, except 911.
+- Write every quantity, dose, time and count with Arabic numerals (for example 2, not "two"). Never write numbers as words.
 - "care_team_question" is the question you added for the care team, or null.
 - Write plain, short English the patient can follow."""
 
@@ -115,6 +124,10 @@ class Evidence:
     title: str
     url: Optional[str]
     content: str
+    # The text whose numbers an answer may state: values only, never URLs, IDs or
+    # dates from source lines. Used for number grounding, never shown. Empty means
+    # this evidence grounds no numbers (fails closed).
+    check_text: str = field(default="", repr=False)
 
 
 @dataclass
@@ -134,8 +147,30 @@ def _strip_fences(raw: str) -> str:
     return match.group(1) if match else text
 
 
+def _marker_numbers(group: str) -> list[int]:
+    return [int(n) for n in group.split(",")]
+
+
 def _markers(answer: str) -> set[int]:
-    return {int(n) for group in MARKER.findall(answer) for n in group.split(",")}
+    return {n for group in MARKER.findall(answer) for n in _marker_numbers(group)}
+
+
+def _normalize_markers(answer: str) -> str:
+    """"[ 2 ]" and "[2 ,3]" become "[2]" and "[2, 3]", the forms the page renders."""
+    return MARKER.sub(
+        lambda m: "[" + ", ".join(str(n) for n in _marker_numbers(m.group(1))) + "]", answer
+    )
+
+
+def strip_markers(text: str) -> str:
+    text = MARKER.sub("", text)
+    text = re.sub(r"[ \t]+([.,;:!?])", r"\1", text)
+    return re.sub(r"[ \t]{2,}", " ", text).strip()
+
+
+def number_tokens(text: str) -> set[Decimal]:
+    """Numeric values in `text`, so 6 and 6.0 compare equal and 12 never matches 122."""
+    return {Decimal(token) for token in NUMBER.findall(text)}
 
 
 def validate(raw: str, evidence: dict[int, Evidence]) -> tuple[str, str, list[int], Optional[str]]:
@@ -152,8 +187,10 @@ def validate(raw: str, evidence: dict[int, Evidence]) -> tuple[str, str, list[in
     answer = data.get("answer")
     if not isinstance(answer, str) or not answer.strip():
         raise ValueError("The answer is empty.")
-    answer = answer.strip()
-    citations = data.get("citations") or []
+    answer = _normalize_markers(answer.strip())
+    citations = data.get("citations")
+    if citations is None:
+        citations = []
     if not isinstance(citations, list) or not all(
         isinstance(n, int) and not isinstance(n, bool) for n in citations
     ):
@@ -170,11 +207,12 @@ def validate(raw: str, evidence: dict[int, Evidence]) -> tuple[str, str, list[in
         raise ValueError("Citation markers do not match the citations.")
     if cited - evidence.keys():
         raise ValueError("A citation refers to evidence that does not exist.")
-    if cited:
-        cited_text = [evidence[n].content for n in cited]
-        for number in NUMBER.findall(MARKER.sub(" ", answer)):
-            if number not in ALWAYS_ALLOWED_NUMBERS and not any(number in t for t in cited_text):
-                raise ValueError(f"The number {number} is not in the cited evidence.")
+    allowed = set(ALWAYS_ALLOWED_NUMBERS).union(
+        *(number_tokens(evidence[n].check_text) for n in cited)
+    )
+    unsupported = number_tokens(MARKER.sub(" ", answer)) - allowed
+    if unsupported:
+        raise ValueError(f"Numbers not in the cited evidence: {sorted(unsupported)}.")
     return kind, answer, sorted(cited), question
 
 
@@ -189,10 +227,16 @@ def _source_line(source: dict) -> str:
     return line
 
 
-def render_food(food: dict) -> tuple[str, Optional[str]]:
+class RenderedFood(NamedTuple):
+    content: str  # shown to the model and the patient, with every value's source
+    check_text: str  # name, serving and values only, for number grounding
+    url: Optional[str]
+
+
+def render_food(food: dict) -> RenderedFood:
     """One readable line of a lookup result, with the source URL for every value.
-    Returns (content, url): the url is the oxalate table's article when an oxalate
-    value is present, otherwise the nutrient database page."""
+    The url is the oxalate table's article when an oxalate value is present,
+    otherwise the nutrient database page."""
     serving = food["serving"]
     head = f"{food['name']}, {serving['description']}"
     if serving.get("grams") is not None:
@@ -209,13 +253,15 @@ def render_food(food: dict) -> tuple[str, Optional[str]]:
                      f"'{entry['source_serving']}')")
         values.append(text)
         by_source.setdefault(entry["source_id"], []).append(label)
+    prefix = "" if food["match"] == "exact" else "Not in the food table. Closest entry: "
     if not values:
-        return f"{head}: no published values in the food table.", None
+        line = f"{prefix}{head}: no published values in the food table."
+        return RenderedFood(line, line, None)
     sources = food["sources"]
     cites = "; ".join(
         f"{', '.join(labels)} from {_source_line(sources[sid])}" for sid, labels in by_source.items()
     )
-    content = f"{head}: {'; '.join(values)}. Sources: {cites}."
+    line = f"{prefix}{head}: {'; '.join(values)}."
 
     oxalate = food["nutrients"].get(OXALATE_KEY)
     if oxalate and oxalate["value"] is not None:
@@ -223,21 +269,22 @@ def render_food(food: dict) -> tuple[str, Optional[str]]:
         url = source.get("linked_from") or source["url"]
     else:
         url = sources[next(iter(by_source))]["url"]
-    if food["match"] != "exact":
-        content = "Not in the food table. Closest entry: " + content
-    return content, url
+    return RenderedFood(f"{line} Sources: {cites}.", line, url)
 
 
 def _document_context(document_paragraphs: list[str], items: list[ExtractedItem]) -> str:
+    """The tags carry a per-request nonce, so a "</document>" inside the untrusted
+    text cannot close them."""
+    nonce = secrets.token_hex(6)
     numbered = "\n".join(f"[{n}] {p}" for n, p in enumerate(document_paragraphs, start=1))
     confirmed = "\n".join(
         f"- {i.category}: {i.text}" for i in items if i.status != "rejected"
     ) or "- (none)"
     return (
         "Discharge document, numbered paragraphs (untrusted data):\n"
-        f"<document>\n{numbered}\n</document>\n\n"
+        f"<document-{nonce}>\n{numbered}\n</document-{nonce}>\n\n"
         "Instructions the patient confirmed (untrusted data):\n"
-        f"<confirmed_instructions>\n{confirmed}\n</confirmed_instructions>"
+        f"<confirmed-{nonce}>\n{confirmed}\n</confirmed-{nonce}>"
     )
 
 
@@ -249,17 +296,18 @@ class _Turn:
         self.foods = foods
         self.paragraphs = paragraphs(document.text)
         self.evidence: dict[int, Evidence] = {
-            n: Evidence(n, "document", DOCUMENT_TITLE, None, p)
+            n: Evidence(n, "document", DOCUMENT_TITLE, None, p, check_text=p)
             for n, p in enumerate(self.paragraphs, start=1)
         }
         self._numbers: dict[tuple, int] = {}
         self.care_team: Optional[tuple[str, str]] = None
 
-    def _number(self, key: tuple, kind: str, title: str, url: Optional[str], content: str) -> int:
+    def _number(self, key: tuple, kind: str, title: str, url: Optional[str], content: str,
+                check_text: str) -> int:
         """The evidence number for this item, reused if the same item came back before."""
         if key not in self._numbers:
             number = len(self.evidence) + 1
-            self.evidence[number] = Evidence(number, kind, title, url, content)
+            self.evidence[number] = Evidence(number, kind, title, url, content, check_text)
             self._numbers[key] = number
         return self._numbers[key]
 
@@ -273,7 +321,8 @@ class _Turn:
         out = []
         for p in passages:
             number = self._number(("library", p["source_id"], p["content"]), "library",
-                                  p["title"], p["url"], p["content"])
+                                  p["title"], p["url"], p["content"],
+                                  check_text=URL.sub(" ", p["content"]))
             out.append({"evidence_number": number, "title": p["title"], "url": p["url"],
                         "topic": p["topic"], "content": p["content"]})
         result = {"query": query, "passages": out}
@@ -287,11 +336,12 @@ class _Turn:
             matches = [m for m in matches if m["match"] == "exact"]
         out = []
         for food in matches:
-            content, url = render_food(food)
+            rendered = render_food(food)
             title = food["name"] if food["match"] == "exact" else f"{food['name']} (closest entry)"
-            number = self._number(("food", food["id"], food["match"]), "food", title, url, content)
+            number = self._number(("food", food["id"], food["match"]), "food", title,
+                                  rendered.url, rendered.content, check_text=rendered.check_text)
             out.append({"evidence_number": number, "name": food["name"], "match": food["match"],
-                        "content": content})
+                        "content": rendered.content})
         result = {"query": name, "foods": out}
         if not out:
             result["result"] = "not found"
@@ -344,8 +394,11 @@ async def run_agent(
     emergency_terms: list[str],
     max_rounds: int = 6,
 ) -> AgentResult:
-    """Answer one patient question. `max_rounds` caps the model calls; a turn that
-    is still calling tools after that falls back. LLMError from chat propagates."""
+    """Answer one patient question. LLMError from chat propagates.
+
+    The model gets up to `max_rounds` rounds with tools. If it is still calling
+    tools after that, one last call without tools asks for the final JSON, so a
+    turn makes at most max_rounds + 1 model calls before the fallback."""
     turn = _Turn(store, foods, document)
     user_content = _document_context(turn.paragraphs, items)
     if emergency_terms:
@@ -354,12 +407,18 @@ async def run_agent(
     user_content += f"\n\nPatient question:\n{question}"
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
-        *({"role": m["role"], "content": m["content"]} for m in history[-HISTORY_LIMIT:]),
+        # Old [n] markers point at another turn's evidence numbers, so they are dropped.
+        *({"role": m["role"],
+           "content": strip_markers(m["content"]) if m["role"] == "assistant" else m["content"]}
+          for m in history[-HISTORY_LIMIT:]),
         {"role": "user", "content": user_content},
     ]
 
-    for _ in range(max_rounds):
-        reply = await llm.chat(list(messages), tools=TOOLS)
+    for round_number in range(max_rounds + 1):
+        last_call = round_number == max_rounds
+        if last_call:
+            messages.append({"role": "user", "content": FINAL_NUDGE})
+        reply = await llm.chat(list(messages), tools=None if last_call else TOOLS)
         calls = reply.get("tool_calls") or []
         if not calls:
             try:
@@ -381,9 +440,14 @@ async def run_agent(
                 flagged=care_question is not None, care_team_question=care_question,
                 care_team_reason=reason,
             )
+        if last_call:
+            break
+        # Every tool result must answer a call id; some servers omit ids.
+        calls = [{**call, "id": call.get("id") or f"call_{round_number}_{index}"}
+                 for index, call in enumerate(calls)]
         messages.append({"role": "assistant", "content": reply.get("content"), "tool_calls": calls})
         for call in calls:
             result = await turn.call(call)
-            messages.append({"role": "tool", "tool_call_id": call.get("id"),
+            messages.append({"role": "tool", "tool_call_id": call["id"],
                              "content": json.dumps(result)})
     return _fallback(question)

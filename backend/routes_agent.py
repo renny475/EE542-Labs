@@ -1,4 +1,3 @@
-from dataclasses import asdict
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -74,7 +73,10 @@ async def ask(
     payload = {
         "kind": result.kind,
         "answer": result.answer,
-        "sources": [asdict(source) for source in result.sources],
+        "sources": [
+            {"number": e.number, "kind": e.kind, "title": e.title, "url": e.url, "content": e.content}
+            for e in result.sources
+        ],
         "flagged": result.flagged,
         "emergency": {"terms": terms, "banner": bool(terms)},
     }
