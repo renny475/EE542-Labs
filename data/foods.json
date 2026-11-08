@@ -1,0 +1,5693 @@
+{
+ "foods": [
+  {
+   "id": "almonds",
+   "name": "Almonds",
+   "aliases": [
+    "almond",
+    "raw almonds"
+   ],
+   "serving": {
+    "description": "1 oz (about 23 almonds)",
+    "grams": 28.35
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "fdc-170567"
+    },
+    "potassium_mg": {
+     "value": 208,
+     "unit": "mg",
+     "source_id": "fdc-170567"
+    },
+    "calcium_mg": {
+     "value": 76,
+     "unit": "mg",
+     "source_id": "fdc-170567"
+    },
+    "phosphorus_mg": {
+     "value": 136,
+     "unit": "mg",
+     "source_id": "fdc-170567"
+    },
+    "protein_g": {
+     "value": 6.0,
+     "unit": "g",
+     "source_id": "fdc-170567"
+    },
+    "carbohydrate_g": {
+     "value": 6.1,
+     "unit": "g",
+     "source_id": "fdc-170567"
+    },
+    "sugars_g": {
+     "value": 1.2,
+     "unit": "g",
+     "source_id": "fdc-170567"
+    },
+    "oxalate_mg": {
+     "value": 122,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "almond-butter",
+   "name": "Almond butter",
+   "aliases": [
+    "almond nut butter"
+   ],
+   "serving": {
+    "description": "1 tablespoon",
+    "grams": 16
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "fdc-168588"
+    },
+    "potassium_mg": {
+     "value": 120,
+     "unit": "mg",
+     "source_id": "fdc-168588"
+    },
+    "calcium_mg": {
+     "value": 56,
+     "unit": "mg",
+     "source_id": "fdc-168588"
+    },
+    "phosphorus_mg": {
+     "value": 81,
+     "unit": "mg",
+     "source_id": "fdc-168588"
+    },
+    "protein_g": {
+     "value": 3.4,
+     "unit": "g",
+     "source_id": "fdc-168588"
+    },
+    "carbohydrate_g": {
+     "value": 3.0,
+     "unit": "g",
+     "source_id": "fdc-168588"
+    },
+    "sugars_g": {
+     "value": 0.7,
+     "unit": "g",
+     "source_id": "fdc-168588"
+    },
+    "oxalate_mg": {
+     "value": null,
+     "unit": "mg",
+     "source_id": null
+    }
+   }
+  },
+  {
+   "id": "almond-milk",
+   "name": "Almond milk, unsweetened",
+   "aliases": [
+    "almond milk",
+    "almond beverage"
+   ],
+   "serving": {
+    "description": "1 cup",
+    "grams": 262
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 189,
+     "unit": "mg",
+     "source_id": "fdc-174832"
+    },
+    "potassium_mg": {
+     "value": 176,
+     "unit": "mg",
+     "source_id": "fdc-174832"
+    },
+    "calcium_mg": {
+     "value": 482,
+     "unit": "mg",
+     "source_id": "fdc-174832"
+    },
+    "phosphorus_mg": {
+     "value": 24,
+     "unit": "mg",
+     "source_id": "fdc-174832"
+    },
+    "protein_g": {
+     "value": 1.0,
+     "unit": "g",
+     "source_id": "fdc-174832"
+    },
+    "carbohydrate_g": {
+     "value": 3.4,
+     "unit": "g",
+     "source_id": "fdc-174832"
+    },
+    "sugars_g": {
+     "value": 2.1,
+     "unit": "g",
+     "source_id": "fdc-174832"
+    },
+    "oxalate_mg": {
+     "value": null,
+     "unit": "mg",
+     "source_id": null
+    }
+   }
+  },
+  {
+   "id": "peanuts",
+   "name": "Peanuts, dry-roasted, salted",
+   "aliases": [
+    "peanuts",
+    "peanut",
+    "roasted peanuts"
+   ],
+   "serving": {
+    "description": "1 oz",
+    "grams": 28.35
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 116,
+     "unit": "mg",
+     "source_id": "fdc-174262"
+    },
+    "potassium_mg": {
+     "value": 180,
+     "unit": "mg",
+     "source_id": "fdc-174262"
+    },
+    "calcium_mg": {
+     "value": 16,
+     "unit": "mg",
+     "source_id": "fdc-174262"
+    },
+    "phosphorus_mg": {
+     "value": 103,
+     "unit": "mg",
+     "source_id": "fdc-174262"
+    },
+    "protein_g": {
+     "value": 6.9,
+     "unit": "g",
+     "source_id": "fdc-174262"
+    },
+    "carbohydrate_g": {
+     "value": 6.0,
+     "unit": "g",
+     "source_id": "fdc-174262"
+    },
+    "sugars_g": {
+     "value": 1.4,
+     "unit": "g",
+     "source_id": "fdc-174262"
+    },
+    "oxalate_mg": {
+     "value": 27,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "peanut-butter",
+   "name": "Peanut butter, smooth",
+   "aliases": [
+    "peanut butter"
+   ],
+   "serving": {
+    "description": "1 tablespoon",
+    "grams": 16
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 68,
+     "unit": "mg",
+     "source_id": "fdc-174266"
+    },
+    "potassium_mg": {
+     "value": 89,
+     "unit": "mg",
+     "source_id": "fdc-174266"
+    },
+    "calcium_mg": {
+     "value": 8,
+     "unit": "mg",
+     "source_id": "fdc-174266"
+    },
+    "phosphorus_mg": {
+     "value": 54,
+     "unit": "mg",
+     "source_id": "fdc-174266"
+    },
+    "protein_g": {
+     "value": 3.6,
+     "unit": "g",
+     "source_id": "fdc-174266"
+    },
+    "carbohydrate_g": {
+     "value": 3.6,
+     "unit": "g",
+     "source_id": "fdc-174266"
+    },
+    "sugars_g": {
+     "value": 1.7,
+     "unit": "g",
+     "source_id": "fdc-174266"
+    },
+    "oxalate_mg": {
+     "value": 13,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "cashews",
+   "name": "Cashews, dry-roasted, salted",
+   "aliases": [
+    "cashews",
+    "cashew",
+    "cashew nuts"
+   ],
+   "serving": {
+    "description": "1 oz (about 18 cashews)",
+    "grams": 28.35
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 181,
+     "unit": "mg",
+     "source_id": "fdc-169421"
+    },
+    "potassium_mg": {
+     "value": 160,
+     "unit": "mg",
+     "source_id": "fdc-169421"
+    },
+    "calcium_mg": {
+     "value": 13,
+     "unit": "mg",
+     "source_id": "fdc-169421"
+    },
+    "phosphorus_mg": {
+     "value": 139,
+     "unit": "mg",
+     "source_id": "fdc-169421"
+    },
+    "protein_g": {
+     "value": 4.3,
+     "unit": "g",
+     "source_id": "fdc-169421"
+    },
+    "carbohydrate_g": {
+     "value": 9.3,
+     "unit": "g",
+     "source_id": "fdc-169421"
+    },
+    "sugars_g": {
+     "value": 1.4,
+     "unit": "g",
+     "source_id": "fdc-169421"
+    },
+    "oxalate_mg": {
+     "value": 49,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "walnuts",
+   "name": "Walnuts",
+   "aliases": [
+    "walnut",
+    "english walnuts"
+   ],
+   "serving": {
+    "description": "7 walnuts, shelled (about 1 oz)",
+    "grams": 28
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "fdc-170187"
+    },
+    "potassium_mg": {
+     "value": 123,
+     "unit": "mg",
+     "source_id": "fdc-170187"
+    },
+    "calcium_mg": {
+     "value": 27,
+     "unit": "mg",
+     "source_id": "fdc-170187"
+    },
+    "phosphorus_mg": {
+     "value": 97,
+     "unit": "mg",
+     "source_id": "fdc-170187"
+    },
+    "protein_g": {
+     "value": 4.3,
+     "unit": "g",
+     "source_id": "fdc-170187"
+    },
+    "carbohydrate_g": {
+     "value": 3.8,
+     "unit": "g",
+     "source_id": "fdc-170187"
+    },
+    "sugars_g": {
+     "value": 0.7,
+     "unit": "g",
+     "source_id": "fdc-170187"
+    },
+    "oxalate_mg": {
+     "value": 31,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "pecans",
+   "name": "Pecans",
+   "aliases": [
+    "pecan"
+   ],
+   "serving": {
+    "description": "1 oz",
+    "grams": 28.35
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "fdc-170182"
+    },
+    "potassium_mg": {
+     "value": 116,
+     "unit": "mg",
+     "source_id": "fdc-170182"
+    },
+    "calcium_mg": {
+     "value": 20,
+     "unit": "mg",
+     "source_id": "fdc-170182"
+    },
+    "phosphorus_mg": {
+     "value": 79,
+     "unit": "mg",
+     "source_id": "fdc-170182"
+    },
+    "protein_g": {
+     "value": 2.6,
+     "unit": "g",
+     "source_id": "fdc-170182"
+    },
+    "carbohydrate_g": {
+     "value": 3.9,
+     "unit": "g",
+     "source_id": "fdc-170182"
+    },
+    "sugars_g": {
+     "value": 1.1,
+     "unit": "g",
+     "source_id": "fdc-170182"
+    },
+    "oxalate_mg": {
+     "value": 10,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "pistachios",
+   "name": "Pistachios, dry-roasted, salted",
+   "aliases": [
+    "pistachios",
+    "pistachio"
+   ],
+   "serving": {
+    "description": "1 oz (about 49 kernels)",
+    "grams": 28.35
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 121,
+     "unit": "mg",
+     "source_id": "fdc-169426"
+    },
+    "potassium_mg": {
+     "value": 285,
+     "unit": "mg",
+     "source_id": "fdc-169426"
+    },
+    "calcium_mg": {
+     "value": 30,
+     "unit": "mg",
+     "source_id": "fdc-169426"
+    },
+    "phosphorus_mg": {
+     "value": 133,
+     "unit": "mg",
+     "source_id": "fdc-169426"
+    },
+    "protein_g": {
+     "value": 6.0,
+     "unit": "g",
+     "source_id": "fdc-169426"
+    },
+    "carbohydrate_g": {
+     "value": 7.8,
+     "unit": "g",
+     "source_id": "fdc-169426"
+    },
+    "sugars_g": {
+     "value": 2.2,
+     "unit": "g",
+     "source_id": "fdc-169426"
+    },
+    "oxalate_mg": {
+     "value": 14,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "mixed-nuts",
+   "name": "Mixed nuts with peanuts, dry-roasted, salted",
+   "aliases": [
+    "mixed nuts"
+   ],
+   "serving": {
+    "description": "1 oz",
+    "grams": 28.35
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 98,
+     "unit": "mg",
+     "source_id": "fdc-168599"
+    },
+    "potassium_mg": {
+     "value": 196,
+     "unit": "mg",
+     "source_id": "fdc-168599"
+    },
+    "calcium_mg": {
+     "value": 20,
+     "unit": "mg",
+     "source_id": "fdc-168599"
+    },
+    "phosphorus_mg": {
+     "value": 123,
+     "unit": "mg",
+     "source_id": "fdc-168599"
+    },
+    "protein_g": {
+     "value": 4.9,
+     "unit": "g",
+     "source_id": "fdc-168599"
+    },
+    "carbohydrate_g": {
+     "value": 7.2,
+     "unit": "g",
+     "source_id": "fdc-168599"
+    },
+    "sugars_g": {
+     "value": 1.4,
+     "unit": "g",
+     "source_id": "fdc-168599"
+    },
+    "oxalate_mg": {
+     "value": 39,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "tahini",
+   "name": "Tahini (sesame seed butter)",
+   "aliases": [
+    "sesame butter",
+    "sesame paste"
+   ],
+   "serving": {
+    "description": "1 tablespoon",
+    "grams": 15
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 17,
+     "unit": "mg",
+     "source_id": "fdc-170189"
+    },
+    "potassium_mg": {
+     "value": 62,
+     "unit": "mg",
+     "source_id": "fdc-170189"
+    },
+    "calcium_mg": {
+     "value": 64,
+     "unit": "mg",
+     "source_id": "fdc-170189"
+    },
+    "phosphorus_mg": {
+     "value": 110,
+     "unit": "mg",
+     "source_id": "fdc-170189"
+    },
+    "protein_g": {
+     "value": 2.5,
+     "unit": "g",
+     "source_id": "fdc-170189"
+    },
+    "carbohydrate_g": {
+     "value": 3.2,
+     "unit": "g",
+     "source_id": "fdc-170189"
+    },
+    "sugars_g": {
+     "value": 0.1,
+     "unit": "g",
+     "source_id": "fdc-170189"
+    },
+    "oxalate_mg": {
+     "value": 16,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "spinach-raw",
+   "name": "Spinach, raw",
+   "aliases": [
+    "spinach",
+    "raw spinach",
+    "spinach salad"
+   ],
+   "serving": {
+    "description": "1 cup raw",
+    "grams": 30
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 24,
+     "unit": "mg",
+     "source_id": "fdc-168462"
+    },
+    "potassium_mg": {
+     "value": 167,
+     "unit": "mg",
+     "source_id": "fdc-168462"
+    },
+    "calcium_mg": {
+     "value": 30,
+     "unit": "mg",
+     "source_id": "fdc-168462"
+    },
+    "phosphorus_mg": {
+     "value": 15,
+     "unit": "mg",
+     "source_id": "fdc-168462"
+    },
+    "protein_g": {
+     "value": 0.9,
+     "unit": "g",
+     "source_id": "fdc-168462"
+    },
+    "carbohydrate_g": {
+     "value": 1.1,
+     "unit": "g",
+     "source_id": "fdc-168462"
+    },
+    "sugars_g": {
+     "value": 0.1,
+     "unit": "g",
+     "source_id": "fdc-168462"
+    },
+    "oxalate_mg": {
+     "value": 656,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "spinach-cooked",
+   "name": "Spinach, cooked",
+   "aliases": [
+    "cooked spinach",
+    "boiled spinach"
+   ],
+   "serving": {
+    "description": "1/2 cup cooked",
+    "grams": 90
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 63,
+     "unit": "mg",
+     "source_id": "fdc-168463"
+    },
+    "potassium_mg": {
+     "value": 419,
+     "unit": "mg",
+     "source_id": "fdc-168463"
+    },
+    "calcium_mg": {
+     "value": 122,
+     "unit": "mg",
+     "source_id": "fdc-168463"
+    },
+    "phosphorus_mg": {
+     "value": 50,
+     "unit": "mg",
+     "source_id": "fdc-168463"
+    },
+    "protein_g": {
+     "value": 2.7,
+     "unit": "g",
+     "source_id": "fdc-168463"
+    },
+    "carbohydrate_g": {
+     "value": 3.4,
+     "unit": "g",
+     "source_id": "fdc-168463"
+    },
+    "sugars_g": {
+     "value": 0.4,
+     "unit": "g",
+     "source_id": "fdc-168463"
+    },
+    "oxalate_mg": {
+     "value": 755,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "rhubarb",
+   "name": "Rhubarb",
+   "aliases": [
+    "rhubarb stalks"
+   ],
+   "serving": {
+    "description": "1/2 cup diced, raw",
+    "grams": 61
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 2,
+     "unit": "mg",
+     "source_id": "fdc-167758"
+    },
+    "potassium_mg": {
+     "value": 176,
+     "unit": "mg",
+     "source_id": "fdc-167758"
+    },
+    "calcium_mg": {
+     "value": 52,
+     "unit": "mg",
+     "source_id": "fdc-167758"
+    },
+    "phosphorus_mg": {
+     "value": 9,
+     "unit": "mg",
+     "source_id": "fdc-167758"
+    },
+    "protein_g": {
+     "value": 0.5,
+     "unit": "g",
+     "source_id": "fdc-167758"
+    },
+    "carbohydrate_g": {
+     "value": 2.8,
+     "unit": "g",
+     "source_id": "fdc-167758"
+    },
+    "sugars_g": {
+     "value": 0.7,
+     "unit": "g",
+     "source_id": "fdc-167758"
+    },
+    "oxalate_mg": {
+     "value": 541,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "beets",
+   "name": "Beets, cooked",
+   "aliases": [
+    "beet",
+    "beetroot",
+    "cooked beets"
+   ],
+   "serving": {
+    "description": "1/2 cup sliced, cooked",
+    "grams": 85
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 65,
+     "unit": "mg",
+     "source_id": "fdc-169146"
+    },
+    "potassium_mg": {
+     "value": 259,
+     "unit": "mg",
+     "source_id": "fdc-169146"
+    },
+    "calcium_mg": {
+     "value": 14,
+     "unit": "mg",
+     "source_id": "fdc-169146"
+    },
+    "phosphorus_mg": {
+     "value": 32,
+     "unit": "mg",
+     "source_id": "fdc-169146"
+    },
+    "protein_g": {
+     "value": 1.4,
+     "unit": "g",
+     "source_id": "fdc-169146"
+    },
+    "carbohydrate_g": {
+     "value": 8.5,
+     "unit": "g",
+     "source_id": "fdc-169146"
+    },
+    "sugars_g": {
+     "value": 6.8,
+     "unit": "g",
+     "source_id": "fdc-169146"
+    },
+    "oxalate_mg": {
+     "value": 76,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "sweet-potato",
+   "name": "Sweet potato, baked",
+   "aliases": [
+    "sweet potato",
+    "sweet potatoes",
+    "baked sweet potato"
+   ],
+   "serving": {
+    "description": "1 cup, baked (flesh only)",
+    "grams": 200
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 72,
+     "unit": "mg",
+     "source_id": "fdc-168483"
+    },
+    "potassium_mg": {
+     "value": 950,
+     "unit": "mg",
+     "source_id": "fdc-168483"
+    },
+    "calcium_mg": {
+     "value": 76,
+     "unit": "mg",
+     "source_id": "fdc-168483"
+    },
+    "phosphorus_mg": {
+     "value": 108,
+     "unit": "mg",
+     "source_id": "fdc-168483"
+    },
+    "protein_g": {
+     "value": 4.0,
+     "unit": "g",
+     "source_id": "fdc-168483"
+    },
+    "carbohydrate_g": {
+     "value": 41.4,
+     "unit": "g",
+     "source_id": "fdc-168483"
+    },
+    "sugars_g": {
+     "value": 13.0,
+     "unit": "g",
+     "source_id": "fdc-168483"
+    },
+    "oxalate_mg": {
+     "value": 28,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "baked-potato",
+   "name": "Baked potato with skin",
+   "aliases": [
+    "potato",
+    "potatoes",
+    "baked potato"
+   ],
+   "serving": {
+    "description": "1 medium potato",
+    "grams": 173
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 17,
+     "unit": "mg",
+     "source_id": "fdc-170093"
+    },
+    "potassium_mg": {
+     "value": 926,
+     "unit": "mg",
+     "source_id": "fdc-170093"
+    },
+    "calcium_mg": {
+     "value": 26,
+     "unit": "mg",
+     "source_id": "fdc-170093"
+    },
+    "phosphorus_mg": {
+     "value": 121,
+     "unit": "mg",
+     "source_id": "fdc-170093"
+    },
+    "protein_g": {
+     "value": 4.3,
+     "unit": "g",
+     "source_id": "fdc-170093"
+    },
+    "carbohydrate_g": {
+     "value": 36.6,
+     "unit": "g",
+     "source_id": "fdc-170093"
+    },
+    "sugars_g": {
+     "value": 2.0,
+     "unit": "g",
+     "source_id": "fdc-170093"
+    },
+    "oxalate_mg": {
+     "value": 97,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "mashed-potatoes",
+   "name": "Mashed potatoes",
+   "aliases": [
+    "mashed potato"
+   ],
+   "serving": {
+    "description": "1 cup (made with whole milk and butter)",
+    "grams": 210
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 666,
+     "unit": "mg",
+     "source_id": "fdc-168555"
+    },
+    "potassium_mg": {
+     "value": 596,
+     "unit": "mg",
+     "source_id": "fdc-168555"
+    },
+    "calcium_mg": {
+     "value": 50,
+     "unit": "mg",
+     "source_id": "fdc-168555"
+    },
+    "phosphorus_mg": {
+     "value": 94,
+     "unit": "mg",
+     "source_id": "fdc-168555"
+    },
+    "protein_g": {
+     "value": 3.9,
+     "unit": "g",
+     "source_id": "fdc-168555"
+    },
+    "carbohydrate_g": {
+     "value": 35.3,
+     "unit": "g",
+     "source_id": "fdc-168555"
+    },
+    "sugars_g": {
+     "value": 3.0,
+     "unit": "g",
+     "source_id": "fdc-168555"
+    },
+    "oxalate_mg": {
+     "value": 29,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "broccoli",
+   "name": "Broccoli, raw",
+   "aliases": [
+    "broccoli",
+    "raw broccoli"
+   ],
+   "serving": {
+    "description": "1/2 cup chopped, raw",
+    "grams": 44
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 15,
+     "unit": "mg",
+     "source_id": "fdc-170379"
+    },
+    "potassium_mg": {
+     "value": 139,
+     "unit": "mg",
+     "source_id": "fdc-170379"
+    },
+    "calcium_mg": {
+     "value": 21,
+     "unit": "mg",
+     "source_id": "fdc-170379"
+    },
+    "phosphorus_mg": {
+     "value": 29,
+     "unit": "mg",
+     "source_id": "fdc-170379"
+    },
+    "protein_g": {
+     "value": 1.2,
+     "unit": "g",
+     "source_id": "fdc-170379"
+    },
+    "carbohydrate_g": {
+     "value": 2.9,
+     "unit": "g",
+     "source_id": "fdc-170379"
+    },
+    "sugars_g": {
+     "value": 0.7,
+     "unit": "g",
+     "source_id": "fdc-170379"
+    },
+    "oxalate_mg": {
+     "value": 6,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "carrots-cooked",
+   "name": "Carrots, cooked",
+   "aliases": [
+    "carrots",
+    "carrot",
+    "cooked carrots"
+   ],
+   "serving": {
+    "description": "1/2 cup sliced, cooked",
+    "grams": 78
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 45,
+     "unit": "mg",
+     "source_id": "fdc-170394"
+    },
+    "potassium_mg": {
+     "value": 183,
+     "unit": "mg",
+     "source_id": "fdc-170394"
+    },
+    "calcium_mg": {
+     "value": 23,
+     "unit": "mg",
+     "source_id": "fdc-170394"
+    },
+    "phosphorus_mg": {
+     "value": 23,
+     "unit": "mg",
+     "source_id": "fdc-170394"
+    },
+    "protein_g": {
+     "value": 0.6,
+     "unit": "g",
+     "source_id": "fdc-170394"
+    },
+    "carbohydrate_g": {
+     "value": 6.4,
+     "unit": "g",
+     "source_id": "fdc-170394"
+    },
+    "sugars_g": {
+     "value": 2.7,
+     "unit": "g",
+     "source_id": "fdc-170394"
+    },
+    "oxalate_mg": {
+     "value": 7,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "celery",
+   "name": "Celery, raw",
+   "aliases": [
+    "celery",
+    "celery sticks"
+   ],
+   "serving": {
+    "description": "1/2 cup chopped, raw",
+    "grams": 50.5
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 40,
+     "unit": "mg",
+     "source_id": "fdc-169988"
+    },
+    "potassium_mg": {
+     "value": 131,
+     "unit": "mg",
+     "source_id": "fdc-169988"
+    },
+    "calcium_mg": {
+     "value": 20,
+     "unit": "mg",
+     "source_id": "fdc-169988"
+    },
+    "phosphorus_mg": {
+     "value": 12,
+     "unit": "mg",
+     "source_id": "fdc-169988"
+    },
+    "protein_g": {
+     "value": 0.3,
+     "unit": "g",
+     "source_id": "fdc-169988"
+    },
+    "carbohydrate_g": {
+     "value": 1.5,
+     "unit": "g",
+     "source_id": "fdc-169988"
+    },
+    "sugars_g": {
+     "value": 0.7,
+     "unit": "g",
+     "source_id": "fdc-169988"
+    },
+    "oxalate_mg": {
+     "value": 19,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "tomato",
+   "name": "Tomato, raw",
+   "aliases": [
+    "tomato",
+    "tomatoes"
+   ],
+   "serving": {
+    "description": "1 medium tomato",
+    "grams": 123
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 6,
+     "unit": "mg",
+     "source_id": "fdc-170457"
+    },
+    "potassium_mg": {
+     "value": 292,
+     "unit": "mg",
+     "source_id": "fdc-170457"
+    },
+    "calcium_mg": {
+     "value": 12,
+     "unit": "mg",
+     "source_id": "fdc-170457"
+    },
+    "phosphorus_mg": {
+     "value": 30,
+     "unit": "mg",
+     "source_id": "fdc-170457"
+    },
+    "protein_g": {
+     "value": 1.1,
+     "unit": "g",
+     "source_id": "fdc-170457"
+    },
+    "carbohydrate_g": {
+     "value": 4.8,
+     "unit": "g",
+     "source_id": "fdc-170457"
+    },
+    "sugars_g": {
+     "value": 3.2,
+     "unit": "g",
+     "source_id": "fdc-170457"
+    },
+    "oxalate_mg": {
+     "value": 7,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "iceberg-lettuce",
+   "name": "Iceberg lettuce",
+   "aliases": [
+    "lettuce",
+    "iceberg"
+   ],
+   "serving": {
+    "description": "1 cup shredded",
+    "grams": 72
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 7,
+     "unit": "mg",
+     "source_id": "fdc-169248"
+    },
+    "potassium_mg": {
+     "value": 102,
+     "unit": "mg",
+     "source_id": "fdc-169248"
+    },
+    "calcium_mg": {
+     "value": 13,
+     "unit": "mg",
+     "source_id": "fdc-169248"
+    },
+    "phosphorus_mg": {
+     "value": 14,
+     "unit": "mg",
+     "source_id": "fdc-169248"
+    },
+    "protein_g": {
+     "value": 0.6,
+     "unit": "g",
+     "source_id": "fdc-169248"
+    },
+    "carbohydrate_g": {
+     "value": 2.1,
+     "unit": "g",
+     "source_id": "fdc-169248"
+    },
+    "sugars_g": {
+     "value": 1.4,
+     "unit": "g",
+     "source_id": "fdc-169248"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "kidney-beans",
+   "name": "Kidney beans, cooked",
+   "aliases": [
+    "kidney beans",
+    "red beans"
+   ],
+   "serving": {
+    "description": "1/2 cup cooked",
+    "grams": 88.5
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 2,
+     "unit": "mg",
+     "source_id": "fdc-175194"
+    },
+    "potassium_mg": {
+     "value": 357,
+     "unit": "mg",
+     "source_id": "fdc-175194"
+    },
+    "calcium_mg": {
+     "value": 25,
+     "unit": "mg",
+     "source_id": "fdc-175194"
+    },
+    "phosphorus_mg": {
+     "value": 126,
+     "unit": "mg",
+     "source_id": "fdc-175194"
+    },
+    "protein_g": {
+     "value": 7.7,
+     "unit": "g",
+     "source_id": "fdc-175194"
+    },
+    "carbohydrate_g": {
+     "value": 20.2,
+     "unit": "g",
+     "source_id": "fdc-175194"
+    },
+    "sugars_g": {
+     "value": 0.3,
+     "unit": "g",
+     "source_id": "fdc-175194"
+    },
+    "oxalate_mg": {
+     "value": 15,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "navy-beans",
+   "name": "Navy beans, cooked",
+   "aliases": [
+    "navy beans",
+    "white beans"
+   ],
+   "serving": {
+    "description": "1/2 cup cooked",
+    "grams": 91
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "fdc-173746"
+    },
+    "potassium_mg": {
+     "value": 354,
+     "unit": "mg",
+     "source_id": "fdc-173746"
+    },
+    "calcium_mg": {
+     "value": 63,
+     "unit": "mg",
+     "source_id": "fdc-173746"
+    },
+    "phosphorus_mg": {
+     "value": 131,
+     "unit": "mg",
+     "source_id": "fdc-173746"
+    },
+    "protein_g": {
+     "value": 7.5,
+     "unit": "g",
+     "source_id": "fdc-173746"
+    },
+    "carbohydrate_g": {
+     "value": 23.7,
+     "unit": "g",
+     "source_id": "fdc-173746"
+    },
+    "sugars_g": {
+     "value": 0.3,
+     "unit": "g",
+     "source_id": "fdc-173746"
+    },
+    "oxalate_mg": {
+     "value": 76,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "tomato-sauce",
+   "name": "Tomato sauce, canned",
+   "aliases": [
+    "tomato sauce",
+    "pasta sauce"
+   ],
+   "serving": {
+    "description": "1/2 cup",
+    "grams": 122.5
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 581,
+     "unit": "mg",
+     "source_id": "fdc-170054"
+    },
+    "potassium_mg": {
+     "value": 364,
+     "unit": "mg",
+     "source_id": "fdc-170054"
+    },
+    "calcium_mg": {
+     "value": 17,
+     "unit": "mg",
+     "source_id": "fdc-170054"
+    },
+    "phosphorus_mg": {
+     "value": 33,
+     "unit": "mg",
+     "source_id": "fdc-170054"
+    },
+    "protein_g": {
+     "value": 1.5,
+     "unit": "g",
+     "source_id": "fdc-170054"
+    },
+    "carbohydrate_g": {
+     "value": 6.5,
+     "unit": "g",
+     "source_id": "fdc-170054"
+    },
+    "sugars_g": {
+     "value": 4.4,
+     "unit": "g",
+     "source_id": "fdc-170054"
+    },
+    "oxalate_mg": {
+     "value": 17,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "sauerkraut",
+   "name": "Sauerkraut, canned",
+   "aliases": [
+    "sauerkraut"
+   ],
+   "serving": {
+    "description": "1/2 cup",
+    "grams": 71
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 469,
+     "unit": "mg",
+     "source_id": "fdc-169279"
+    },
+    "potassium_mg": {
+     "value": 121,
+     "unit": "mg",
+     "source_id": "fdc-169279"
+    },
+    "calcium_mg": {
+     "value": 21,
+     "unit": "mg",
+     "source_id": "fdc-169279"
+    },
+    "phosphorus_mg": {
+     "value": 14,
+     "unit": "mg",
+     "source_id": "fdc-169279"
+    },
+    "protein_g": {
+     "value": 0.6,
+     "unit": "g",
+     "source_id": "fdc-169279"
+    },
+    "carbohydrate_g": {
+     "value": 3.0,
+     "unit": "g",
+     "source_id": "fdc-169279"
+    },
+    "sugars_g": {
+     "value": 1.3,
+     "unit": "g",
+     "source_id": "fdc-169279"
+    },
+    "oxalate_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "dill-pickle",
+   "name": "Dill pickle",
+   "aliases": [
+    "pickle",
+    "pickles",
+    "dill pickles"
+   ],
+   "serving": {
+    "description": "1 small spear",
+    "grams": 35
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 283,
+     "unit": "mg",
+     "source_id": "fdc-168558"
+    },
+    "potassium_mg": {
+     "value": 41,
+     "unit": "mg",
+     "source_id": "fdc-168558"
+    },
+    "calcium_mg": {
+     "value": 20,
+     "unit": "mg",
+     "source_id": "fdc-168558"
+    },
+    "phosphorus_mg": {
+     "value": 6,
+     "unit": "mg",
+     "source_id": "fdc-168558"
+    },
+    "protein_g": {
+     "value": 0.2,
+     "unit": "g",
+     "source_id": "fdc-168558"
+    },
+    "carbohydrate_g": {
+     "value": 0.8,
+     "unit": "g",
+     "source_id": "fdc-168558"
+    },
+    "sugars_g": {
+     "value": 0.4,
+     "unit": "g",
+     "source_id": "fdc-168558"
+    },
+    "oxalate_mg": {
+     "value": null,
+     "unit": "mg",
+     "source_id": null
+    }
+   }
+  },
+  {
+   "id": "tofu",
+   "name": "Tofu, firm",
+   "aliases": [
+    "tofu",
+    "bean curd"
+   ],
+   "serving": {
+    "description": "3.5 oz",
+    "grams": 99.23
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 14,
+     "unit": "mg",
+     "source_id": "fdc-172475"
+    },
+    "potassium_mg": {
+     "value": 235,
+     "unit": "mg",
+     "source_id": "fdc-172475"
+    },
+    "calcium_mg": {
+     "value": 678,
+     "unit": "mg",
+     "source_id": "fdc-172475"
+    },
+    "phosphorus_mg": {
+     "value": 189,
+     "unit": "mg",
+     "source_id": "fdc-172475"
+    },
+    "protein_g": {
+     "value": 17.1,
+     "unit": "g",
+     "source_id": "fdc-172475"
+    },
+    "carbohydrate_g": {
+     "value": 2.8,
+     "unit": "g",
+     "source_id": "fdc-172475"
+    },
+    "sugars_g": {
+     "value": null,
+     "unit": "g",
+     "source_id": null
+    },
+    "oxalate_mg": {
+     "value": 13,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "banana",
+   "name": "Banana",
+   "aliases": [
+    "bananas"
+   ],
+   "serving": {
+    "description": "1 medium banana",
+    "grams": 118
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "fdc-173944"
+    },
+    "potassium_mg": {
+     "value": 422,
+     "unit": "mg",
+     "source_id": "fdc-173944"
+    },
+    "calcium_mg": {
+     "value": 6,
+     "unit": "mg",
+     "source_id": "fdc-173944"
+    },
+    "phosphorus_mg": {
+     "value": 26,
+     "unit": "mg",
+     "source_id": "fdc-173944"
+    },
+    "protein_g": {
+     "value": 1.3,
+     "unit": "g",
+     "source_id": "fdc-173944"
+    },
+    "carbohydrate_g": {
+     "value": 27.0,
+     "unit": "g",
+     "source_id": "fdc-173944"
+    },
+    "sugars_g": {
+     "value": 14.4,
+     "unit": "g",
+     "source_id": "fdc-173944"
+    },
+    "oxalate_mg": {
+     "value": 3,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "apple",
+   "name": "Apple",
+   "aliases": [
+    "apples"
+   ],
+   "serving": {
+    "description": "1 medium apple",
+    "grams": 182
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 2,
+     "unit": "mg",
+     "source_id": "fdc-171688"
+    },
+    "potassium_mg": {
+     "value": 195,
+     "unit": "mg",
+     "source_id": "fdc-171688"
+    },
+    "calcium_mg": {
+     "value": 11,
+     "unit": "mg",
+     "source_id": "fdc-171688"
+    },
+    "phosphorus_mg": {
+     "value": 20,
+     "unit": "mg",
+     "source_id": "fdc-171688"
+    },
+    "protein_g": {
+     "value": 0.5,
+     "unit": "g",
+     "source_id": "fdc-171688"
+    },
+    "carbohydrate_g": {
+     "value": 25.1,
+     "unit": "g",
+     "source_id": "fdc-171688"
+    },
+    "sugars_g": {
+     "value": 18.9,
+     "unit": "g",
+     "source_id": "fdc-171688"
+    },
+    "oxalate_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "orange",
+   "name": "Orange",
+   "aliases": [
+    "oranges"
+   ],
+   "serving": {
+    "description": "1 orange",
+    "grams": 131
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "fdc-169097"
+    },
+    "potassium_mg": {
+     "value": 237,
+     "unit": "mg",
+     "source_id": "fdc-169097"
+    },
+    "calcium_mg": {
+     "value": 52,
+     "unit": "mg",
+     "source_id": "fdc-169097"
+    },
+    "phosphorus_mg": {
+     "value": 18,
+     "unit": "mg",
+     "source_id": "fdc-169097"
+    },
+    "protein_g": {
+     "value": 1.2,
+     "unit": "g",
+     "source_id": "fdc-169097"
+    },
+    "carbohydrate_g": {
+     "value": 15.4,
+     "unit": "g",
+     "source_id": "fdc-169097"
+    },
+    "sugars_g": {
+     "value": 12.2,
+     "unit": "g",
+     "source_id": "fdc-169097"
+    },
+    "oxalate_mg": {
+     "value": 29,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "avocado",
+   "name": "Avocado",
+   "aliases": [
+    "avocados"
+   ],
+   "serving": {
+    "description": "1 avocado",
+    "grams": 201
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 14,
+     "unit": "mg",
+     "source_id": "fdc-171705"
+    },
+    "potassium_mg": {
+     "value": 975,
+     "unit": "mg",
+     "source_id": "fdc-171705"
+    },
+    "calcium_mg": {
+     "value": 24,
+     "unit": "mg",
+     "source_id": "fdc-171705"
+    },
+    "phosphorus_mg": {
+     "value": 105,
+     "unit": "mg",
+     "source_id": "fdc-171705"
+    },
+    "protein_g": {
+     "value": 4.0,
+     "unit": "g",
+     "source_id": "fdc-171705"
+    },
+    "carbohydrate_g": {
+     "value": 17.1,
+     "unit": "g",
+     "source_id": "fdc-171705"
+    },
+    "sugars_g": {
+     "value": 1.3,
+     "unit": "g",
+     "source_id": "fdc-171705"
+    },
+    "oxalate_mg": {
+     "value": 19,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "grapes",
+   "name": "Grapes",
+   "aliases": [
+    "grape",
+    "seedless grapes"
+   ],
+   "serving": {
+    "description": "1/2 cup (about 16 grapes)",
+    "grams": 75.5
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 2,
+     "unit": "mg",
+     "source_id": "fdc-174683"
+    },
+    "potassium_mg": {
+     "value": 144,
+     "unit": "mg",
+     "source_id": "fdc-174683"
+    },
+    "calcium_mg": {
+     "value": 8,
+     "unit": "mg",
+     "source_id": "fdc-174683"
+    },
+    "phosphorus_mg": {
+     "value": 15,
+     "unit": "mg",
+     "source_id": "fdc-174683"
+    },
+    "protein_g": {
+     "value": 0.5,
+     "unit": "g",
+     "source_id": "fdc-174683"
+    },
+    "carbohydrate_g": {
+     "value": 13.7,
+     "unit": "g",
+     "source_id": "fdc-174683"
+    },
+    "sugars_g": {
+     "value": 11.7,
+     "unit": "g",
+     "source_id": "fdc-174683"
+    },
+    "oxalate_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "strawberries",
+   "name": "Strawberries",
+   "aliases": [
+    "strawberry"
+   ],
+   "serving": {
+    "description": "1/2 cup whole",
+    "grams": 72
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "fdc-167762"
+    },
+    "potassium_mg": {
+     "value": 110,
+     "unit": "mg",
+     "source_id": "fdc-167762"
+    },
+    "calcium_mg": {
+     "value": 12,
+     "unit": "mg",
+     "source_id": "fdc-167762"
+    },
+    "phosphorus_mg": {
+     "value": 17,
+     "unit": "mg",
+     "source_id": "fdc-167762"
+    },
+    "protein_g": {
+     "value": 0.5,
+     "unit": "g",
+     "source_id": "fdc-167762"
+    },
+    "carbohydrate_g": {
+     "value": 5.5,
+     "unit": "g",
+     "source_id": "fdc-167762"
+    },
+    "sugars_g": {
+     "value": 3.5,
+     "unit": "g",
+     "source_id": "fdc-167762"
+    },
+    "oxalate_mg": {
+     "value": 2,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "blueberries",
+   "name": "Blueberries",
+   "aliases": [
+    "blueberry"
+   ],
+   "serving": {
+    "description": "1/2 cup",
+    "grams": 74
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "fdc-171711"
+    },
+    "potassium_mg": {
+     "value": 57,
+     "unit": "mg",
+     "source_id": "fdc-171711"
+    },
+    "calcium_mg": {
+     "value": 4,
+     "unit": "mg",
+     "source_id": "fdc-171711"
+    },
+    "phosphorus_mg": {
+     "value": 9,
+     "unit": "mg",
+     "source_id": "fdc-171711"
+    },
+    "protein_g": {
+     "value": 0.5,
+     "unit": "g",
+     "source_id": "fdc-171711"
+    },
+    "carbohydrate_g": {
+     "value": 10.7,
+     "unit": "g",
+     "source_id": "fdc-171711"
+    },
+    "sugars_g": {
+     "value": 7.4,
+     "unit": "g",
+     "source_id": "fdc-171711"
+    },
+    "oxalate_mg": {
+     "value": 2,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "raspberries",
+   "name": "Raspberries",
+   "aliases": [
+    "raspberry"
+   ],
+   "serving": {
+    "description": "1 cup",
+    "grams": 123
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "fdc-167755"
+    },
+    "potassium_mg": {
+     "value": 186,
+     "unit": "mg",
+     "source_id": "fdc-167755"
+    },
+    "calcium_mg": {
+     "value": 31,
+     "unit": "mg",
+     "source_id": "fdc-167755"
+    },
+    "phosphorus_mg": {
+     "value": 36,
+     "unit": "mg",
+     "source_id": "fdc-167755"
+    },
+    "protein_g": {
+     "value": 1.5,
+     "unit": "g",
+     "source_id": "fdc-167755"
+    },
+    "carbohydrate_g": {
+     "value": 14.7,
+     "unit": "g",
+     "source_id": "fdc-167755"
+    },
+    "sugars_g": {
+     "value": 5.4,
+     "unit": "g",
+     "source_id": "fdc-167755"
+    },
+    "oxalate_mg": {
+     "value": 48,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "raisins",
+   "name": "Raisins",
+   "aliases": [
+    "raisin"
+   ],
+   "serving": {
+    "description": "1 oz",
+    "grams": 28.35
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 7,
+     "unit": "mg",
+     "source_id": "fdc-168165"
+    },
+    "potassium_mg": {
+     "value": 211,
+     "unit": "mg",
+     "source_id": "fdc-168165"
+    },
+    "calcium_mg": {
+     "value": 18,
+     "unit": "mg",
+     "source_id": "fdc-168165"
+    },
+    "phosphorus_mg": {
+     "value": 28,
+     "unit": "mg",
+     "source_id": "fdc-168165"
+    },
+    "protein_g": {
+     "value": 0.9,
+     "unit": "g",
+     "source_id": "fdc-168165"
+    },
+    "carbohydrate_g": {
+     "value": 22.5,
+     "unit": "g",
+     "source_id": "fdc-168165"
+    },
+    "sugars_g": {
+     "value": 18.5,
+     "unit": "g",
+     "source_id": "fdc-168165"
+    },
+    "oxalate_mg": {
+     "value": 3,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "kiwi",
+   "name": "Kiwi",
+   "aliases": [
+    "kiwifruit",
+    "kiwis"
+   ],
+   "serving": {
+    "description": "1 kiwi",
+    "grams": 69
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 2,
+     "unit": "mg",
+     "source_id": "fdc-168153"
+    },
+    "potassium_mg": {
+     "value": 215,
+     "unit": "mg",
+     "source_id": "fdc-168153"
+    },
+    "calcium_mg": {
+     "value": 23,
+     "unit": "mg",
+     "source_id": "fdc-168153"
+    },
+    "phosphorus_mg": {
+     "value": 23,
+     "unit": "mg",
+     "source_id": "fdc-168153"
+    },
+    "protein_g": {
+     "value": 0.8,
+     "unit": "g",
+     "source_id": "fdc-168153"
+    },
+    "carbohydrate_g": {
+     "value": 10.1,
+     "unit": "g",
+     "source_id": "fdc-168153"
+    },
+    "sugars_g": {
+     "value": 6.2,
+     "unit": "g",
+     "source_id": "fdc-168153"
+    },
+    "oxalate_mg": {
+     "value": 16,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "grapefruit",
+   "name": "Grapefruit",
+   "aliases": [
+    "grapefruits"
+   ],
+   "serving": {
+    "description": "1/2 grapefruit",
+    "grams": 123
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "fdc-174673"
+    },
+    "potassium_mg": {
+     "value": 166,
+     "unit": "mg",
+     "source_id": "fdc-174673"
+    },
+    "calcium_mg": {
+     "value": 27,
+     "unit": "mg",
+     "source_id": "fdc-174673"
+    },
+    "phosphorus_mg": {
+     "value": 22,
+     "unit": "mg",
+     "source_id": "fdc-174673"
+    },
+    "protein_g": {
+     "value": 0.9,
+     "unit": "g",
+     "source_id": "fdc-174673"
+    },
+    "carbohydrate_g": {
+     "value": 13.1,
+     "unit": "g",
+     "source_id": "fdc-174673"
+    },
+    "sugars_g": {
+     "value": 8.5,
+     "unit": "g",
+     "source_id": "fdc-174673"
+    },
+    "oxalate_mg": {
+     "value": 12,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "black-tea",
+   "name": "Black tea, brewed",
+   "aliases": [
+    "black tea",
+    "tea",
+    "hot tea",
+    "iced tea, unsweetened"
+   ],
+   "serving": {
+    "description": "1 cup (8 fl oz)",
+    "grams": 237
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 7,
+     "unit": "mg",
+     "source_id": "fdc-173227"
+    },
+    "potassium_mg": {
+     "value": 88,
+     "unit": "mg",
+     "source_id": "fdc-173227"
+    },
+    "calcium_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "fdc-173227"
+    },
+    "phosphorus_mg": {
+     "value": 2,
+     "unit": "mg",
+     "source_id": "fdc-173227"
+    },
+    "protein_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-173227"
+    },
+    "carbohydrate_g": {
+     "value": 0.7,
+     "unit": "g",
+     "source_id": "fdc-173227"
+    },
+    "sugars_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-173227"
+    },
+    "oxalate_mg": {
+     "value": 14,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "green-tea",
+   "name": "Green tea, brewed",
+   "aliases": [
+    "green tea"
+   ],
+   "serving": {
+    "description": "1 cup",
+    "grams": 245
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 2,
+     "unit": "mg",
+     "source_id": "fdc-171917"
+    },
+    "potassium_mg": {
+     "value": 20,
+     "unit": "mg",
+     "source_id": "fdc-171917"
+    },
+    "calcium_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "fdc-171917"
+    },
+    "phosphorus_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "fdc-171917"
+    },
+    "protein_g": {
+     "value": 0.5,
+     "unit": "g",
+     "source_id": "fdc-171917"
+    },
+    "carbohydrate_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-171917"
+    },
+    "sugars_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-171917"
+    },
+    "oxalate_mg": {
+     "value": null,
+     "unit": "mg",
+     "source_id": null
+    }
+   }
+  },
+  {
+   "id": "coffee",
+   "name": "Coffee, brewed",
+   "aliases": [
+    "coffee",
+    "black coffee"
+   ],
+   "serving": {
+    "description": "1 cup (8 fl oz)",
+    "grams": 237
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 5,
+     "unit": "mg",
+     "source_id": "fdc-171890"
+    },
+    "potassium_mg": {
+     "value": 116,
+     "unit": "mg",
+     "source_id": "fdc-171890"
+    },
+    "calcium_mg": {
+     "value": 5,
+     "unit": "mg",
+     "source_id": "fdc-171890"
+    },
+    "phosphorus_mg": {
+     "value": 7,
+     "unit": "mg",
+     "source_id": "fdc-171890"
+    },
+    "protein_g": {
+     "value": 0.3,
+     "unit": "g",
+     "source_id": "fdc-171890"
+    },
+    "carbohydrate_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-171890"
+    },
+    "sugars_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-171890"
+    },
+    "oxalate_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "orange-juice",
+   "name": "Orange juice",
+   "aliases": [
+    "orange juice",
+    "oj"
+   ],
+   "serving": {
+    "description": "1 cup (8 fl oz)",
+    "grams": 249
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 5,
+     "unit": "mg",
+     "source_id": "fdc-169100"
+    },
+    "potassium_mg": {
+     "value": 443,
+     "unit": "mg",
+     "source_id": "fdc-169100"
+    },
+    "calcium_mg": {
+     "value": 27,
+     "unit": "mg",
+     "source_id": "fdc-169100"
+    },
+    "phosphorus_mg": {
+     "value": 42,
+     "unit": "mg",
+     "source_id": "fdc-169100"
+    },
+    "protein_g": {
+     "value": 1.7,
+     "unit": "g",
+     "source_id": "fdc-169100"
+    },
+    "carbohydrate_g": {
+     "value": 28.7,
+     "unit": "g",
+     "source_id": "fdc-169100"
+    },
+    "sugars_g": {
+     "value": 20.7,
+     "unit": "g",
+     "source_id": "fdc-169100"
+    },
+    "oxalate_mg": {
+     "value": 2,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "apple-juice",
+   "name": "Apple juice",
+   "aliases": [
+    "apple juice"
+   ],
+   "serving": {
+    "description": "6 fl oz",
+    "grams": 186
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 7,
+     "unit": "mg",
+     "source_id": "fdc-173933"
+    },
+    "potassium_mg": {
+     "value": 188,
+     "unit": "mg",
+     "source_id": "fdc-173933"
+    },
+    "calcium_mg": {
+     "value": 15,
+     "unit": "mg",
+     "source_id": "fdc-173933"
+    },
+    "phosphorus_mg": {
+     "value": 13,
+     "unit": "mg",
+     "source_id": "fdc-173933"
+    },
+    "protein_g": {
+     "value": 0.2,
+     "unit": "g",
+     "source_id": "fdc-173933"
+    },
+    "carbohydrate_g": {
+     "value": 21.0,
+     "unit": "g",
+     "source_id": "fdc-173933"
+    },
+    "sugars_g": {
+     "value": 17.9,
+     "unit": "g",
+     "source_id": "fdc-173933"
+    },
+    "oxalate_mg": {
+     "value": 2,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "tomato-juice",
+   "name": "Tomato juice, canned, salted",
+   "aliases": [
+    "tomato juice"
+   ],
+   "serving": {
+    "description": "1 cup",
+    "grams": 243
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 615,
+     "unit": "mg",
+     "source_id": "fdc-170458"
+    },
+    "potassium_mg": {
+     "value": 527,
+     "unit": "mg",
+     "source_id": "fdc-170458"
+    },
+    "calcium_mg": {
+     "value": 24,
+     "unit": "mg",
+     "source_id": "fdc-170458"
+    },
+    "phosphorus_mg": {
+     "value": 46,
+     "unit": "mg",
+     "source_id": "fdc-170458"
+    },
+    "protein_g": {
+     "value": 2.1,
+     "unit": "g",
+     "source_id": "fdc-170458"
+    },
+    "carbohydrate_g": {
+     "value": 8.6,
+     "unit": "g",
+     "source_id": "fdc-170458"
+    },
+    "sugars_g": {
+     "value": 6.3,
+     "unit": "g",
+     "source_id": "fdc-170458"
+    },
+    "oxalate_mg": {
+     "value": 14,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "lemonade",
+   "name": "Lemonade (from frozen concentrate)",
+   "aliases": [
+    "lemonade"
+   ],
+   "serving": {
+    "description": "1 cup (8 fl oz)",
+    "grams": 247
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 10,
+     "unit": "mg",
+     "source_id": "fdc-173217"
+    },
+    "potassium_mg": {
+     "value": 37,
+     "unit": "mg",
+     "source_id": "fdc-173217"
+    },
+    "calcium_mg": {
+     "value": 10,
+     "unit": "mg",
+     "source_id": "fdc-173217"
+    },
+    "phosphorus_mg": {
+     "value": 5,
+     "unit": "mg",
+     "source_id": "fdc-173217"
+    },
+    "protein_g": {
+     "value": 0.2,
+     "unit": "g",
+     "source_id": "fdc-173217"
+    },
+    "carbohydrate_g": {
+     "value": 25.7,
+     "unit": "g",
+     "source_id": "fdc-173217"
+    },
+    "sugars_g": {
+     "value": 24.7,
+     "unit": "g",
+     "source_id": "fdc-173217"
+    },
+    "oxalate_mg": {
+     "value": 15,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "regular-soda",
+   "name": "Regular soda (cola)",
+   "aliases": [
+    "regular soda",
+    "soda",
+    "cola",
+    "pop",
+    "soft drink"
+   ],
+   "serving": {
+    "description": "8 fl oz",
+    "grams": 245.6
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 7,
+     "unit": "mg",
+     "source_id": "fdc-174852"
+    },
+    "potassium_mg": {
+     "value": 12,
+     "unit": "mg",
+     "source_id": "fdc-174852"
+    },
+    "calcium_mg": {
+     "value": 2,
+     "unit": "mg",
+     "source_id": "fdc-174852"
+    },
+    "phosphorus_mg": {
+     "value": 22,
+     "unit": "mg",
+     "source_id": "fdc-174852"
+    },
+    "protein_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-174852"
+    },
+    "carbohydrate_g": {
+     "value": 25.4,
+     "unit": "g",
+     "source_id": "fdc-174852"
+    },
+    "sugars_g": {
+     "value": 24.4,
+     "unit": "g",
+     "source_id": "fdc-174852"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "diet-soda",
+   "name": "Diet soda (cola)",
+   "aliases": [
+    "diet soda",
+    "diet cola",
+    "diet pop"
+   ],
+   "serving": {
+    "description": "8 fl oz",
+    "grams": 236.8
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 9,
+     "unit": "mg",
+     "source_id": "fdc-174850"
+    },
+    "potassium_mg": {
+     "value": 17,
+     "unit": "mg",
+     "source_id": "fdc-174850"
+    },
+    "calcium_mg": {
+     "value": 7,
+     "unit": "mg",
+     "source_id": "fdc-174850"
+    },
+    "phosphorus_mg": {
+     "value": 24,
+     "unit": "mg",
+     "source_id": "fdc-174850"
+    },
+    "protein_g": {
+     "value": 0.3,
+     "unit": "g",
+     "source_id": "fdc-174850"
+    },
+    "carbohydrate_g": {
+     "value": 0.3,
+     "unit": "g",
+     "source_id": "fdc-174850"
+    },
+    "sugars_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-174850"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "sports-drink",
+   "name": "Sports drink (Gatorade)",
+   "aliases": [
+    "sports drink",
+    "gatorade"
+   ],
+   "serving": {
+    "description": "8 fl oz",
+    "grams": 244
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 95,
+     "unit": "mg",
+     "source_id": "fdc-173660"
+    },
+    "potassium_mg": {
+     "value": 37,
+     "unit": "mg",
+     "source_id": "fdc-173660"
+    },
+    "calcium_mg": {
+     "value": 2,
+     "unit": "mg",
+     "source_id": "fdc-173660"
+    },
+    "phosphorus_mg": {
+     "value": 24,
+     "unit": "mg",
+     "source_id": "fdc-173660"
+    },
+    "protein_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-173660"
+    },
+    "carbohydrate_g": {
+     "value": 15.7,
+     "unit": "g",
+     "source_id": "fdc-173660"
+    },
+    "sugars_g": {
+     "value": 12.8,
+     "unit": "g",
+     "source_id": "fdc-173660"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "beer",
+   "name": "Beer, regular",
+   "aliases": [
+    "beer"
+   ],
+   "serving": {
+    "description": "1 can (12 fl oz)",
+    "grams": 356
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 14,
+     "unit": "mg",
+     "source_id": "fdc-168746"
+    },
+    "potassium_mg": {
+     "value": 96,
+     "unit": "mg",
+     "source_id": "fdc-168746"
+    },
+    "calcium_mg": {
+     "value": 14,
+     "unit": "mg",
+     "source_id": "fdc-168746"
+    },
+    "phosphorus_mg": {
+     "value": 50,
+     "unit": "mg",
+     "source_id": "fdc-168746"
+    },
+    "protein_g": {
+     "value": 1.6,
+     "unit": "g",
+     "source_id": "fdc-168746"
+    },
+    "carbohydrate_g": {
+     "value": 12.6,
+     "unit": "g",
+     "source_id": "fdc-168746"
+    },
+    "sugars_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-168746"
+    },
+    "oxalate_mg": {
+     "value": 4,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "soy-milk",
+   "name": "Soy milk",
+   "aliases": [
+    "soymilk",
+    "soy drink"
+   ],
+   "serving": {
+    "description": "1 cup",
+    "grams": 243
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 124,
+     "unit": "mg",
+     "source_id": "fdc-172446"
+    },
+    "potassium_mg": {
+     "value": 287,
+     "unit": "mg",
+     "source_id": "fdc-172446"
+    },
+    "calcium_mg": {
+     "value": 61,
+     "unit": "mg",
+     "source_id": "fdc-172446"
+    },
+    "phosphorus_mg": {
+     "value": 126,
+     "unit": "mg",
+     "source_id": "fdc-172446"
+    },
+    "protein_g": {
+     "value": 7.9,
+     "unit": "g",
+     "source_id": "fdc-172446"
+    },
+    "carbohydrate_g": {
+     "value": 15.3,
+     "unit": "g",
+     "source_id": "fdc-172446"
+    },
+    "sugars_g": {
+     "value": 9.7,
+     "unit": "g",
+     "source_id": "fdc-172446"
+    },
+    "oxalate_mg": {
+     "value": 20,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "whole-milk",
+   "name": "Milk, whole",
+   "aliases": [
+    "milk",
+    "whole milk"
+   ],
+   "serving": {
+    "description": "1 cup",
+    "grams": 244
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 105,
+     "unit": "mg",
+     "source_id": "fdc-171265"
+    },
+    "potassium_mg": {
+     "value": 322,
+     "unit": "mg",
+     "source_id": "fdc-171265"
+    },
+    "calcium_mg": {
+     "value": 276,
+     "unit": "mg",
+     "source_id": "fdc-171265"
+    },
+    "phosphorus_mg": {
+     "value": 205,
+     "unit": "mg",
+     "source_id": "fdc-171265"
+    },
+    "protein_g": {
+     "value": 7.7,
+     "unit": "g",
+     "source_id": "fdc-171265"
+    },
+    "carbohydrate_g": {
+     "value": 11.7,
+     "unit": "g",
+     "source_id": "fdc-171265"
+    },
+    "sugars_g": {
+     "value": 12.3,
+     "unit": "g",
+     "source_id": "fdc-171265"
+    },
+    "oxalate_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "skim-milk",
+   "name": "Milk, fat free (skim)",
+   "aliases": [
+    "milk",
+    "skim milk",
+    "nonfat milk",
+    "fat free milk"
+   ],
+   "serving": {
+    "description": "1 cup",
+    "grams": 245
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 103,
+     "unit": "mg",
+     "source_id": "fdc-171269"
+    },
+    "potassium_mg": {
+     "value": 382,
+     "unit": "mg",
+     "source_id": "fdc-171269"
+    },
+    "calcium_mg": {
+     "value": 299,
+     "unit": "mg",
+     "source_id": "fdc-171269"
+    },
+    "phosphorus_mg": {
+     "value": 247,
+     "unit": "mg",
+     "source_id": "fdc-171269"
+    },
+    "protein_g": {
+     "value": 8.3,
+     "unit": "g",
+     "source_id": "fdc-171269"
+    },
+    "carbohydrate_g": {
+     "value": 12.2,
+     "unit": "g",
+     "source_id": "fdc-171269"
+    },
+    "sugars_g": {
+     "value": 12.5,
+     "unit": "g",
+     "source_id": "fdc-171269"
+    },
+    "oxalate_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "chocolate-milk",
+   "name": "Chocolate milk, reduced fat",
+   "aliases": [
+    "chocolate milk"
+   ],
+   "serving": {
+    "description": "1 cup",
+    "grams": 250
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 165,
+     "unit": "mg",
+     "source_id": "fdc-170880"
+    },
+    "potassium_mg": {
+     "value": 422,
+     "unit": "mg",
+     "source_id": "fdc-170880"
+    },
+    "calcium_mg": {
+     "value": 272,
+     "unit": "mg",
+     "source_id": "fdc-170880"
+    },
+    "phosphorus_mg": {
+     "value": 255,
+     "unit": "mg",
+     "source_id": "fdc-170880"
+    },
+    "protein_g": {
+     "value": 7.5,
+     "unit": "g",
+     "source_id": "fdc-170880"
+    },
+    "carbohydrate_g": {
+     "value": 30.3,
+     "unit": "g",
+     "source_id": "fdc-170880"
+    },
+    "sugars_g": {
+     "value": 23.9,
+     "unit": "g",
+     "source_id": "fdc-170880"
+    },
+    "oxalate_mg": {
+     "value": 7,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "yogurt",
+   "name": "Yogurt, plain, low fat",
+   "aliases": [
+    "yogurt",
+    "plain yogurt",
+    "yoghurt"
+   ],
+   "serving": {
+    "description": "1 cup (8 fl oz)",
+    "grams": 245
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 172,
+     "unit": "mg",
+     "source_id": "fdc-170886"
+    },
+    "potassium_mg": {
+     "value": 573,
+     "unit": "mg",
+     "source_id": "fdc-170886"
+    },
+    "calcium_mg": {
+     "value": 448,
+     "unit": "mg",
+     "source_id": "fdc-170886"
+    },
+    "phosphorus_mg": {
+     "value": 353,
+     "unit": "mg",
+     "source_id": "fdc-170886"
+    },
+    "protein_g": {
+     "value": 12.9,
+     "unit": "g",
+     "source_id": "fdc-170886"
+    },
+    "carbohydrate_g": {
+     "value": 17.2,
+     "unit": "g",
+     "source_id": "fdc-170886"
+    },
+    "sugars_g": {
+     "value": 17.2,
+     "unit": "g",
+     "source_id": "fdc-170886"
+    },
+    "oxalate_mg": {
+     "value": 2,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "cheddar-cheese",
+   "name": "Cheddar cheese",
+   "aliases": [
+    "cheddar"
+   ],
+   "serving": {
+    "description": "1 slice (1 oz)",
+    "grams": 28
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 183,
+     "unit": "mg",
+     "source_id": "fdc-173414"
+    },
+    "potassium_mg": {
+     "value": 21,
+     "unit": "mg",
+     "source_id": "fdc-173414"
+    },
+    "calcium_mg": {
+     "value": 199,
+     "unit": "mg",
+     "source_id": "fdc-173414"
+    },
+    "phosphorus_mg": {
+     "value": 127,
+     "unit": "mg",
+     "source_id": "fdc-173414"
+    },
+    "protein_g": {
+     "value": 6.4,
+     "unit": "g",
+     "source_id": "fdc-173414"
+    },
+    "carbohydrate_g": {
+     "value": 0.9,
+     "unit": "g",
+     "source_id": "fdc-173414"
+    },
+    "sugars_g": {
+     "value": 0.1,
+     "unit": "g",
+     "source_id": "fdc-173414"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "american-cheese",
+   "name": "American cheese",
+   "aliases": [
+    "processed cheese",
+    "cheese slice"
+   ],
+   "serving": {
+    "description": "1 slice (3/4 oz)",
+    "grams": 21
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 351,
+     "unit": "mg",
+     "source_id": "fdc-171290"
+    },
+    "potassium_mg": {
+     "value": 28,
+     "unit": "mg",
+     "source_id": "fdc-171290"
+    },
+    "calcium_mg": {
+     "value": 219,
+     "unit": "mg",
+     "source_id": "fdc-171290"
+    },
+    "phosphorus_mg": {
+     "value": 135,
+     "unit": "mg",
+     "source_id": "fdc-171290"
+    },
+    "protein_g": {
+     "value": 3.8,
+     "unit": "g",
+     "source_id": "fdc-171290"
+    },
+    "carbohydrate_g": {
+     "value": 0.8,
+     "unit": "g",
+     "source_id": "fdc-171290"
+    },
+    "sugars_g": {
+     "value": 0.5,
+     "unit": "g",
+     "source_id": "fdc-171290"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "mozzarella",
+   "name": "Mozzarella cheese",
+   "aliases": [
+    "mozzarella"
+   ],
+   "serving": {
+    "description": "1 oz",
+    "grams": 28.35
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 138,
+     "unit": "mg",
+     "source_id": "fdc-170845"
+    },
+    "potassium_mg": {
+     "value": 22,
+     "unit": "mg",
+     "source_id": "fdc-170845"
+    },
+    "calcium_mg": {
+     "value": 143,
+     "unit": "mg",
+     "source_id": "fdc-170845"
+    },
+    "phosphorus_mg": {
+     "value": 100,
+     "unit": "mg",
+     "source_id": "fdc-170845"
+    },
+    "protein_g": {
+     "value": 6.3,
+     "unit": "g",
+     "source_id": "fdc-170845"
+    },
+    "carbohydrate_g": {
+     "value": 0.7,
+     "unit": "g",
+     "source_id": "fdc-170845"
+    },
+    "sugars_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-170845"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "cottage-cheese",
+   "name": "Cottage cheese",
+   "aliases": [
+    "cottage cheese"
+   ],
+   "serving": {
+    "description": "1/2 cup",
+    "grams": 113
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 356,
+     "unit": "mg",
+     "source_id": "fdc-172179"
+    },
+    "potassium_mg": {
+     "value": 118,
+     "unit": "mg",
+     "source_id": "fdc-172179"
+    },
+    "calcium_mg": {
+     "value": 94,
+     "unit": "mg",
+     "source_id": "fdc-172179"
+    },
+    "phosphorus_mg": {
+     "value": 180,
+     "unit": "mg",
+     "source_id": "fdc-172179"
+    },
+    "protein_g": {
+     "value": 12.6,
+     "unit": "g",
+     "source_id": "fdc-172179"
+    },
+    "carbohydrate_g": {
+     "value": 3.8,
+     "unit": "g",
+     "source_id": "fdc-172179"
+    },
+    "sugars_g": {
+     "value": 3.0,
+     "unit": "g",
+     "source_id": "fdc-172179"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "ice-cream",
+   "name": "Vanilla ice cream",
+   "aliases": [
+    "ice cream"
+   ],
+   "serving": {
+    "description": "1/2 cup",
+    "grams": 66
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 53,
+     "unit": "mg",
+     "source_id": "fdc-167575"
+    },
+    "potassium_mg": {
+     "value": 131,
+     "unit": "mg",
+     "source_id": "fdc-167575"
+    },
+    "calcium_mg": {
+     "value": 84,
+     "unit": "mg",
+     "source_id": "fdc-167575"
+    },
+    "phosphorus_mg": {
+     "value": 69,
+     "unit": "mg",
+     "source_id": "fdc-167575"
+    },
+    "protein_g": {
+     "value": 2.3,
+     "unit": "g",
+     "source_id": "fdc-167575"
+    },
+    "carbohydrate_g": {
+     "value": 15.6,
+     "unit": "g",
+     "source_id": "fdc-167575"
+    },
+    "sugars_g": {
+     "value": 14.0,
+     "unit": "g",
+     "source_id": "fdc-167575"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "egg",
+   "name": "Egg",
+   "aliases": [
+    "eggs"
+   ],
+   "serving": {
+    "description": "1 medium egg",
+    "grams": 44
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 62,
+     "unit": "mg",
+     "source_id": "fdc-171287"
+    },
+    "potassium_mg": {
+     "value": 61,
+     "unit": "mg",
+     "source_id": "fdc-171287"
+    },
+    "calcium_mg": {
+     "value": 25,
+     "unit": "mg",
+     "source_id": "fdc-171287"
+    },
+    "phosphorus_mg": {
+     "value": 87,
+     "unit": "mg",
+     "source_id": "fdc-171287"
+    },
+    "protein_g": {
+     "value": 5.5,
+     "unit": "g",
+     "source_id": "fdc-171287"
+    },
+    "carbohydrate_g": {
+     "value": 0.3,
+     "unit": "g",
+     "source_id": "fdc-171287"
+    },
+    "sugars_g": {
+     "value": 0.2,
+     "unit": "g",
+     "source_id": "fdc-171287"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "chicken-breast",
+   "name": "Chicken breast, roasted",
+   "aliases": [
+    "chicken",
+    "chicken breast"
+   ],
+   "serving": {
+    "description": "3 oz cooked",
+    "grams": 85.05
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 63,
+     "unit": "mg",
+     "source_id": "fdc-171477"
+    },
+    "potassium_mg": {
+     "value": 218,
+     "unit": "mg",
+     "source_id": "fdc-171477"
+    },
+    "calcium_mg": {
+     "value": 13,
+     "unit": "mg",
+     "source_id": "fdc-171477"
+    },
+    "phosphorus_mg": {
+     "value": 194,
+     "unit": "mg",
+     "source_id": "fdc-171477"
+    },
+    "protein_g": {
+     "value": 26.4,
+     "unit": "g",
+     "source_id": "fdc-171477"
+    },
+    "carbohydrate_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-171477"
+    },
+    "sugars_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-171477"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "ground-beef",
+   "name": "Ground beef (85% lean), cooked",
+   "aliases": [
+    "ground beef",
+    "hamburger",
+    "beef"
+   ],
+   "serving": {
+    "description": "3 oz cooked",
+    "grams": 85
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 61,
+     "unit": "mg",
+     "source_id": "fdc-174032"
+    },
+    "potassium_mg": {
+     "value": 270,
+     "unit": "mg",
+     "source_id": "fdc-174032"
+    },
+    "calcium_mg": {
+     "value": 15,
+     "unit": "mg",
+     "source_id": "fdc-174032"
+    },
+    "phosphorus_mg": {
+     "value": 168,
+     "unit": "mg",
+     "source_id": "fdc-174032"
+    },
+    "protein_g": {
+     "value": 22.0,
+     "unit": "g",
+     "source_id": "fdc-174032"
+    },
+    "carbohydrate_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-174032"
+    },
+    "sugars_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-174032"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "salmon",
+   "name": "Salmon, cooked",
+   "aliases": [
+    "salmon"
+   ],
+   "serving": {
+    "description": "4 oz cooked",
+    "grams": 113.4
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 69,
+     "unit": "mg",
+     "source_id": "fdc-175168"
+    },
+    "potassium_mg": {
+     "value": 435,
+     "unit": "mg",
+     "source_id": "fdc-175168"
+    },
+    "calcium_mg": {
+     "value": 17,
+     "unit": "mg",
+     "source_id": "fdc-175168"
+    },
+    "phosphorus_mg": {
+     "value": 286,
+     "unit": "mg",
+     "source_id": "fdc-175168"
+    },
+    "protein_g": {
+     "value": 25.1,
+     "unit": "g",
+     "source_id": "fdc-175168"
+    },
+    "carbohydrate_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-175168"
+    },
+    "sugars_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-175168"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "tuna-canned",
+   "name": "Tuna, canned in water",
+   "aliases": [
+    "tuna",
+    "canned tuna"
+   ],
+   "serving": {
+    "description": "3.5 oz, drained",
+    "grams": 99.23
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 245,
+     "unit": "mg",
+     "source_id": "fdc-173709"
+    },
+    "potassium_mg": {
+     "value": 178,
+     "unit": "mg",
+     "source_id": "fdc-173709"
+    },
+    "calcium_mg": {
+     "value": 17,
+     "unit": "mg",
+     "source_id": "fdc-173709"
+    },
+    "phosphorus_mg": {
+     "value": 138,
+     "unit": "mg",
+     "source_id": "fdc-173709"
+    },
+    "protein_g": {
+     "value": 19.3,
+     "unit": "g",
+     "source_id": "fdc-173709"
+    },
+    "carbohydrate_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-173709"
+    },
+    "sugars_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-173709"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "bacon",
+   "name": "Bacon, cooked",
+   "aliases": [
+    "bacon"
+   ],
+   "serving": {
+    "description": "2 slices",
+    "grams": 23
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 387,
+     "unit": "mg",
+     "source_id": "fdc-168322"
+    },
+    "potassium_mg": {
+     "value": 115,
+     "unit": "mg",
+     "source_id": "fdc-168322"
+    },
+    "calcium_mg": {
+     "value": 3,
+     "unit": "mg",
+     "source_id": "fdc-168322"
+    },
+    "phosphorus_mg": {
+     "value": 89,
+     "unit": "mg",
+     "source_id": "fdc-168322"
+    },
+    "protein_g": {
+     "value": 7.8,
+     "unit": "g",
+     "source_id": "fdc-168322"
+    },
+    "carbohydrate_g": {
+     "value": 0.4,
+     "unit": "g",
+     "source_id": "fdc-168322"
+    },
+    "sugars_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-168322"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "hot-dog",
+   "name": "Hot dog (beef frankfurter)",
+   "aliases": [
+    "hot dog",
+    "hot dogs",
+    "frankfurter",
+    "wiener"
+   ],
+   "serving": {
+    "description": "1 hot dog (no bun)",
+    "grams": 49
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 424,
+     "unit": "mg",
+     "source_id": "fdc-173862"
+    },
+    "potassium_mg": {
+     "value": 178,
+     "unit": "mg",
+     "source_id": "fdc-173862"
+    },
+    "calcium_mg": {
+     "value": 7,
+     "unit": "mg",
+     "source_id": "fdc-173862"
+    },
+    "phosphorus_mg": {
+     "value": 66,
+     "unit": "mg",
+     "source_id": "fdc-173862"
+    },
+    "protein_g": {
+     "value": 5.7,
+     "unit": "g",
+     "source_id": "fdc-173862"
+    },
+    "carbohydrate_g": {
+     "value": 1.5,
+     "unit": "g",
+     "source_id": "fdc-173862"
+    },
+    "sugars_g": {
+     "value": 0.6,
+     "unit": "g",
+     "source_id": "fdc-173862"
+    },
+    "oxalate_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "deli-turkey",
+   "name": "Deli turkey breast, sliced",
+   "aliases": [
+    "deli meat",
+    "deli turkey",
+    "sliced turkey",
+    "lunch meat",
+    "cold cuts"
+   ],
+   "serving": {
+    "description": "2 oz (about 3-4 slices)",
+    "grams": 56.7
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 509,
+     "unit": "mg",
+     "source_id": "fdc-172941"
+    },
+    "potassium_mg": {
+     "value": 210,
+     "unit": "mg",
+     "source_id": "fdc-172941"
+    },
+    "calcium_mg": {
+     "value": 8,
+     "unit": "mg",
+     "source_id": "fdc-172941"
+    },
+    "phosphorus_mg": {
+     "value": 141,
+     "unit": "mg",
+     "source_id": "fdc-172941"
+    },
+    "protein_g": {
+     "value": 8.4,
+     "unit": "g",
+     "source_id": "fdc-172941"
+    },
+    "carbohydrate_g": {
+     "value": 1.2,
+     "unit": "g",
+     "source_id": "fdc-172941"
+    },
+    "sugars_g": {
+     "value": 0.5,
+     "unit": "g",
+     "source_id": "fdc-172941"
+    },
+    "oxalate_mg": {
+     "value": null,
+     "unit": "mg",
+     "source_id": null
+    }
+   }
+  },
+  {
+   "id": "deli-ham",
+   "name": "Deli ham, sliced",
+   "aliases": [
+    "deli meat",
+    "ham",
+    "sliced ham",
+    "lunch meat"
+   ],
+   "serving": {
+    "description": "2 slices (2 oz)",
+    "grams": 56
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 456,
+     "unit": "mg",
+     "source_id": "fdc-173864"
+    },
+    "potassium_mg": {
+     "value": 161,
+     "unit": "mg",
+     "source_id": "fdc-173864"
+    },
+    "calcium_mg": {
+     "value": 13,
+     "unit": "mg",
+     "source_id": "fdc-173864"
+    },
+    "phosphorus_mg": {
+     "value": 86,
+     "unit": "mg",
+     "source_id": "fdc-173864"
+    },
+    "protein_g": {
+     "value": 9.3,
+     "unit": "g",
+     "source_id": "fdc-173864"
+    },
+    "carbohydrate_g": {
+     "value": 2.0,
+     "unit": "g",
+     "source_id": "fdc-173864"
+    },
+    "sugars_g": {
+     "value": 0.6,
+     "unit": "g",
+     "source_id": "fdc-173864"
+    },
+    "oxalate_mg": {
+     "value": null,
+     "unit": "mg",
+     "source_id": null
+    }
+   }
+  },
+  {
+   "id": "bologna",
+   "name": "Bologna (beef)",
+   "aliases": [
+    "bologna",
+    "deli meat"
+   ],
+   "serving": {
+    "description": "1 slice",
+    "grams": 30
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 304,
+     "unit": "mg",
+     "source_id": "fdc-172012"
+    },
+    "potassium_mg": {
+     "value": 105,
+     "unit": "mg",
+     "source_id": "fdc-172012"
+    },
+    "calcium_mg": {
+     "value": 6,
+     "unit": "mg",
+     "source_id": "fdc-172012"
+    },
+    "phosphorus_mg": {
+     "value": 46,
+     "unit": "mg",
+     "source_id": "fdc-172012"
+    },
+    "protein_g": {
+     "value": 3.3,
+     "unit": "g",
+     "source_id": "fdc-172012"
+    },
+    "carbohydrate_g": {
+     "value": 1.3,
+     "unit": "g",
+     "source_id": "fdc-172012"
+    },
+    "sugars_g": {
+     "value": 0.6,
+     "unit": "g",
+     "source_id": "fdc-172012"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "white-bread",
+   "name": "White bread",
+   "aliases": [
+    "bread",
+    "white bread"
+   ],
+   "serving": {
+    "description": "1 slice",
+    "grams": 29
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 142,
+     "unit": "mg",
+     "source_id": "fdc-174924"
+    },
+    "potassium_mg": {
+     "value": 37,
+     "unit": "mg",
+     "source_id": "fdc-174924"
+    },
+    "calcium_mg": {
+     "value": 42,
+     "unit": "mg",
+     "source_id": "fdc-174924"
+    },
+    "phosphorus_mg": {
+     "value": 28,
+     "unit": "mg",
+     "source_id": "fdc-174924"
+    },
+    "protein_g": {
+     "value": 2.6,
+     "unit": "g",
+     "source_id": "fdc-174924"
+    },
+    "carbohydrate_g": {
+     "value": 14.3,
+     "unit": "g",
+     "source_id": "fdc-174924"
+    },
+    "sugars_g": {
+     "value": 1.6,
+     "unit": "g",
+     "source_id": "fdc-174924"
+    },
+    "oxalate_mg": {
+     "value": 5,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "whole-wheat-bread",
+   "name": "Whole wheat bread",
+   "aliases": [
+    "wheat bread",
+    "whole wheat bread"
+   ],
+   "serving": {
+    "description": "1 slice",
+    "grams": 32
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 146,
+     "unit": "mg",
+     "source_id": "fdc-172688"
+    },
+    "potassium_mg": {
+     "value": 81,
+     "unit": "mg",
+     "source_id": "fdc-172688"
+    },
+    "calcium_mg": {
+     "value": 52,
+     "unit": "mg",
+     "source_id": "fdc-172688"
+    },
+    "phosphorus_mg": {
+     "value": 68,
+     "unit": "mg",
+     "source_id": "fdc-172688"
+    },
+    "protein_g": {
+     "value": 4.0,
+     "unit": "g",
+     "source_id": "fdc-172688"
+    },
+    "carbohydrate_g": {
+     "value": 13.7,
+     "unit": "g",
+     "source_id": "fdc-172688"
+    },
+    "sugars_g": {
+     "value": 1.4,
+     "unit": "g",
+     "source_id": "fdc-172688"
+    },
+    "oxalate_mg": {
+     "value": 6,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "bagel",
+   "name": "Bagel, plain",
+   "aliases": [
+    "bagel",
+    "bagels"
+   ],
+   "serving": {
+    "description": "1 bagel",
+    "grams": 99
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 418,
+     "unit": "mg",
+     "source_id": "fdc-174899"
+    },
+    "potassium_mg": {
+     "value": 106,
+     "unit": "mg",
+     "source_id": "fdc-174899"
+    },
+    "calcium_mg": {
+     "value": 217,
+     "unit": "mg",
+     "source_id": "fdc-174899"
+    },
+    "phosphorus_mg": {
+     "value": 98,
+     "unit": "mg",
+     "source_id": "fdc-174899"
+    },
+    "protein_g": {
+     "value": 10.5,
+     "unit": "g",
+     "source_id": "fdc-174899"
+    },
+    "carbohydrate_g": {
+     "value": 51.9,
+     "unit": "g",
+     "source_id": "fdc-174899"
+    },
+    "sugars_g": {
+     "value": 8.3,
+     "unit": "g",
+     "source_id": "fdc-174899"
+    },
+    "oxalate_mg": {
+     "value": 9,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "corn-tortilla",
+   "name": "Corn tortilla",
+   "aliases": [
+    "corn tortillas"
+   ],
+   "serving": {
+    "description": "1 tortilla",
+    "grams": 24
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 11,
+     "unit": "mg",
+     "source_id": "fdc-175036"
+    },
+    "potassium_mg": {
+     "value": 45,
+     "unit": "mg",
+     "source_id": "fdc-175036"
+    },
+    "calcium_mg": {
+     "value": 19,
+     "unit": "mg",
+     "source_id": "fdc-175036"
+    },
+    "phosphorus_mg": {
+     "value": 75,
+     "unit": "mg",
+     "source_id": "fdc-175036"
+    },
+    "protein_g": {
+     "value": 1.4,
+     "unit": "g",
+     "source_id": "fdc-175036"
+    },
+    "carbohydrate_g": {
+     "value": 10.7,
+     "unit": "g",
+     "source_id": "fdc-175036"
+    },
+    "sugars_g": {
+     "value": 0.2,
+     "unit": "g",
+     "source_id": "fdc-175036"
+    },
+    "oxalate_mg": {
+     "value": 7,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "flour-tortilla",
+   "name": "Flour tortilla",
+   "aliases": [
+    "flour tortillas",
+    "tortilla"
+   ],
+   "serving": {
+    "description": "1 medium tortilla (6 inch)",
+    "grams": 32
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 153,
+     "unit": "mg",
+     "source_id": "fdc-173242"
+    },
+    "potassium_mg": {
+     "value": 42,
+     "unit": "mg",
+     "source_id": "fdc-173242"
+    },
+    "calcium_mg": {
+     "value": 12,
+     "unit": "mg",
+     "source_id": "fdc-173242"
+    },
+    "phosphorus_mg": {
+     "value": 40,
+     "unit": "mg",
+     "source_id": "fdc-173242"
+    },
+    "protein_g": {
+     "value": 2.8,
+     "unit": "g",
+     "source_id": "fdc-173242"
+    },
+    "carbohydrate_g": {
+     "value": 17.8,
+     "unit": "g",
+     "source_id": "fdc-173242"
+    },
+    "sugars_g": {
+     "value": null,
+     "unit": "g",
+     "source_id": null
+    },
+    "oxalate_mg": {
+     "value": 8,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "white-rice",
+   "name": "White rice, cooked",
+   "aliases": [
+    "rice",
+    "white rice"
+   ],
+   "serving": {
+    "description": "1 cup cooked",
+    "grams": 158
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 2,
+     "unit": "mg",
+     "source_id": "fdc-168878"
+    },
+    "potassium_mg": {
+     "value": 55,
+     "unit": "mg",
+     "source_id": "fdc-168878"
+    },
+    "calcium_mg": {
+     "value": 16,
+     "unit": "mg",
+     "source_id": "fdc-168878"
+    },
+    "phosphorus_mg": {
+     "value": 68,
+     "unit": "mg",
+     "source_id": "fdc-168878"
+    },
+    "protein_g": {
+     "value": 4.3,
+     "unit": "g",
+     "source_id": "fdc-168878"
+    },
+    "carbohydrate_g": {
+     "value": 44.5,
+     "unit": "g",
+     "source_id": "fdc-168878"
+    },
+    "sugars_g": {
+     "value": 0.1,
+     "unit": "g",
+     "source_id": "fdc-168878"
+    },
+    "oxalate_mg": {
+     "value": 4,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "brown-rice",
+   "name": "Brown rice, cooked",
+   "aliases": [
+    "brown rice"
+   ],
+   "serving": {
+    "description": "1 cup cooked",
+    "grams": 202
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 8,
+     "unit": "mg",
+     "source_id": "fdc-169704"
+    },
+    "potassium_mg": {
+     "value": 174,
+     "unit": "mg",
+     "source_id": "fdc-169704"
+    },
+    "calcium_mg": {
+     "value": 6,
+     "unit": "mg",
+     "source_id": "fdc-169704"
+    },
+    "phosphorus_mg": {
+     "value": 208,
+     "unit": "mg",
+     "source_id": "fdc-169704"
+    },
+    "protein_g": {
+     "value": 5.5,
+     "unit": "g",
+     "source_id": "fdc-169704"
+    },
+    "carbohydrate_g": {
+     "value": 51.7,
+     "unit": "g",
+     "source_id": "fdc-169704"
+    },
+    "sugars_g": {
+     "value": 0.5,
+     "unit": "g",
+     "source_id": "fdc-169704"
+    },
+    "oxalate_mg": {
+     "value": 24,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "spaghetti",
+   "name": "Spaghetti, cooked",
+   "aliases": [
+    "pasta",
+    "spaghetti",
+    "noodles"
+   ],
+   "serving": {
+    "description": "1 cup cooked",
+    "grams": 124
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "fdc-169737"
+    },
+    "potassium_mg": {
+     "value": 55,
+     "unit": "mg",
+     "source_id": "fdc-169737"
+    },
+    "calcium_mg": {
+     "value": 9,
+     "unit": "mg",
+     "source_id": "fdc-169737"
+    },
+    "phosphorus_mg": {
+     "value": 72,
+     "unit": "mg",
+     "source_id": "fdc-169737"
+    },
+    "protein_g": {
+     "value": 7.2,
+     "unit": "g",
+     "source_id": "fdc-169737"
+    },
+    "carbohydrate_g": {
+     "value": 38.3,
+     "unit": "g",
+     "source_id": "fdc-169737"
+    },
+    "sugars_g": {
+     "value": 0.7,
+     "unit": "g",
+     "source_id": "fdc-169737"
+    },
+    "oxalate_mg": {
+     "value": 11,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "oatmeal",
+   "name": "Oatmeal, cooked with water and salt",
+   "aliases": [
+    "oatmeal",
+    "oats",
+    "porridge"
+   ],
+   "serving": {
+    "description": "1 cup cooked",
+    "grams": 234
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 166,
+     "unit": "mg",
+     "source_id": "fdc-171675"
+    },
+    "potassium_mg": {
+     "value": 164,
+     "unit": "mg",
+     "source_id": "fdc-171675"
+    },
+    "calcium_mg": {
+     "value": 21,
+     "unit": "mg",
+     "source_id": "fdc-171675"
+    },
+    "phosphorus_mg": {
+     "value": 180,
+     "unit": "mg",
+     "source_id": "fdc-171675"
+    },
+    "protein_g": {
+     "value": 5.9,
+     "unit": "g",
+     "source_id": "fdc-171675"
+    },
+    "carbohydrate_g": {
+     "value": 28.1,
+     "unit": "g",
+     "source_id": "fdc-171675"
+    },
+    "sugars_g": {
+     "value": 0.6,
+     "unit": "g",
+     "source_id": "fdc-171675"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "cheerios",
+   "name": "Cheerios cereal",
+   "aliases": [
+    "cheerios"
+   ],
+   "serving": {
+    "description": "1 cup",
+    "grams": 28
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 139,
+     "unit": "mg",
+     "source_id": "fdc-173884"
+    },
+    "potassium_mg": {
+     "value": 177,
+     "unit": "mg",
+     "source_id": "fdc-173884"
+    },
+    "calcium_mg": {
+     "value": 100,
+     "unit": "mg",
+     "source_id": "fdc-173884"
+    },
+    "phosphorus_mg": {
+     "value": 100,
+     "unit": "mg",
+     "source_id": "fdc-173884"
+    },
+    "protein_g": {
+     "value": 3.5,
+     "unit": "g",
+     "source_id": "fdc-173884"
+    },
+    "carbohydrate_g": {
+     "value": 20.5,
+     "unit": "g",
+     "source_id": "fdc-173884"
+    },
+    "sugars_g": {
+     "value": 1.3,
+     "unit": "g",
+     "source_id": "fdc-173884"
+    },
+    "oxalate_mg": {
+     "value": 8,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "raisin-bran",
+   "name": "Raisin bran cereal",
+   "aliases": [
+    "raisin bran",
+    "bran cereal"
+   ],
+   "serving": {
+    "description": "1 cup",
+    "grams": 59
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 225,
+     "unit": "mg",
+     "source_id": "fdc-171650"
+    },
+    "potassium_mg": {
+     "value": 310,
+     "unit": "mg",
+     "source_id": "fdc-171650"
+    },
+    "calcium_mg": {
+     "value": 26,
+     "unit": "mg",
+     "source_id": "fdc-171650"
+    },
+    "phosphorus_mg": {
+     "value": 200,
+     "unit": "mg",
+     "source_id": "fdc-171650"
+    },
+    "protein_g": {
+     "value": 4.5,
+     "unit": "g",
+     "source_id": "fdc-171650"
+    },
+    "carbohydrate_g": {
+     "value": 46.6,
+     "unit": "g",
+     "source_id": "fdc-171650"
+    },
+    "sugars_g": {
+     "value": 19.4,
+     "unit": "g",
+     "source_id": "fdc-171650"
+    },
+    "oxalate_mg": {
+     "value": 46,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "potato-chips",
+   "name": "Potato chips, salted",
+   "aliases": [
+    "potato chips",
+    "chips",
+    "crisps"
+   ],
+   "serving": {
+    "description": "1 oz (about 15-20 chips)",
+    "grams": 28.35
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 149,
+     "unit": "mg",
+     "source_id": "fdc-169677"
+    },
+    "potassium_mg": {
+     "value": 339,
+     "unit": "mg",
+     "source_id": "fdc-169677"
+    },
+    "calcium_mg": {
+     "value": 6,
+     "unit": "mg",
+     "source_id": "fdc-169677"
+    },
+    "phosphorus_mg": {
+     "value": 43,
+     "unit": "mg",
+     "source_id": "fdc-169677"
+    },
+    "protein_g": {
+     "value": 1.8,
+     "unit": "g",
+     "source_id": "fdc-169677"
+    },
+    "carbohydrate_g": {
+     "value": 15.3,
+     "unit": "g",
+     "source_id": "fdc-169677"
+    },
+    "sugars_g": {
+     "value": 0.1,
+     "unit": "g",
+     "source_id": "fdc-169677"
+    },
+    "oxalate_mg": {
+     "value": 21,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "tortilla-chips",
+   "name": "Tortilla chips, salted",
+   "aliases": [
+    "tortilla chips",
+    "corn chips"
+   ],
+   "serving": {
+    "description": "1 oz",
+    "grams": 28.35
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 93,
+     "unit": "mg",
+     "source_id": "fdc-167558"
+    },
+    "potassium_mg": {
+     "value": 52,
+     "unit": "mg",
+     "source_id": "fdc-167558"
+    },
+    "calcium_mg": {
+     "value": 30,
+     "unit": "mg",
+     "source_id": "fdc-167558"
+    },
+    "phosphorus_mg": {
+     "value": 64,
+     "unit": "mg",
+     "source_id": "fdc-167558"
+    },
+    "protein_g": {
+     "value": 2.0,
+     "unit": "g",
+     "source_id": "fdc-167558"
+    },
+    "carbohydrate_g": {
+     "value": 19.2,
+     "unit": "g",
+     "source_id": "fdc-167558"
+    },
+    "sugars_g": {
+     "value": 0.2,
+     "unit": "g",
+     "source_id": "fdc-167558"
+    },
+    "oxalate_mg": {
+     "value": 7,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "pretzels",
+   "name": "Pretzels, hard, salted",
+   "aliases": [
+    "pretzel"
+   ],
+   "serving": {
+    "description": "1 oz",
+    "grams": 28.35
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 352,
+     "unit": "mg",
+     "source_id": "fdc-167555"
+    },
+    "potassium_mg": {
+     "value": 63,
+     "unit": "mg",
+     "source_id": "fdc-167555"
+    },
+    "calcium_mg": {
+     "value": 8,
+     "unit": "mg",
+     "source_id": "fdc-167555"
+    },
+    "phosphorus_mg": {
+     "value": 36,
+     "unit": "mg",
+     "source_id": "fdc-167555"
+    },
+    "protein_g": {
+     "value": 2.8,
+     "unit": "g",
+     "source_id": "fdc-167555"
+    },
+    "carbohydrate_g": {
+     "value": 22.8,
+     "unit": "g",
+     "source_id": "fdc-167555"
+    },
+    "sugars_g": {
+     "value": 0.6,
+     "unit": "g",
+     "source_id": "fdc-167555"
+    },
+    "oxalate_mg": {
+     "value": 5,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "saltine-crackers",
+   "name": "Saltine crackers",
+   "aliases": [
+    "saltines",
+    "saltine",
+    "crackers",
+    "soda crackers"
+   ],
+   "serving": {
+    "description": "1 cracker",
+    "grams": 3
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 28,
+     "unit": "mg",
+     "source_id": "fdc-172746"
+    },
+    "potassium_mg": {
+     "value": 5,
+     "unit": "mg",
+     "source_id": "fdc-172746"
+    },
+    "calcium_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "fdc-172746"
+    },
+    "phosphorus_mg": {
+     "value": 3,
+     "unit": "mg",
+     "source_id": "fdc-172746"
+    },
+    "protein_g": {
+     "value": 0.3,
+     "unit": "g",
+     "source_id": "fdc-172746"
+    },
+    "carbohydrate_g": {
+     "value": 2.2,
+     "unit": "g",
+     "source_id": "fdc-172746"
+    },
+    "sugars_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-172746"
+    },
+    "oxalate_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "popcorn",
+   "name": "Popcorn, air-popped",
+   "aliases": [
+    "popcorn"
+   ],
+   "serving": {
+    "description": "1 cup",
+    "grams": 8
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "fdc-167959"
+    },
+    "potassium_mg": {
+     "value": 26,
+     "unit": "mg",
+     "source_id": "fdc-167959"
+    },
+    "calcium_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "fdc-167959"
+    },
+    "phosphorus_mg": {
+     "value": 29,
+     "unit": "mg",
+     "source_id": "fdc-167959"
+    },
+    "protein_g": {
+     "value": 1.0,
+     "unit": "g",
+     "source_id": "fdc-167959"
+    },
+    "carbohydrate_g": {
+     "value": 6.2,
+     "unit": "g",
+     "source_id": "fdc-167959"
+    },
+    "sugars_g": {
+     "value": 0.1,
+     "unit": "g",
+     "source_id": "fdc-167959"
+    },
+    "oxalate_mg": {
+     "value": 4,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "french-fries",
+   "name": "French fries (fast food)",
+   "aliases": [
+    "french fries",
+    "fries",
+    "chips (fries)"
+   ],
+   "serving": {
+    "description": "4 oz",
+    "grams": 113.4
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 238,
+     "unit": "mg",
+     "source_id": "fdc-170698"
+    },
+    "potassium_mg": {
+     "value": 657,
+     "unit": "mg",
+     "source_id": "fdc-170698"
+    },
+    "calcium_mg": {
+     "value": 20,
+     "unit": "mg",
+     "source_id": "fdc-170698"
+    },
+    "phosphorus_mg": {
+     "value": 142,
+     "unit": "mg",
+     "source_id": "fdc-170698"
+    },
+    "protein_g": {
+     "value": 3.9,
+     "unit": "g",
+     "source_id": "fdc-170698"
+    },
+    "carbohydrate_g": {
+     "value": 47.0,
+     "unit": "g",
+     "source_id": "fdc-170698"
+    },
+    "sugars_g": {
+     "value": 0.3,
+     "unit": "g",
+     "source_id": "fdc-170698"
+    },
+    "oxalate_mg": {
+     "value": 51,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "chocolate-chip-cookie",
+   "name": "Chocolate chip cookie",
+   "aliases": [
+    "cookie",
+    "cookies",
+    "chocolate chip cookies"
+   ],
+   "serving": {
+    "description": "1 medium cookie",
+    "grams": 10
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 32,
+     "unit": "mg",
+     "source_id": "fdc-172820"
+    },
+    "potassium_mg": {
+     "value": 14,
+     "unit": "mg",
+     "source_id": "fdc-172820"
+    },
+    "calcium_mg": {
+     "value": 2,
+     "unit": "mg",
+     "source_id": "fdc-172820"
+    },
+    "phosphorus_mg": {
+     "value": 11,
+     "unit": "mg",
+     "source_id": "fdc-172820"
+    },
+    "protein_g": {
+     "value": 0.5,
+     "unit": "g",
+     "source_id": "fdc-172820"
+    },
+    "carbohydrate_g": {
+     "value": 6.7,
+     "unit": "g",
+     "source_id": "fdc-172820"
+    },
+    "sugars_g": {
+     "value": null,
+     "unit": "g",
+     "source_id": null
+    },
+    "oxalate_mg": {
+     "value": 10,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "milk-chocolate",
+   "name": "Milk chocolate",
+   "aliases": [
+    "chocolate",
+    "milk chocolate",
+    "chocolate bar"
+   ],
+   "serving": {
+    "description": "1 oz",
+    "grams": 28.35
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 22,
+     "unit": "mg",
+     "source_id": "fdc-167587"
+    },
+    "potassium_mg": {
+     "value": 105,
+     "unit": "mg",
+     "source_id": "fdc-167587"
+    },
+    "calcium_mg": {
+     "value": 54,
+     "unit": "mg",
+     "source_id": "fdc-167587"
+    },
+    "phosphorus_mg": {
+     "value": 59,
+     "unit": "mg",
+     "source_id": "fdc-167587"
+    },
+    "protein_g": {
+     "value": 2.2,
+     "unit": "g",
+     "source_id": "fdc-167587"
+    },
+    "carbohydrate_g": {
+     "value": 16.8,
+     "unit": "g",
+     "source_id": "fdc-167587"
+    },
+    "sugars_g": {
+     "value": 14.6,
+     "unit": "g",
+     "source_id": "fdc-167587"
+    },
+    "oxalate_mg": {
+     "value": 5,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "dark-chocolate",
+   "name": "Dark chocolate",
+   "aliases": [
+    "dark chocolate"
+   ],
+   "serving": {
+    "description": "1 oz",
+    "grams": 28.35
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 7,
+     "unit": "mg",
+     "source_id": "fdc-170274"
+    },
+    "potassium_mg": {
+     "value": 161,
+     "unit": "mg",
+     "source_id": "fdc-170274"
+    },
+    "calcium_mg": {
+     "value": 16,
+     "unit": "mg",
+     "source_id": "fdc-170274"
+    },
+    "phosphorus_mg": {
+     "value": 61,
+     "unit": "mg",
+     "source_id": "fdc-170274"
+    },
+    "protein_g": {
+     "value": 1.4,
+     "unit": "g",
+     "source_id": "fdc-170274"
+    },
+    "carbohydrate_g": {
+     "value": 17.0,
+     "unit": "g",
+     "source_id": "fdc-170274"
+    },
+    "sugars_g": {
+     "value": 13.1,
+     "unit": "g",
+     "source_id": "fdc-170274"
+    },
+    "oxalate_mg": {
+     "value": null,
+     "unit": "mg",
+     "source_id": null
+    }
+   }
+  },
+  {
+   "id": "hummus",
+   "name": "Hummus",
+   "aliases": [
+    "houmous",
+    "hummous"
+   ],
+   "serving": {
+    "description": "1 tablespoon",
+    "grams": 15
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 64,
+     "unit": "mg",
+     "source_id": "fdc-174289"
+    },
+    "potassium_mg": {
+     "value": 47,
+     "unit": "mg",
+     "source_id": "fdc-174289"
+    },
+    "calcium_mg": {
+     "value": 7,
+     "unit": "mg",
+     "source_id": "fdc-174289"
+    },
+    "phosphorus_mg": {
+     "value": 27,
+     "unit": "mg",
+     "source_id": "fdc-174289"
+    },
+    "protein_g": {
+     "value": 1.2,
+     "unit": "g",
+     "source_id": "fdc-174289"
+    },
+    "carbohydrate_g": {
+     "value": 2.2,
+     "unit": "g",
+     "source_id": "fdc-174289"
+    },
+    "sugars_g": {
+     "value": 0.1,
+     "unit": "g",
+     "source_id": "fdc-174289"
+    },
+    "oxalate_mg": {
+     "value": 4,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "chicken-noodle-soup",
+   "name": "Chicken noodle soup, canned",
+   "aliases": [
+    "canned soup",
+    "chicken noodle soup",
+    "chicken soup",
+    "soup"
+   ],
+   "serving": {
+    "description": "1 cup (prepared with water)",
+    "grams": 248
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 831,
+     "unit": "mg",
+     "source_id": "fdc-172909"
+    },
+    "potassium_mg": {
+     "value": 60,
+     "unit": "mg",
+     "source_id": "fdc-172909"
+    },
+    "calcium_mg": {
+     "value": 12,
+     "unit": "mg",
+     "source_id": "fdc-172909"
+    },
+    "phosphorus_mg": {
+     "value": 45,
+     "unit": "mg",
+     "source_id": "fdc-172909"
+    },
+    "protein_g": {
+     "value": 2.9,
+     "unit": "g",
+     "source_id": "fdc-172909"
+    },
+    "carbohydrate_g": {
+     "value": 7.4,
+     "unit": "g",
+     "source_id": "fdc-172909"
+    },
+    "sugars_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-172909"
+    },
+    "oxalate_mg": {
+     "value": null,
+     "unit": "mg",
+     "source_id": null
+    }
+   }
+  },
+  {
+   "id": "tomato-soup",
+   "name": "Tomato soup, canned",
+   "aliases": [
+    "canned soup",
+    "tomato soup"
+   ],
+   "serving": {
+    "description": "1 cup (prepared with water)",
+    "grams": 248
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 461,
+     "unit": "mg",
+     "source_id": "fdc-171176"
+    },
+    "potassium_mg": {
+     "value": 682,
+     "unit": "mg",
+     "source_id": "fdc-171176"
+    },
+    "calcium_mg": {
+     "value": 20,
+     "unit": "mg",
+     "source_id": "fdc-171176"
+    },
+    "phosphorus_mg": {
+     "value": 37,
+     "unit": "mg",
+     "source_id": "fdc-171176"
+    },
+    "protein_g": {
+     "value": 1.8,
+     "unit": "g",
+     "source_id": "fdc-171176"
+    },
+    "carbohydrate_g": {
+     "value": 18.5,
+     "unit": "g",
+     "source_id": "fdc-171176"
+    },
+    "sugars_g": {
+     "value": 10.0,
+     "unit": "g",
+     "source_id": "fdc-171176"
+    },
+    "oxalate_mg": {
+     "value": null,
+     "unit": "mg",
+     "source_id": null
+    }
+   }
+  },
+  {
+   "id": "soy-sauce",
+   "name": "Soy sauce",
+   "aliases": [
+    "soy sauce",
+    "shoyu"
+   ],
+   "serving": {
+    "description": "1 tablespoon",
+    "grams": 16
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 879,
+     "unit": "mg",
+     "source_id": "fdc-174277"
+    },
+    "potassium_mg": {
+     "value": 70,
+     "unit": "mg",
+     "source_id": "fdc-174277"
+    },
+    "calcium_mg": {
+     "value": 5,
+     "unit": "mg",
+     "source_id": "fdc-174277"
+    },
+    "phosphorus_mg": {
+     "value": 27,
+     "unit": "mg",
+     "source_id": "fdc-174277"
+    },
+    "protein_g": {
+     "value": 1.3,
+     "unit": "g",
+     "source_id": "fdc-174277"
+    },
+    "carbohydrate_g": {
+     "value": 0.8,
+     "unit": "g",
+     "source_id": "fdc-174277"
+    },
+    "sugars_g": {
+     "value": 0.1,
+     "unit": "g",
+     "source_id": "fdc-174277"
+    },
+    "oxalate_mg": {
+     "value": 3,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "ketchup",
+   "name": "Ketchup",
+   "aliases": [
+    "catsup"
+   ],
+   "serving": {
+    "description": "1 packet",
+    "grams": 9
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 82,
+     "unit": "mg",
+     "source_id": "fdc-168556"
+    },
+    "potassium_mg": {
+     "value": 25,
+     "unit": "mg",
+     "source_id": "fdc-168556"
+    },
+    "calcium_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "fdc-168556"
+    },
+    "phosphorus_mg": {
+     "value": 2,
+     "unit": "mg",
+     "source_id": "fdc-168556"
+    },
+    "protein_g": {
+     "value": 0.1,
+     "unit": "g",
+     "source_id": "fdc-168556"
+    },
+    "carbohydrate_g": {
+     "value": 2.5,
+     "unit": "g",
+     "source_id": "fdc-168556"
+    },
+    "sugars_g": {
+     "value": 1.9,
+     "unit": "g",
+     "source_id": "fdc-168556"
+    },
+    "oxalate_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "table-salt",
+   "name": "Table salt",
+   "aliases": [
+    "salt"
+   ],
+   "serving": {
+    "description": "1 teaspoon",
+    "grams": 6
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 2325,
+     "unit": "mg",
+     "source_id": "fdc-173468"
+    },
+    "potassium_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "fdc-173468"
+    },
+    "calcium_mg": {
+     "value": 1,
+     "unit": "mg",
+     "source_id": "fdc-173468"
+    },
+    "phosphorus_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "fdc-173468"
+    },
+    "protein_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-173468"
+    },
+    "carbohydrate_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-173468"
+    },
+    "sugars_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-173468"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  },
+  {
+   "id": "sugar",
+   "name": "Sugar, white",
+   "aliases": [
+    "sugar",
+    "granulated sugar",
+    "table sugar"
+   ],
+   "serving": {
+    "description": "1 teaspoon",
+    "grams": 4.2
+   },
+   "nutrients": {
+    "sodium_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "fdc-169655"
+    },
+    "potassium_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "fdc-169655"
+    },
+    "calcium_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "fdc-169655"
+    },
+    "phosphorus_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "fdc-169655"
+    },
+    "protein_g": {
+     "value": 0.0,
+     "unit": "g",
+     "source_id": "fdc-169655"
+    },
+    "carbohydrate_g": {
+     "value": 4.2,
+     "unit": "g",
+     "source_id": "fdc-169655"
+    },
+    "sugars_g": {
+     "value": 4.2,
+     "unit": "g",
+     "source_id": "fdc-169655"
+    },
+    "oxalate_mg": {
+     "value": 0,
+     "unit": "mg",
+     "source_id": "uchicago-oxalate-table"
+    }
+   }
+  }
+ ],
+ "sources": {
+  "uchicago-oxalate-table": {
+   "title": "University of Chicago Kidney Stone Program: Updated table of oxalate foods (mg of oxalate per serving)",
+   "url": "https://docs.google.com/spreadsheets/d/1nbDZPxhAW4It-m2-c460w6eGr4dMSIeDiQdqg3MaRgQ/edit#gid=1354389148"
+  },
+  "fdc-170567": {
+   "title": "USDA FoodData Central: Nuts, almonds (FDC ID 170567)",
+   "url": "https://fdc.nal.usda.gov/food-details/170567/nutrients"
+  },
+  "fdc-168588": {
+   "title": "USDA FoodData Central: Nuts, almond butter, plain, without salt added (FDC ID 168588)",
+   "url": "https://fdc.nal.usda.gov/food-details/168588/nutrients"
+  },
+  "fdc-174832": {
+   "title": "USDA FoodData Central: Beverages, almond milk, unsweetened, shelf stable (FDC ID 174832)",
+   "url": "https://fdc.nal.usda.gov/food-details/174832/nutrients"
+  },
+  "fdc-174262": {
+   "title": "USDA FoodData Central: Peanuts, all types, dry-roasted, with salt (FDC ID 174262)",
+   "url": "https://fdc.nal.usda.gov/food-details/174262/nutrients"
+  },
+  "fdc-174266": {
+   "title": "USDA FoodData Central: Peanut butter, smooth style, with salt (Includes foods for USDA's Food Distribution Program) (FDC ID 174266)",
+   "url": "https://fdc.nal.usda.gov/food-details/174266/nutrients"
+  },
+  "fdc-169421": {
+   "title": "USDA FoodData Central: Nuts, cashew nuts, dry roasted, with salt added (FDC ID 169421)",
+   "url": "https://fdc.nal.usda.gov/food-details/169421/nutrients"
+  },
+  "fdc-170187": {
+   "title": "USDA FoodData Central: Nuts, walnuts, english (FDC ID 170187)",
+   "url": "https://fdc.nal.usda.gov/food-details/170187/nutrients"
+  },
+  "fdc-170182": {
+   "title": "USDA FoodData Central: Nuts, pecans (FDC ID 170182)",
+   "url": "https://fdc.nal.usda.gov/food-details/170182/nutrients"
+  },
+  "fdc-169426": {
+   "title": "USDA FoodData Central: Nuts, pistachio nuts, dry roasted, with salt added (FDC ID 169426)",
+   "url": "https://fdc.nal.usda.gov/food-details/169426/nutrients"
+  },
+  "fdc-168599": {
+   "title": "USDA FoodData Central: Nuts, mixed nuts, dry roasted, with peanuts, with salt added (FDC ID 168599)",
+   "url": "https://fdc.nal.usda.gov/food-details/168599/nutrients"
+  },
+  "fdc-170189": {
+   "title": "USDA FoodData Central: Seeds, sesame butter, tahini, from roasted and toasted kernels (most common type) (FDC ID 170189)",
+   "url": "https://fdc.nal.usda.gov/food-details/170189/nutrients"
+  },
+  "fdc-168462": {
+   "title": "USDA FoodData Central: Spinach, raw (FDC ID 168462)",
+   "url": "https://fdc.nal.usda.gov/food-details/168462/nutrients"
+  },
+  "fdc-168463": {
+   "title": "USDA FoodData Central: Spinach, cooked, boiled, drained, without salt (FDC ID 168463)",
+   "url": "https://fdc.nal.usda.gov/food-details/168463/nutrients"
+  },
+  "fdc-167758": {
+   "title": "USDA FoodData Central: Rhubarb, raw (FDC ID 167758)",
+   "url": "https://fdc.nal.usda.gov/food-details/167758/nutrients"
+  },
+  "fdc-169146": {
+   "title": "USDA FoodData Central: Beets, cooked, boiled, drained (FDC ID 169146)",
+   "url": "https://fdc.nal.usda.gov/food-details/169146/nutrients"
+  },
+  "fdc-168483": {
+   "title": "USDA FoodData Central: Sweet potato, cooked, baked in skin, flesh, without salt (FDC ID 168483)",
+   "url": "https://fdc.nal.usda.gov/food-details/168483/nutrients"
+  },
+  "fdc-170093": {
+   "title": "USDA FoodData Central: Potatoes, baked, flesh and skin, without salt (FDC ID 170093)",
+   "url": "https://fdc.nal.usda.gov/food-details/170093/nutrients"
+  },
+  "fdc-168555": {
+   "title": "USDA FoodData Central: Potatoes, mashed, home-prepared, whole milk and butter added (FDC ID 168555)",
+   "url": "https://fdc.nal.usda.gov/food-details/168555/nutrients"
+  },
+  "fdc-170379": {
+   "title": "USDA FoodData Central: Broccoli, raw (FDC ID 170379)",
+   "url": "https://fdc.nal.usda.gov/food-details/170379/nutrients"
+  },
+  "fdc-170394": {
+   "title": "USDA FoodData Central: Carrots, cooked, boiled, drained, without salt (FDC ID 170394)",
+   "url": "https://fdc.nal.usda.gov/food-details/170394/nutrients"
+  },
+  "fdc-169988": {
+   "title": "USDA FoodData Central: Celery, raw (FDC ID 169988)",
+   "url": "https://fdc.nal.usda.gov/food-details/169988/nutrients"
+  },
+  "fdc-170457": {
+   "title": "USDA FoodData Central: Tomatoes, red, ripe, raw, year round average (FDC ID 170457)",
+   "url": "https://fdc.nal.usda.gov/food-details/170457/nutrients"
+  },
+  "fdc-169248": {
+   "title": "USDA FoodData Central: Lettuce, iceberg (includes crisphead types), raw (FDC ID 169248)",
+   "url": "https://fdc.nal.usda.gov/food-details/169248/nutrients"
+  },
+  "fdc-175194": {
+   "title": "USDA FoodData Central: Beans, kidney, red, mature seeds, cooked, boiled, without salt (FDC ID 175194)",
+   "url": "https://fdc.nal.usda.gov/food-details/175194/nutrients"
+  },
+  "fdc-173746": {
+   "title": "USDA FoodData Central: Beans, navy, mature seeds, cooked, boiled, without salt (FDC ID 173746)",
+   "url": "https://fdc.nal.usda.gov/food-details/173746/nutrients"
+  },
+  "fdc-170054": {
+   "title": "USDA FoodData Central: Tomato products, canned, sauce (FDC ID 170054)",
+   "url": "https://fdc.nal.usda.gov/food-details/170054/nutrients"
+  },
+  "fdc-169279": {
+   "title": "USDA FoodData Central: Sauerkraut, canned, solids and liquids (FDC ID 169279)",
+   "url": "https://fdc.nal.usda.gov/food-details/169279/nutrients"
+  },
+  "fdc-168558": {
+   "title": "USDA FoodData Central: Pickles, cucumber, dill or kosher dill (FDC ID 168558)",
+   "url": "https://fdc.nal.usda.gov/food-details/168558/nutrients"
+  },
+  "fdc-172475": {
+   "title": "USDA FoodData Central: Tofu, raw, firm, prepared with calcium sulfate (FDC ID 172475)",
+   "url": "https://fdc.nal.usda.gov/food-details/172475/nutrients"
+  },
+  "fdc-173944": {
+   "title": "USDA FoodData Central: Bananas, raw (FDC ID 173944)",
+   "url": "https://fdc.nal.usda.gov/food-details/173944/nutrients"
+  },
+  "fdc-171688": {
+   "title": "USDA FoodData Central: Apples, raw, with skin (Includes foods for USDA's Food Distribution Program) (FDC ID 171688)",
+   "url": "https://fdc.nal.usda.gov/food-details/171688/nutrients"
+  },
+  "fdc-169097": {
+   "title": "USDA FoodData Central: Oranges, raw, all commercial varieties (FDC ID 169097)",
+   "url": "https://fdc.nal.usda.gov/food-details/169097/nutrients"
+  },
+  "fdc-171705": {
+   "title": "USDA FoodData Central: Avocados, raw, all commercial varieties (FDC ID 171705)",
+   "url": "https://fdc.nal.usda.gov/food-details/171705/nutrients"
+  },
+  "fdc-174683": {
+   "title": "USDA FoodData Central: Grapes, red or green (European type, such as Thompson seedless), raw (FDC ID 174683)",
+   "url": "https://fdc.nal.usda.gov/food-details/174683/nutrients"
+  },
+  "fdc-167762": {
+   "title": "USDA FoodData Central: Strawberries, raw (FDC ID 167762)",
+   "url": "https://fdc.nal.usda.gov/food-details/167762/nutrients"
+  },
+  "fdc-171711": {
+   "title": "USDA FoodData Central: Blueberries, raw (FDC ID 171711)",
+   "url": "https://fdc.nal.usda.gov/food-details/171711/nutrients"
+  },
+  "fdc-167755": {
+   "title": "USDA FoodData Central: Raspberries, raw (FDC ID 167755)",
+   "url": "https://fdc.nal.usda.gov/food-details/167755/nutrients"
+  },
+  "fdc-168165": {
+   "title": "USDA FoodData Central: Raisins, dark, seedless (Includes foods for USDA's Food Distribution Program) (FDC ID 168165)",
+   "url": "https://fdc.nal.usda.gov/food-details/168165/nutrients"
+  },
+  "fdc-168153": {
+   "title": "USDA FoodData Central: Kiwifruit, green, raw (FDC ID 168153)",
+   "url": "https://fdc.nal.usda.gov/food-details/168153/nutrients"
+  },
+  "fdc-174673": {
+   "title": "USDA FoodData Central: Grapefruit, raw, pink and red, all areas (FDC ID 174673)",
+   "url": "https://fdc.nal.usda.gov/food-details/174673/nutrients"
+  },
+  "fdc-173227": {
+   "title": "USDA FoodData Central: Beverages, tea, black, brewed, prepared with tap water (FDC ID 173227)",
+   "url": "https://fdc.nal.usda.gov/food-details/173227/nutrients"
+  },
+  "fdc-171917": {
+   "title": "USDA FoodData Central: Beverages, tea, green, brewed, regular (FDC ID 171917)",
+   "url": "https://fdc.nal.usda.gov/food-details/171917/nutrients"
+  },
+  "fdc-171890": {
+   "title": "USDA FoodData Central: Beverages, coffee, brewed, prepared with tap water (FDC ID 171890)",
+   "url": "https://fdc.nal.usda.gov/food-details/171890/nutrients"
+  },
+  "fdc-169100": {
+   "title": "USDA FoodData Central: Orange juice, chilled, includes from concentrate (FDC ID 169100)",
+   "url": "https://fdc.nal.usda.gov/food-details/169100/nutrients"
+  },
+  "fdc-173933": {
+   "title": "USDA FoodData Central: Apple juice, canned or bottled, unsweetened, without added ascorbic acid (FDC ID 173933)",
+   "url": "https://fdc.nal.usda.gov/food-details/173933/nutrients"
+  },
+  "fdc-170458": {
+   "title": "USDA FoodData Central: Tomato juice, canned, with salt added (FDC ID 170458)",
+   "url": "https://fdc.nal.usda.gov/food-details/170458/nutrients"
+  },
+  "fdc-173217": {
+   "title": "USDA FoodData Central: Lemonade, frozen concentrate, white, prepared with water (FDC ID 173217)",
+   "url": "https://fdc.nal.usda.gov/food-details/173217/nutrients"
+  },
+  "fdc-174852": {
+   "title": "USDA FoodData Central: Beverages, carbonated, cola, regular (FDC ID 174852)",
+   "url": "https://fdc.nal.usda.gov/food-details/174852/nutrients"
+  },
+  "fdc-174850": {
+   "title": "USDA FoodData Central: Beverages, carbonated, low calorie, cola or pepper-type, with aspartame, without caffeine (FDC ID 174850)",
+   "url": "https://fdc.nal.usda.gov/food-details/174850/nutrients"
+  },
+  "fdc-173660": {
+   "title": "USDA FoodData Central: Beverages, PEPSICO QUAKER, Gatorade, G performance O 2, ready-to-drink. (FDC ID 173660)",
+   "url": "https://fdc.nal.usda.gov/food-details/173660/nutrients"
+  },
+  "fdc-168746": {
+   "title": "USDA FoodData Central: Alcoholic beverage, beer, regular, all (FDC ID 168746)",
+   "url": "https://fdc.nal.usda.gov/food-details/168746/nutrients"
+  },
+  "fdc-172446": {
+   "title": "USDA FoodData Central: Soymilk, original and vanilla, unfortified (FDC ID 172446)",
+   "url": "https://fdc.nal.usda.gov/food-details/172446/nutrients"
+  },
+  "fdc-171265": {
+   "title": "USDA FoodData Central: Milk, whole, 3.25% milkfat, with added vitamin D (FDC ID 171265)",
+   "url": "https://fdc.nal.usda.gov/food-details/171265/nutrients"
+  },
+  "fdc-171269": {
+   "title": "USDA FoodData Central: Milk, nonfat, fluid, with added vitamin A and vitamin D (fat free or skim) (FDC ID 171269)",
+   "url": "https://fdc.nal.usda.gov/food-details/171269/nutrients"
+  },
+  "fdc-170880": {
+   "title": "USDA FoodData Central: Milk, chocolate, fluid, commercial, reduced fat, with added vitamin A and vitamin D (FDC ID 170880)",
+   "url": "https://fdc.nal.usda.gov/food-details/170880/nutrients"
+  },
+  "fdc-170886": {
+   "title": "USDA FoodData Central: Yogurt, plain, low fat (FDC ID 170886)",
+   "url": "https://fdc.nal.usda.gov/food-details/170886/nutrients"
+  },
+  "fdc-173414": {
+   "title": "USDA FoodData Central: Cheese, cheddar (Includes foods for USDA's Food Distribution Program) (FDC ID 173414)",
+   "url": "https://fdc.nal.usda.gov/food-details/173414/nutrients"
+  },
+  "fdc-171290": {
+   "title": "USDA FoodData Central: Cheese, pasteurized process, American, without added vitamin D (FDC ID 171290)",
+   "url": "https://fdc.nal.usda.gov/food-details/171290/nutrients"
+  },
+  "fdc-170845": {
+   "title": "USDA FoodData Central: Cheese, mozzarella, whole milk (FDC ID 170845)",
+   "url": "https://fdc.nal.usda.gov/food-details/170845/nutrients"
+  },
+  "fdc-172179": {
+   "title": "USDA FoodData Central: Cheese, cottage, creamed, large or small curd (FDC ID 172179)",
+   "url": "https://fdc.nal.usda.gov/food-details/172179/nutrients"
+  },
+  "fdc-167575": {
+   "title": "USDA FoodData Central: Ice creams, vanilla (FDC ID 167575)",
+   "url": "https://fdc.nal.usda.gov/food-details/167575/nutrients"
+  },
+  "fdc-171287": {
+   "title": "USDA FoodData Central: Egg, whole, raw, fresh (FDC ID 171287)",
+   "url": "https://fdc.nal.usda.gov/food-details/171287/nutrients"
+  },
+  "fdc-171477": {
+   "title": "USDA FoodData Central: Chicken, broilers or fryers, breast, meat only, cooked, roasted (FDC ID 171477)",
+   "url": "https://fdc.nal.usda.gov/food-details/171477/nutrients"
+  },
+  "fdc-174032": {
+   "title": "USDA FoodData Central: Beef, ground, 85% lean meat / 15% fat, patty, cooked, broiled (FDC ID 174032)",
+   "url": "https://fdc.nal.usda.gov/food-details/174032/nutrients"
+  },
+  "fdc-175168": {
+   "title": "USDA FoodData Central: Fish, salmon, Atlantic, farmed, cooked, dry heat (FDC ID 175168)",
+   "url": "https://fdc.nal.usda.gov/food-details/175168/nutrients"
+  },
+  "fdc-173709": {
+   "title": "USDA FoodData Central: Fish, tuna, light, canned in water, drained solids (Includes foods for USDA's Food Distribution Program) (FDC ID 173709)",
+   "url": "https://fdc.nal.usda.gov/food-details/173709/nutrients"
+  },
+  "fdc-168322": {
+   "title": "USDA FoodData Central: Pork, cured, bacon, pre-sliced, cooked, pan-fried (FDC ID 168322)",
+   "url": "https://fdc.nal.usda.gov/food-details/168322/nutrients"
+  },
+  "fdc-173862": {
+   "title": "USDA FoodData Central: Frankfurter, beef, unheated (FDC ID 173862)",
+   "url": "https://fdc.nal.usda.gov/food-details/173862/nutrients"
+  },
+  "fdc-172941": {
+   "title": "USDA FoodData Central: Turkey breast, sliced, prepackaged (FDC ID 172941)",
+   "url": "https://fdc.nal.usda.gov/food-details/172941/nutrients"
+  },
+  "fdc-173864": {
+   "title": "USDA FoodData Central: Ham, sliced, regular (approximately 11% fat) (FDC ID 173864)",
+   "url": "https://fdc.nal.usda.gov/food-details/173864/nutrients"
+  },
+  "fdc-172012": {
+   "title": "USDA FoodData Central: Bologna, beef (FDC ID 172012)",
+   "url": "https://fdc.nal.usda.gov/food-details/172012/nutrients"
+  },
+  "fdc-174924": {
+   "title": "USDA FoodData Central: Bread, white, commercially prepared (includes soft bread crumbs) (FDC ID 174924)",
+   "url": "https://fdc.nal.usda.gov/food-details/174924/nutrients"
+  },
+  "fdc-172688": {
+   "title": "USDA FoodData Central: Bread, whole-wheat, commercially prepared (FDC ID 172688)",
+   "url": "https://fdc.nal.usda.gov/food-details/172688/nutrients"
+  },
+  "fdc-174899": {
+   "title": "USDA FoodData Central: Bagels, plain, enriched, with calcium propionate (includes onion, poppy, sesame) (FDC ID 174899)",
+   "url": "https://fdc.nal.usda.gov/food-details/174899/nutrients"
+  },
+  "fdc-175036": {
+   "title": "USDA FoodData Central: Tortillas, ready-to-bake or -fry, corn (FDC ID 175036)",
+   "url": "https://fdc.nal.usda.gov/food-details/175036/nutrients"
+  },
+  "fdc-173242": {
+   "title": "USDA FoodData Central: Tortillas, ready-to-bake or -fry, flour, without added calcium (FDC ID 173242)",
+   "url": "https://fdc.nal.usda.gov/food-details/173242/nutrients"
+  },
+  "fdc-168878": {
+   "title": "USDA FoodData Central: Rice, white, long-grain, regular, enriched, cooked (FDC ID 168878)",
+   "url": "https://fdc.nal.usda.gov/food-details/168878/nutrients"
+  },
+  "fdc-169704": {
+   "title": "USDA FoodData Central: Rice, brown, long-grain, cooked (Includes foods for USDA's Food Distribution Program) (FDC ID 169704)",
+   "url": "https://fdc.nal.usda.gov/food-details/169704/nutrients"
+  },
+  "fdc-169737": {
+   "title": "USDA FoodData Central: Pasta, cooked, enriched, without added salt (FDC ID 169737)",
+   "url": "https://fdc.nal.usda.gov/food-details/169737/nutrients"
+  },
+  "fdc-171675": {
+   "title": "USDA FoodData Central: Cereals, oats, regular and quick and instant, unenriched, cooked with water (includes boiling and microwaving), with salt (FDC ID 171675)",
+   "url": "https://fdc.nal.usda.gov/food-details/171675/nutrients"
+  },
+  "fdc-173884": {
+   "title": "USDA FoodData Central: Cereals ready-to-eat, GENERAL MILLS, CHEERIOS (FDC ID 173884)",
+   "url": "https://fdc.nal.usda.gov/food-details/173884/nutrients"
+  },
+  "fdc-171650": {
+   "title": "USDA FoodData Central: Cereals ready-to-eat, POST Raisin Bran Cereal (FDC ID 171650)",
+   "url": "https://fdc.nal.usda.gov/food-details/171650/nutrients"
+  },
+  "fdc-169677": {
+   "title": "USDA FoodData Central: Snacks, potato chips, plain, salted (FDC ID 169677)",
+   "url": "https://fdc.nal.usda.gov/food-details/169677/nutrients"
+  },
+  "fdc-167558": {
+   "title": "USDA FoodData Central: Snacks, tortilla chips, plain, white corn, salted (FDC ID 167558)",
+   "url": "https://fdc.nal.usda.gov/food-details/167558/nutrients"
+  },
+  "fdc-167555": {
+   "title": "USDA FoodData Central: Snacks, pretzels, hard, plain, salted (FDC ID 167555)",
+   "url": "https://fdc.nal.usda.gov/food-details/167555/nutrients"
+  },
+  "fdc-172746": {
+   "title": "USDA FoodData Central: Crackers, saltines (includes oyster, soda, soup) (FDC ID 172746)",
+   "url": "https://fdc.nal.usda.gov/food-details/172746/nutrients"
+  },
+  "fdc-167959": {
+   "title": "USDA FoodData Central: Snacks, popcorn, air-popped (FDC ID 167959)",
+   "url": "https://fdc.nal.usda.gov/food-details/167959/nutrients"
+  },
+  "fdc-170698": {
+   "title": "USDA FoodData Central: Fast foods, potato, french fried in vegetable oil (FDC ID 170698)",
+   "url": "https://fdc.nal.usda.gov/food-details/170698/nutrients"
+  },
+  "fdc-172820": {
+   "title": "USDA FoodData Central: Cookies, chocolate chip, commercially prepared, regular, higher fat, unenriched (FDC ID 172820)",
+   "url": "https://fdc.nal.usda.gov/food-details/172820/nutrients"
+  },
+  "fdc-167587": {
+   "title": "USDA FoodData Central: Candies, milk chocolate (FDC ID 167587)",
+   "url": "https://fdc.nal.usda.gov/food-details/167587/nutrients"
+  },
+  "fdc-170274": {
+   "title": "USDA FoodData Central: Candies, chocolate, dark, NFS (45-59% cacao solids 90%; 60-69% cacao solids 5%; 70-85% cacao solids 5%) (FDC ID 170274)",
+   "url": "https://fdc.nal.usda.gov/food-details/170274/nutrients"
+  },
+  "fdc-174289": {
+   "title": "USDA FoodData Central: Hummus, commercial (FDC ID 174289)",
+   "url": "https://fdc.nal.usda.gov/food-details/174289/nutrients"
+  },
+  "fdc-172909": {
+   "title": "USDA FoodData Central: Soup, chicken noodle, canned, prepared with equal volume water (FDC ID 172909)",
+   "url": "https://fdc.nal.usda.gov/food-details/172909/nutrients"
+  },
+  "fdc-171176": {
+   "title": "USDA FoodData Central: Soup, tomato, canned, prepared with equal volume water, commercial (FDC ID 171176)",
+   "url": "https://fdc.nal.usda.gov/food-details/171176/nutrients"
+  },
+  "fdc-174277": {
+   "title": "USDA FoodData Central: Soy sauce made from soy and wheat (shoyu) (FDC ID 174277)",
+   "url": "https://fdc.nal.usda.gov/food-details/174277/nutrients"
+  },
+  "fdc-168556": {
+   "title": "USDA FoodData Central: Catsup (FDC ID 168556)",
+   "url": "https://fdc.nal.usda.gov/food-details/168556/nutrients"
+  },
+  "fdc-173468": {
+   "title": "USDA FoodData Central: Salt, table (FDC ID 173468)",
+   "url": "https://fdc.nal.usda.gov/food-details/173468/nutrients"
+  },
+  "fdc-169655": {
+   "title": "USDA FoodData Central: Sugars, granulated (FDC ID 169655)",
+   "url": "https://fdc.nal.usda.gov/food-details/169655/nutrients"
+  }
+ }
+}
