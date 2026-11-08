@@ -43,10 +43,38 @@ def test_variants_detected(msg):
     assert detect_emergency(msg, [])
 
 
-def test_word_boundaries():
-    assert detect_emergency("the seizures are back", []) == []
-    assert detect_emergency("overdosed on pills", []) == []
-    assert detect_emergency("a seizure", [])
+@pytest.mark.parametrize(
+    "msg",
+    [
+        "the seizures are back", "he overdosed", "he was fainting", "bleeding heavily",
+        "my chest is hurting", "chest feels tight", "I feel faint", "cant breath",
+        "hard to breathe", "I am struggling to breathe", "bleeding a lot",
+        "I want to kill myself", "she is having a stroke", "heart attack",
+        "he is gasping", "anaphylaxis", "my throat is closing", "his face is swelling",
+        "tongue swollen", "lips swelling", "I feel suicidal", "thinking of suicide",
+        "I want to die", "thinking about self harm", "self-harm", "bleeding won't stop",
+        "the bleeding will not stop", "I can not breathe", "short of breath",
+        "pain in my chest",
+    ],
+)
+def test_realistic_phrasings_detected(msg):
+    assert detect_emergency(msg, []), msg
+
+
+def test_hit_returns_readable_terms():
+    assert detect_emergency("the seizures are back", []) == ["seizure"]
+
+
+def test_generic_document_words_dropped_but_multiword_and_specific_kept():
+    items = [
+        item("Call your doctor if you have fever, pain, or bleeding"),
+        item("confusion or a new rash"),
+    ]
+    terms = warning_terms(items)
+    for generic in ("fever", "pain", "bleeding", "rash"):
+        assert generic not in terms
+    assert "confusion" in terms
+    assert detect_emergency("what is a fever?", terms) == []
 
 
 def test_extra_terms_returned_and_deduped():
@@ -63,8 +91,8 @@ def test_all_minimum_terms_present_and_detected():
 def test_warning_terms_split_filter_dedupe_and_ignore_rejected():
     items = [
         item("redness, swelling; or pus at the wound"),
-        item("redness and fever"),
+        item("redness and confusion"),
         item("Call 911 for severe pain", status="rejected"),
         item("take aspirin", category="medications"),
     ]
-    assert warning_terms(items) == ["redness", "swelling", "pus at the wound", "fever"]
+    assert warning_terms(items) == ["pus at the wound", "confusion"]
