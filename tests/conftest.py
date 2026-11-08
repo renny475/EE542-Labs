@@ -30,3 +30,18 @@ async def auth_headers(client, username="alice"):
     )
     assert resp.status_code == 200, resp.text
     return {"Authorization": f"Bearer {resp.json()['token']}"}
+
+
+@pytest_asyncio.fixture
+async def file_client(fake_llm, tmp_path):
+    """Like `client`, but on a file-backed SQLite DB so sessions get separate
+    connections (needed for real concurrency tests)."""
+    settings = Settings(
+        database_url=f"sqlite+aiosqlite:///{tmp_path / 'test.db'}",
+        jwt_secret="test-secret-not-for-production",
+    )
+    app = create_app(settings, llm=fake_llm)
+    async with app.router.lifespan_context(app):
+        transport = httpx.ASGITransport(app=app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://test") as c:
+            yield c

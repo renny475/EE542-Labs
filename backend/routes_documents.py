@@ -4,6 +4,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 from sqlalchemy import delete, select, update
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth import current_user
@@ -47,9 +48,20 @@ def document_view(doc: DischargeDocument, items: list[ExtractedItem]) -> dict:
 
 async def load_items(session: AsyncSession, doc: DischargeDocument) -> list[ExtractedItem]:
     rows = await session.scalars(
-        select(ExtractedItem).where(ExtractedItem.document_id == doc.id).order_by(ExtractedItem.id)
+        select(ExtractedItem)
+        .where(ExtractedItem.document_id == doc.id)
+        .order_by(ExtractedItem.id)
+        .execution_options(populate_existing=True)
     )
     return list(rows)
+
+
+async def lock_user(session: AsyncSession, user: User) -> None:
+    """Serialize this user's document mutations (row lock on MySQL; SQLite ignores it).
+    Ends the transaction opened by current_user first, so that under MySQL
+    REPEATABLE READ the reads after the lock see a fresh snapshot."""
+    await session.commit()
+    await session.execute(select(User.id).where(User.id == user.id).with_for_update())
 
 
 async def active_document(session: AsyncSession, user: User) -> DischargeDocument:
@@ -134,13 +146,15 @@ async def upload_document(
     # previous active document stays active.
     extraction = await run_extraction(request, body)
 
+    await lock_user(session, user)
     await session.execute(
         update(DischargeDocument)
         .where(DischargeDocument.user_id == user.id, DischargeDocument.status.in_(ACTIVE_STATUSES))
-        .values(status="archived")
+        .values(status="archived", active_user_id=None)
     )
     doc = DischargeDocument(
         user_id=user.id,
+        active_user_id=user.id,
         status="pending_review",
         filename=filename,
         text=body,
@@ -151,7 +165,14 @@ async def upload_document(
     await session.flush()
     items = new_items(doc.id, extraction)
     session.add_all(items)
-    await session.commit()
+    try:
+        await session.commit()
+    except IntegrityError as exc:
+        # Lost a race with a concurrent upload (unique active_user_id); nothing was saved.
+        await session.rollback()
+        raise HTTPException(
+            status_code=409, detail="Another upload is in progress. Try again in a moment."
+        ) from exc
     return document_view(doc, await load_items(session, doc))
 
 
@@ -165,14 +186,20 @@ async def get_active(user: User = Depends(current_user), session: AsyncSession =
 async def reject_item(
     item_id: int, user: User = Depends(current_user), session: AsyncSession = Depends(get_session)
 ):
+    await lock_user(session, user)
     doc = await pending_document(session, user)
     item = await session.scalar(
         select(ExtractedItem).where(ExtractedItem.id == item_id, ExtractedItem.document_id == doc.id)
     )
     if item is None:
         raise HTTPException(status_code=404, detail="Item not found")
-    if item.status != "rejected":
-        item.status = "rejected"
+    # Conditional transition: only the request that flips the status adds the question.
+    flipped = await session.execute(
+        update(ExtractedItem)
+        .where(ExtractedItem.id == item.id, ExtractedItem.status == "active")
+        .values(status="rejected")
+    )
+    if flipped.rowcount == 1:
         await add_question(
             session,
             user.id,
@@ -181,7 +208,7 @@ async def reject_item(
             reason="Extracted item did not match my document",
             source="rejected_item",
         )
-        await session.commit()
+    await session.commit()
     return document_view(doc, await load_items(session, doc))
 
 
@@ -191,6 +218,8 @@ async def re_extract(
 ):
     doc = await pending_document(session, user)
     extraction = await run_extraction(request, doc.text)
+    await lock_user(session, user)
+    doc = await pending_document(session, user)  # re-check under the lock
     await session.execute(delete(ExtractedItem).where(ExtractedItem.document_id == doc.id))
     session.add_all(new_items(doc.id, extraction))
     doc.discharge_date = extraction.discharge_date
@@ -201,14 +230,27 @@ async def re_extract(
 
 @router.post("/api/documents/active/confirm")
 async def confirm(user: User = Depends(current_user), session: AsyncSession = Depends(get_session)):
+    await lock_user(session, user)
     doc = await pending_document(session, user)
     now = datetime.now(timezone.utc)
-    doc.status = "confirmed"
-    doc.confirmed_at = now.replace(tzinfo=None)
     if doc.discharge_date:
-        doc.anchor_date, doc.date_source = doc.discharge_date, "document"
+        anchor, source = doc.discharge_date, "document"
     else:
-        doc.anchor_date, doc.date_source = now.date(), "confirmation"
+        anchor, source = now.date(), "confirmation"
+    # Conditional transition: exactly one concurrent confirm wins, the rest get 409.
+    flipped = await session.execute(
+        update(DischargeDocument)
+        .where(DischargeDocument.id == doc.id, DischargeDocument.status == "pending_review")
+        .values(
+            status="confirmed",
+            confirmed_at=now.replace(tzinfo=None),
+            anchor_date=anchor,
+            date_source=source,
+        )
+    )
+    if flipped.rowcount != 1:
+        raise HTTPException(status_code=409, detail="This document is already confirmed")
+    await session.refresh(doc)
     await generate_checklist(session, doc)
     await session.commit()
     return document_view(doc, await load_items(session, doc))

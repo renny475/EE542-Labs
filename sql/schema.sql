@@ -29,7 +29,9 @@ CREATE TABLE IF NOT EXISTS discharge_documents (
   unverified JSON NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   confirmed_at DATETIME NULL,
+  active_user_id INT NULL,                                -- = user_id while pending_review/confirmed, NULL when archived
   PRIMARY KEY (id),
+  UNIQUE KEY uq_discharge_documents_active_user (active_user_id),
   KEY ix_discharge_documents_user_id (user_id),
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );

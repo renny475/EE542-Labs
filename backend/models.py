@@ -36,6 +36,10 @@ class DischargeDocument(Base):
     unverified: Mapped[list] = mapped_column(JSON, default=list)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     confirmed_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    # Equals user_id while the document is pending_review/confirmed, NULL once archived.
+    # A plain UNIQUE index (NULLs do not collide) enforces one active document per
+    # user on both MySQL and SQLite.
+    active_user_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True, unique=True)
 
 
 class ExtractedItem(Base):

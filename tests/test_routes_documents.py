@@ -236,3 +236,88 @@ async def test_other_users_document_404(client, fake_llm):
     assert rej.status_code == 404
     assert (await client.post("/api/documents/active/confirm", headers=hb)).status_code == 404
     assert (await client.post("/api/documents/active/re-extract", headers=hb)).status_code == 404
+
+
+async def test_confirm_is_conditional_and_generates_checklist_once(file_client, fake_llm, monkeypatch):
+    import asyncio
+    import routes_documents
+
+    client = file_client
+    calls = []
+
+    async def hook(session, doc):
+        calls.append(doc.id)
+
+    monkeypatch.setattr(routes_documents, "generate_checklist", hook)
+    h = await auth_headers(client)
+    await upload_text(client, h, fake_llm)
+    results = await asyncio.gather(
+        client.post("/api/documents/active/confirm", headers=h),
+        client.post("/api/documents/active/confirm", headers=h),
+    )
+    assert sorted(r.status_code for r in results) == [200, 409]
+    assert (await client.post("/api/documents/active/confirm", headers=h)).status_code == 409
+    assert len(calls) == 1
+
+
+async def test_concurrent_rejects_add_one_question(file_client, fake_llm):
+    import asyncio
+
+    client = file_client
+    h = await auth_headers(client)
+    doc = (await upload_text(client, h, fake_llm)).json()
+    url = f"/api/documents/active/items/{doc['items'][0]['id']}/reject"
+    results = await asyncio.gather(client.post(url, headers=h), client.post(url, headers=h))
+    assert [r.status_code for r in results] == [200, 200]
+    assert len((await client.get("/api/care-team", headers=h)).json()["questions"]) == 1
+
+
+async def test_at_most_one_active_document_per_user(client, fake_llm):
+    import pytest
+    from sqlalchemy.exc import IntegrityError
+    from models import DischargeDocument, User
+    from sqlalchemy import select
+
+    h = await auth_headers(client)
+    doc = (await upload_text(client, h, fake_llm)).json()
+    async with client._transport.app.state.session_factory() as s:
+        user_id = await s.scalar(select(User.id).where(User.username == "alice"))
+        s.add(DischargeDocument(user_id=user_id, active_user_id=user_id, text="x", status="pending_review"))
+        with pytest.raises(IntegrityError):
+            await s.commit()
+    # archiving releases the slot
+    await upload_text(client, h, fake_llm, text="Replacement document text here.")
+    assert (await client.get("/api/documents/active", headers=h)).json()["id"] != doc["id"]
+
+
+async def test_concurrent_uploads_leave_one_active_document(file_client, fake_llm):
+    import asyncio
+    from sqlalchemy import func, select
+    from models import DischargeDocument
+
+    client = file_client
+    h = await auth_headers(client)
+    fake_llm.script(extraction(), extraction())
+    results = await asyncio.gather(
+        client.post("/api/documents", data={"text": DOC}, headers=h),
+        client.post("/api/documents", data={"text": DOC + " again"}, headers=h),
+    )
+    assert any(r.status_code == 200 for r in results)
+    assert all(r.status_code in (200, 409) for r in results)
+    async with client._transport.app.state.session_factory() as s:
+        n = await s.scalar(
+            select(func.count()).select_from(DischargeDocument).where(
+                DischargeDocument.status.in_(("pending_review", "confirmed"))
+            )
+        )
+    assert n == 1
+
+
+async def test_re_extract_drops_rejected_items_but_keeps_their_questions(client, fake_llm):
+    h = await auth_headers(client)
+    doc = (await upload_text(client, h, fake_llm)).json()
+    await client.post(f"/api/documents/active/items/{doc['items'][0]['id']}/reject", headers=h)
+    fake_llm.script(extraction())
+    again = (await client.post("/api/documents/active/re-extract", headers=h)).json()
+    assert all(i["status"] == "active" for i in again["items"])
+    assert len((await client.get("/api/care-team", headers=h)).json()["questions"]) == 1
