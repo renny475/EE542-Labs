@@ -49,6 +49,14 @@ URL = re.compile(r"https?://\S+")
 # match other scripts' digits.
 PLAIN_NUMBER = re.compile(r"[0-9]+(?:\.[0-9]+)?|\.[0-9]+")
 GROUPED_NUMBER = re.compile(r"[0-9]{1,3}(?:,[0-9]{3})+(?:\.[0-9]+)?")
+# A number written directly against a known unit ("80mg", "2L", "101F", "10%")
+# is that number: "80mg" == "80 mg". Only these exact suffixes, so "B12", "2nd"
+# or "10mgs" stay compound tokens that never lend their digits.
+UNIT_SUFFIXES = ("mg", "g", "mcg", "ml", "mL", "L", "kg", "lb", "lbs", "oz", "mmHg", "F", "C", "%")
+NUMBER_WITH_UNIT = re.compile(
+    r"([0-9]{1,3}(?:,[0-9]{3})+(?:\.[0-9]+)?|[0-9]+(?:\.[0-9]+)?|\.[0-9]+)"
+    r"(?:" + "|".join(re.escape(u) for u in UNIT_SUFFIXES) + r")"
+)
 DIGIT = re.compile(r"[0-9]")
 LETTERS = re.compile(r"[A-Za-z]+")
 LEADING_PUNCT = "([{\"'"
@@ -96,7 +104,7 @@ Output contract: when you are done with tools, reply with only one JSON object a
 - kind "answer" must cite at least one evidence number.
 - Every number in the answer (amounts, servings, doses, days, times) must appear as a value in the evidence cited in that answer. Do not convert units, round, or compute new numbers. An answer that cites nothing must not contain any numbers, except 911.
 - Write every quantity, dose, time and count with Arabic numerals (for example 2, not "two"). Never write numbers as words.
-- Write each number exactly as the evidence writes it, with a space before its unit (500 mg, not 500mg). Avoid words such as once, twice, half, single or double unless the cited evidence uses the same word.
+- Write each number exactly as the evidence writes it, with a space before its unit (500 mg, not 500mg). Avoid words such as one, once, twice, half, single or double unless the cited evidence uses the same word.
 - "care_team_question" is the question you added for the care team, or null.
 - Write plain, short English the patient can follow."""
 
@@ -198,6 +206,8 @@ def _part_tokens(part: str):
         yield ("number", Decimal(part))
     elif GROUPED_NUMBER.fullmatch(part):
         yield ("number", Decimal(part.replace(",", "")))
+    elif match := NUMBER_WITH_UNIT.fullmatch(part):
+        yield ("number", Decimal(match.group(1).replace(",", "")))
     else:
         # Times, slash forms and digits touching letters ("8:00", "1/2", "B12",
         # "2nd") compare whole and never lend their fragments.
@@ -228,9 +238,9 @@ def _chunk_tokens(chunk: str):
 
 def number_tokens(text: str) -> set[tuple]:
     """The quantities `text` states, as comparable tokens. Answer and evidence go
-    through this same function. "2,000" == "2000", "6" == "6.0", ".5" == "0.5";
-    compound forms compare whole; "9-1-1" is 911; number words and Unicode
-    numerals (fractions, superscripts) are tokens of their own."""
+    through this same function. "2,000" == "2000", "6" == "6.0", ".5" == "0.5",
+    "80mg" == "80 mg"; compound forms compare whole; "9-1-1" is 911; number words
+    and Unicode numerals (fractions, superscripts) are tokens of their own."""
     tokens: set[tuple] = set()
     for chunk in text.split():
         tokens.update(_chunk_tokens(chunk))
@@ -301,6 +311,13 @@ class RenderedFood(NamedTuple):
     content: str  # shown to the model and the patient, with every value's source
     check_text: str  # name, serving and values only, for number grounding
     url: Optional[str]
+    publishers: str = ""  # "USDA FoodData Central; ...", for the source label
+
+
+def _publisher(source: dict) -> str:
+    """The publisher part of a curated source title ("USDA FoodData Central: Nuts,
+    almonds (FDC ID 170567)" -> "USDA FoodData Central")."""
+    return source.get("publisher") or source["title"].split(":", 1)[0].strip()
 
 
 def render_food(food: dict) -> RenderedFood:
@@ -339,7 +356,8 @@ def render_food(food: dict) -> RenderedFood:
         url = source.get("linked_from") or source["url"]
     else:
         url = sources[next(iter(by_source))]["url"]
-    return RenderedFood(f"{line} Sources: {cites}.", line, url)
+    publishers = "; ".join(dict.fromkeys(_publisher(sources[sid]) for sid in by_source))
+    return RenderedFood(f"{line} Sources: {cites}.", line, url, publishers)
 
 
 def _document_context(document_paragraphs: list[str], items: list[ExtractedItem]) -> str:
@@ -407,7 +425,9 @@ class _Turn:
         out = []
         for food in matches:
             rendered = render_food(food)
-            title = food["name"] if food["match"] == "exact" else f"{food['name']} (closest entry)"
+            title = food["name"] if food["match"] == "exact" else f"{food['name']}, closest entry"
+            if rendered.publishers:
+                title += f" ({rendered.publishers})"
             number = self._number(("food", food["id"], food["match"]), "food", title,
                                   rendered.url, rendered.content, check_text=rendered.check_text)
             out.append({"evidence_number": number, "name": food["name"], "match": food["match"],

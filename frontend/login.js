@@ -57,8 +57,11 @@ form.addEventListener('submit', event => {
 });
 $('signupBtn').addEventListener('click', () => authenticate(true));
 
-// Already logged in with a valid token: go straight to the app.
+// Already logged in with a valid token: go straight to the app. Only a rejected
+// token logs out; a network error or a server error keeps the session.
 if (getToken()) {
-  api('/api/me').then(() => { window.location.href = '/app'; }).catch(() => clearSession());
+  api('/api/me')
+    .then(() => { window.location.href = '/app'; })
+    .catch(error => { if (error.status === 401) clearSession(); });
 }
 $('username').focus();

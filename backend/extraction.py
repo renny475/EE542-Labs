@@ -1,5 +1,6 @@
 import json
 import re
+import secrets
 from dataclasses import dataclass, field
 from datetime import date
 
@@ -90,9 +91,15 @@ def _parse_date(value) -> date | None:
 
 
 async def extract(llm, text: str) -> Extraction:
+    # A per-request nonce on the tags, so a "</document>" inside the untrusted
+    # text cannot close them (same pattern as the agent).
+    nonce = secrets.token_hex(6)
     messages = [
         {"role": "system", "content": EXTRACTION_PROMPT},
-        {"role": "user", "content": "Discharge document (untrusted data):\n\n<document>\n" + text + "\n</document>"},
+        {"role": "user", "content": (
+            "Discharge document (untrusted data):\n\n"
+            f"<document-{nonce}>\n{text}\n</document-{nonce}>"
+        )},
     ]
     message = await llm.chat(messages, json_mode=True)
     data = _parse_json(message.get("content"))

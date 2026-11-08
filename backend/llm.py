@@ -24,7 +24,8 @@ class LLMClient:
         return self.settings.embedding_model
 
     async def _post(self, url: str, api_key: str, payload: dict) -> dict:
-        headers = {"Authorization": f"Bearer {api_key}"}
+        # A keyless self-hosted server (vLLM) gets no Authorization header at all.
+        headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
         try:
             async with httpx.AsyncClient(timeout=90, transport=self.transport) as client:
                 response = await client.post(url, headers=headers, json=payload)

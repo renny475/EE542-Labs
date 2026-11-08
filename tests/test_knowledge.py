@@ -254,6 +254,22 @@ def test_cli_index_without_api_key_fails_clearly(tmp_path, capsys):
     assert not (tmp_path / "index.sqlite3").exists()
 
 
+def test_cli_index_keyless_self_hosted_embeddings_allowed(tmp_path, capsys, monkeypatch):
+    calls = []
+
+    async def fake_index(store, data):
+        calls.append(store.path)
+        return {"indexed": {}, "skipped": []}
+
+    monkeypatch.setattr(manage_knowledge, "index_sources", fake_index)
+    settings = Settings(
+        rag_db_path=str(tmp_path / "index.sqlite3"), llm_api_base="http://gpu-box:8000/v1",
+        llm_model="served-model", llm_api_key="", embedding_api_key="",
+    )
+    assert manage_knowledge.run(["index"], settings) == 0, capsys.readouterr().err
+    assert calls == [tmp_path / "index.sqlite3"]
+
+
 def test_cli_status_reports_json(tmp_path, capsys):
     settings = Settings(rag_db_path=str(tmp_path / "index.sqlite3"), embedding_model="m1")
     assert manage_knowledge.run(["status"], settings) == 0

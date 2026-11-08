@@ -7,11 +7,11 @@ from config import Settings
 from llm import LLMClient, LLMError
 
 
-def make_client(handler, **overrides):
+def make_client(handler, llm_api_key_override=None, **overrides):
     settings = Settings(
         llm_api_base="https://llm.example/v1",
         llm_model="test-model",
-        llm_api_key="key-123",
+        llm_api_key="key-123" if llm_api_key_override is None else llm_api_key_override,
         embedding_model="embed-model",
         **overrides,
     )
@@ -116,3 +116,20 @@ def test_embedding_model_is_exposed_read_only():
     assert client.embedding_model == "embed-model"
     with pytest.raises(AttributeError):
         client.embedding_model = "other"
+
+
+async def test_empty_key_sends_no_authorization_header():
+    seen = {}
+
+    def handler(request):
+        seen["chat"] = request.headers.get("authorization")
+        if request.url.path.endswith("/embeddings"):
+            seen["embed"] = request.headers.get("authorization")
+            return httpx.Response(200, json={"data": [{"index": 0, "embedding": [1.0, 0.0]}]})
+        return httpx.Response(200, json={"choices": [{"message": {"content": "ok"}}]})
+
+    client = make_client(handler, llm_api_key_override="")
+    await client.chat([{"role": "user", "content": "x"}])
+    assert seen["chat"] is None
+    await client.embed(["x"])
+    assert seen["embed"] is None

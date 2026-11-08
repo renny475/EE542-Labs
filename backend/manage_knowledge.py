@@ -8,10 +8,19 @@ import argparse
 import asyncio
 import json
 import sys
+from urllib.parse import urlparse
 
 from config import Settings, get_settings
 from knowledge import DATA, KnowledgeError, KnowledgeStore, collect_sources, index_sources
 from llm import LLMClient, LLMError
+
+
+KEYED_HOSTS = frozenset({"api.openai.com"})
+
+
+def needs_key(settings: Settings) -> bool:
+    """Hosted APIs need a key; a self-hosted embeddings server (vLLM) may not."""
+    return (urlparse(settings.embedding_api_base).hostname or "") in KEYED_HOSTS
 
 
 def run(argv: list[str], settings: Settings | None = None) -> int:
@@ -30,7 +39,7 @@ def run(argv: list[str], settings: Settings | None = None) -> int:
                 return 1
             print("Review each snapshot in knowledge/sources/, then set \"reviewed\": true.", file=sys.stderr)
             return 0
-        if args.command == "index" and not settings.embedding_api_key:
+        if args.command == "index" and needs_key(settings) and not settings.embedding_api_key:
             print("Set EMBEDDING_API_KEY (or LLM_API_KEY) in the project .env before indexing.", file=sys.stderr)
             return 2
         store = KnowledgeStore(settings.rag_db_path, llm, settings.rag_min_similarity)

@@ -166,7 +166,10 @@ async def test_cited_answer_with_food_lookup(store, foods, document, items):
     doc_source, food, passage = result.sources
     assert doc_source.title == "Your discharge document" and doc_source.url is None
     assert doc_source.content == "Limit high-oxalate foods to help prevent kidney stones."
-    assert food.title == "Almonds"
+    # The source label names the data sources, per the spec ("Food data: <source>").
+    assert food.title == (
+        "Almonds (USDA FoodData Central; University of Chicago Kidney Stone Program)"
+    )
     assert food.url == UCHICAGO_ARTICLE
     assert "oxalate 122 mg (Very High, per UChicago table serving '1 oz or 22 kernels')" in food.content
     assert FDC_URL in food.content and UCHICAGO_ARTICLE in food.content
@@ -448,6 +451,10 @@ def test_validate_compares_number_tokens_not_substrings(foods):
     ("Take 2 tablets [1].", "Discharge date: 2026-03-02"),
     ("Eat \u00bd cup [1].", "Eat 1 cup of rice."),
     ("Take it twice a day [1].", "Take it once a day."),
+    ("Take 8 mg [1].", "Take 80mg at night."),
+    ("Take 12 tablets [1].", "Take B12mg daily."),
+    ("Take 10 tablets [1].", "Take 10mgs daily."),  # not a known unit suffix
+    ("Take 2 tablets [1].", "Take 2nd dose at night."),
 ])
 def test_validate_rejects_number_fragments(answer, evidence_text):
     with pytest.raises(ValueError):
@@ -464,6 +471,22 @@ def test_validate_rejects_number_fragments(answer, evidence_text):
     ("Walk 10 - 20 minutes [1].", "Walk 10 to 20 minutes a day."),
     ("You were treated for COVID-19 [1].", "You were treated for COVID-19."),
     ("Eat \u00bd cup [1].", "Eat \u00bd cup of rice."),
+    ("Take 80 mg twice a day [1].", "Take 80mg twice a day."),
+    ("Take 80mg [1].", "Take 80 mg at night."),
+    ("Take 1000 mg [1].", "Take 1,000mg daily."),
+    ("Take 0.4 mg [1].", "Take 0.4mg at bedtime."),
+    ("Drink 500 mL [1].", "Drink 500mL after each meal."),
+    ("Drink 2 L [1].", "Drink 2L a day."),
+    ("Give 250 mcg [1].", "Give 250mcg."),
+    ("Weigh 70 kg or 154 lbs [1].", "Weight 70kg (154lbs)."),
+    ("Lift under 10 lb [1].", "Lift under 10lb."),
+    ("Eat 1 oz [1].", "Eat 1oz."),
+    ("Keep it under 140 mmHg [1].", "Keep it under 140mmHg."),
+    ("Call for a fever of 101 F [1].", "Call for a fever of 101F."),
+    ("Call above 38.3 C [1].", "Call above 38.3C."),
+    ("Keep it under 10 % [1].", "Keep it under 10%."),
+    ("Keep it under 10% [1].", "Keep it under 10 %."),
+    ("Use 5 g [1].", "Use 5g."),
 ])
 def test_validate_accepts_grounded_numbers(answer, evidence_text):
     assert validate(raw(answer=answer, citations=[1]), evidence(evidence_text))[0] == "answer"
@@ -527,3 +550,14 @@ def test_system_prompt_states_rules():
                    '"care_team_question"', "Arabic numerals", "Never write numbers as words",
                    "must not contain any numbers"):
         assert phrase in prompt, phrase
+
+
+async def test_food_titles_name_sources_and_mark_closest_entries(foods):
+    turn = agent._Turn(None, foods, DischargeDocument(text="Eat well."))
+    await turn.lookup_food("banana")
+    await turn.lookup_food("almond bread")
+    titles = [e.title for e in turn.evidence.values() if e.kind == "food"]
+    assert titles == [
+        "Banana (USDA FoodData Central)",
+        "Almonds, closest entry (USDA FoodData Central; University of Chicago Kidney Stone Program)",
+    ]
