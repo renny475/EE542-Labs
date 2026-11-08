@@ -17,14 +17,22 @@ This is EE542 final project, Team 2, milestone 1. The "Status" section below lis
 | Education library | Curated, allowlisted official sources (MedlinePlus, NIDDK, CDC, DailyMed, kidney.org), chunked and embedded into a SQLite vector index, exact cosine search with NumPy |
 | Food table | `data/foods.json`: USDA FoodData Central nutrients plus oxalate categories from the UChicago oxalate table |
 | Grounding | The server validates every answer. Citations must exist in the evidence of that request, and every number in an answer must appear in the cited evidence. Otherwise the user gets a safe fallback and the question is added to the Care team list automatically |
-| Safety | Local emergency-symptom detection shows an emergency banner instead of analysis |
+| Safety | Local emergency-symptom detection (a static symptom list plus the document's own warning signs) shows an emergency banner above the answer. It never depends on the model: with no model configured, or when the model fails, an emergency message still gets the call-911 answer and banner |
 
 The app has four tabs: Instructions (upload, then review and confirm the extracted items), Today (daily checklist), Ask (the agent), Care team (questions the app could not answer).
 
 ## Run the website
 
 1. Install Python 3.10+. MySQL 8+ is only needed for the production setup; for a quick local run use SQLite (below).
-2. From the project root:
+2. Get the code. The project lives on the `aftercare` branch, and the repository root is the project root:
+
+   ```bash
+   git clone https://github.com/renny475/EE542-Labs.git
+   cd EE542-Labs
+   git checkout aftercare
+   ```
+
+3. From the project root:
 
    ```bash
    python3 -m venv .venv
@@ -33,8 +41,8 @@ The app has four tabs: Instructions (upload, then review and confirm the extract
    cp .env.example .env
    ```
 
-3. In `.env`, set a unique `JWT_SECRET` (startup fails if it is empty or still the placeholder). Keep `.env` private; it is gitignored.
-4. Choose a database.
+4. In `.env`, set a unique `JWT_SECRET` (startup fails if it is empty or still the placeholder). Keep `.env` private; it is gitignored.
+5. Choose a database.
 
    Quick local run with SQLite - set this in `.env`:
 
@@ -43,13 +51,13 @@ The app has four tabs: Instructions (upload, then review and confirm the extract
    ```
 
    MySQL - edit the password in `sql/schema.sql`, run `mysql -u root -p < sql/schema.sql`, and put the same password in `DATABASE_URL`. The app also creates missing tables on startup. `schema.sql` uses `CREATE TABLE IF NOT EXISTS`, so a database created by an earlier version will not gain new columns (for example `discharge_documents.active_user_id`). Drop and recreate it.
-5. Start the app from the project root (relative paths such as the SQLite file and `knowledge/index.sqlite3` resolve against the current directory):
+6. Start the app from the project root. A relative SQLite path in `DATABASE_URL` resolves against the current directory; `RAG_DB_PATH` (`knowledge/index.sqlite3`) and `FOODS_PATH` (`data/foods.json`) resolve against the project root wherever you start it:
 
    ```bash
    uvicorn --app-dir backend app:app --host 0.0.0.0 --port 8000
    ```
 
-6. Open `http://localhost:8000`, create an account, and log in.
+7. Open `http://localhost:8000`, create an account, and log in.
 
 ## Model configuration
 
@@ -61,7 +69,7 @@ All settings live in `.env` and are read by `backend/config.py`.
 | `JWT_SECRET` | none, required | Token signing secret |
 | `JWT_EXPIRE_MINUTES` | 43200 | Token lifetime |
 | `LLM_API_BASE` | `https://api.openai.com/v1` | OpenAI-compatible base URL |
-| `LLM_MODEL` | empty | Chat model name |
+| `LLM_MODEL` | empty | Chat model name, for example `gpt-4.1-mini` (see `.env.example`) |
 | `LLM_API_KEY` | empty | May stay empty for a self-hosted server |
 | `EMBEDDING_API_BASE` | `LLM_API_BASE` | Embeddings endpoint base |
 | `EMBEDDING_MODEL` | `text-embedding-3-small` | Embedding model name |
@@ -70,9 +78,9 @@ All settings live in `.env` and are read by `backend/config.py`.
 | `RAG_MIN_SIMILARITY` | 0.25 | Minimum cosine similarity for a passage |
 | `FOODS_PATH` | `data/foods.json` | Food table |
 
-Without `LLM_MODEL` the app still starts and you can sign up, but uploading a document (extraction) and Ask return a "not configured" error (HTTP 503).
+Without `LLM_MODEL` the app still starts and you can sign up, but uploading a document (extraction) and Ask return a "not configured" error (HTTP 503). The one exception is an emergency message in Ask: it still gets the call-911 answer and banner. A temporary model failure returns HTTP 502 and the page asks the patient to try again.
 
-To use a self-hosted vLLM server, set `LLM_API_BASE` to its OpenAI-compatible URL (for example `http://host:8000/v1`) and `LLM_MODEL` to the served model name; `LLM_API_KEY` can be empty. If you change `EMBEDDING_MODEL` or the embeddings endpoint, rebuild the index with `python backend/manage_knowledge.py index` (`status` shows whether the index matches the configured model).
+To use a self-hosted vLLM server, set `LLM_API_BASE` to its OpenAI-compatible URL (for example `http://host:8000/v1`) and `LLM_MODEL` to the served model name; `LLM_API_KEY` can be empty (no `Authorization` header is sent then, and `manage_knowledge.py index` only requires a key for `api.openai.com`). If you change `EMBEDDING_MODEL` or the embeddings endpoint, rebuild the index with `python backend/manage_knowledge.py index` (`status` shows whether the index matches the configured model).
 
 ## Knowledge library
 
@@ -120,7 +128,7 @@ python scripts/seed_demo.py --confirm  # confirmed, checklist generated
 pytest
 ```
 
-The unit suite uses SQLite and a scripted fake model, so it needs no network and no key. Currently 275 tests pass.
+The unit suite uses SQLite and a scripted fake model, so it needs no network and no key. Currently 358 tests pass (`pytest -q -W error`).
 
 ## Status: not done or not verified yet
 

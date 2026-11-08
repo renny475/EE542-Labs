@@ -6,3 +6,7 @@ __pycache__/
 *.sqlite3-journal
 .pytest_cache/
 aftercare-dev.sqlite3
+# Local databases: the dev database and the education index are built locally.
+*.sqlite3
+knowledge/index.sqlite3
+knowledge/*.staging.sqlite3
