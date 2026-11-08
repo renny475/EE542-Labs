@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AfterCare</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230f766e'/%3E%3Cpath d='M16 9v14M9 16h14' stroke='white' stroke-width='3.2' stroke-linecap='round'/%3E%3C/svg%3E">
+  <script>
+    // Not logged in: go to the login page before anything renders.
+    if (!localStorage.getItem('aftercare_token')) window.location.replace('/');
+  </script>
+</head>
+<body class="app-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="app-header">
+    <div class="container header-row">
+      <a class="brand" href="#instructions" aria-label="AfterCare home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </span>
+        <span class="brand-name">AfterCare</span>
+      </a>
+      <div class="header-user">
+        <span class="username" id="username"></span>
+        <button id="logoutBtn" type="button" class="btn btn-ghost btn-small">Log out</button>
+      </div>
+    </div>
+    <nav class="container tabs" aria-label="Sections">
+      <a class="tab" href="#instructions" data-tab="instructions">Instructions</a>
+      <a class="tab" href="#today" data-tab="today" data-requires-confirmed>Today</a>
+      <a class="tab" href="#ask" data-tab="ask" data-requires-confirmed>Ask</a>
+      <a class="tab" href="#careteam" data-tab="careteam">Care team</a>
+    </nav>
+  </header>
+
+  <main id="main" class="container app-main" tabindex="-1">
+    <section class="panel" id="panel-instructions" data-panel="instructions" aria-label="Instructions" hidden></section>
+    <section class="panel" id="panel-today" data-panel="today" aria-label="Today" hidden></section>
+    <section class="panel" id="panel-ask" data-panel="ask" aria-label="Ask" hidden></section>
+    <section class="panel" id="panel-careteam" data-panel="careteam" aria-label="Care team" hidden></section>
+  </main>
+
+  <footer class="disclaimer">AfterCare is a class project, not medical advice. In an emergency, call 911.</footer>
+
+  <script type="module">
+    import {api, clearSession, escapeHtml, getTab, savedUsername} from '/static/api.js';
+    // Tab modules register themselves on import. Add new tabs here.
+    import '/static/review.js';
+
+    const LOCKED_HINT = 'Confirm your instructions first';
+    const TAB_IDS = ['instructions', 'today', 'ask', 'careteam'];
+    const TAB_TITLES = {instructions: 'Instructions', today: 'Today', ask: 'Ask', careteam: 'Care team'};
+    const state = {document: null, username: savedUsername(), ready: false};
+
+    const isConfirmed = () => state.document !== null && state.document.status === 'confirmed';
+    const isLocked = id => !isConfirmed() &&
+      document.querySelector(`.tab[data-tab="${id}"]`).hasAttribute('data-requires-confirmed');
+
+    function currentTab() {
+      const id = window.location.hash.slice(1);
+      return TAB_IDS.includes(id) ? id : 'instructions';
+    }
+
+    const ctx = {
+      get document() { return state.document; },
+      get username() { return state.username; },
+      setDocument(doc) {
+        state.document = doc;
+        render();
+      },
+      async reloadDocument() {
+        state.document = await loadDocument();
+        render();
+      },
+      go(id) {
+        if (window.location.hash === '#' + id) render();
+        else window.location.hash = id;
+      },
+    };
+
+    async function loadDocument() {
+      try {
+        return await api('/api/documents/active');
+      } catch (error) {
+        if (error.status === 404) return null;
+        throw error;
+      }
+    }
+
+    function renderTabs(active) {
+      document.querySelectorAll('.tab').forEach(tab => {
+        const id = tab.dataset.tab;
+        const locked = isLocked(id);
+        tab.classList.toggle('is-locked', locked);
+        if (locked) tab.title = LOCKED_HINT;
+        else tab.removeAttribute('title');
+        if (id === active) tab.setAttribute('aria-current', 'page');
+        else tab.removeAttribute('aria-current');
+      });
+    }
+
+    function renderLocked(panel) {
+      panel.innerHTML = `
+        <div class="empty-state">
+          <h1 class="empty-title">${escapeHtml(LOCKED_HINT)}</h1>
+          <p class="empty-text">This section opens after you review and confirm the instructions from your discharge document.</p>
+          <a class="btn btn-primary" href="#instructions">Go to Instructions</a>
+        </div>`;
+    }
+
+    function renderPlaceholder(panel, id) {
+      panel.innerHTML = `
+        <div class="empty-state">
+          <h1 class="empty-title">${escapeHtml(TAB_TITLES[id])}</h1>
+          <p class="empty-text">This section is coming soon.</p>
+        </div>`;
+    }
+
+    function render() {
+      if (!state.ready) return;
+      const active = currentTab();
+      renderTabs(active);
+      document.querySelectorAll('.panel').forEach(panel => {
+        panel.hidden = panel.dataset.panel !== active;
+      });
+      const panel = document.getElementById('panel-' + active);
+      const module = getTab(active);
+      if (isLocked(active)) renderLocked(panel);
+      else if (module) module.show(panel, ctx);
+      else renderPlaceholder(panel, active);
+      document.title = TAB_TITLES[active] + ' - AfterCare';
+    }
+
+    function renderFatal(message) {
+      const panel = document.getElementById('panel-instructions');
+      document.querySelectorAll('.panel').forEach(p => { p.hidden = p !== panel; });
+      panel.innerHTML = `
+        <div class="empty-state">
+          <h1 class="empty-title">AfterCare could not load</h1>
+          <p class="empty-text">${escapeHtml(message)}</p>
+          <button type="button" class="btn btn-primary" onclick="window.location.reload()">Try again</button>
+        </div>`;
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      clearSession();
+      window.location.href = '/';
+    });
+    window.addEventListener('hashchange', () => {
+      render();
+      window.scrollTo(0, 0);
+    });
+
+    document.getElementById('username').textContent = state.username;
+    try {
+      const me = await api('/api/me');
+      state.username = me.username;
+      document.getElementById('username').textContent = me.username;
+      state.document = await loadDocument();
+      state.ready = true;
+      render();
+    } catch (error) {
+      if (error.status !== 401) renderFatal(error.message);
+    }
+  </script>
+</body>
+</html>
