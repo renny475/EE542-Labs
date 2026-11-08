@@ -117,6 +117,41 @@ def test_diet_items_not_in_checklist():
     assert build_checklist(items, ANCHOR) == []
 
 
+def diet(text, quote=None, id=1):
+    return ExtractedItem(id=id, category="diet", text=text, source_quote=quote or text,
+                         details={}, status="active")
+
+
+def test_daily_fluid_target_diet_item_is_a_daily_checklist_item():
+    # The kidney-stones seed item (ruling R18).
+    fluid = diet("Drink enough fluids to make at least 2.5 liters of urine a day.",
+                 "drink enough fluids to make at least 2.5 liters of urine a day")
+    (spec,) = build_checklist([fluid], ANCHOR)
+    assert spec.label == fluid.text
+    assert spec.slot == "anytime"
+    assert spec.start_date == ANCHOR and spec.end_date is None
+    assert not (spec.one_time or spec.approximate or spec.undated)
+
+
+def test_daily_targets_in_other_units_and_wordings():
+    for text in ("Drink 8 cups of water every day.", "Drink about 64 oz of fluid daily.",
+                 "Drink 2000 mL of fluids per day."):
+        assert len(build_checklist([diet(text)], ANCHOR)) == 1, text
+
+
+def test_restriction_only_diet_items_stay_off_the_checklist():
+    items = [
+        diet("Avoid high-oxalate foods such as nuts, spinach, and rhubarb.", id=1),
+        diet("Keep salt (sodium) under 2,300 mg a day.",
+             "limit sodium to less than 2,300 mg per day", id=2),
+        diet("Limit fluids to 1.5 liters a day.", id=3),
+        diet("Drink no more than 2 liters of fluid per day.", id=4),
+        diet("Drink plenty of fluids.", id=5),
+        diet("Do not cut back on calcium from food.", id=6),
+    ]
+    assert build_checklist(items, ANCHOR) == []
+
+
 def test_rejected_items_excluded():
     assert build_checklist([item("medication", {"times_per_day": 1}, status="rejected")], ANCHOR) == []
 

@@ -67,6 +67,12 @@ export async function api(path, {method, json, form} = {}) {
 
 const ESCAPES = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'};
 
+// The patient's local calendar date as YYYY-MM-DD (never UTC).
+export function localIsoDate(d = new Date()) {
+  const pad = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+}
+
 export function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, ch => ESCAPES[ch]);
 }

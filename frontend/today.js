@@ -1,5 +1,5 @@
 // Today tab: the daily checklist for one local date, with a date switcher.
-import {api, escapeHtml, registerTab} from '/static/api.js';
+import {api, escapeHtml, localIsoDate, registerTab} from '/static/api.js';
 
 const esc = escapeHtml;
 
@@ -21,14 +21,15 @@ const view = {
   itemError: null,  // {id, text} for a failed toggle
   open: new Set(),  // ids whose source quote is expanded
   request: 0,       // guards against out-of-order responses
+  today: null,      // todayIso() when the view was last shown, to notice midnight
 };
+
+let panelRef = null;
+let ctxRef = null;
 
 // ---------- dates (all local, never UTC) ----------
 
-function isoDate(d) {
-  const pad = n => String(n).padStart(2, '0');
-  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
-}
+const isoDate = localIsoDate;
 
 function parseIso(iso) {
   const [y, m, d] = iso.split('-').map(Number);
@@ -70,17 +71,41 @@ function dayHeading(iso) {
 // ---------- data ----------
 
 function show(panel, ctx) {
+  panelRef = panel;
+  ctxRef = ctx;
   const doc = ctx.document;
+  const today = todayIso();
   if (doc.id !== view.docId) {
     view.docId = doc.id;
-    view.date = todayIso();
+    view.date = today;
     view.data = null;
     view.open.clear();
+  } else if (view.date === view.today && view.today !== today) {
+    view.date = today;  // the day changed while the patient was away: follow "Today"
   }
+  view.today = today;
   load(panel, ctx, view.date);
 }
 
 registerTab('today', {show});
+
+// A phone tab left open overnight must not keep checking off yesterday. When the
+// page comes back (or once a minute) after midnight, a view that showed "Today"
+// moves to the new day; any other date stays but its heading is recomputed.
+function refreshAfterMidnight() {
+  const today = todayIso();
+  if (view.today === null || view.today === today) return;
+  if (!panelRef || panelRef.hidden || !panelRef.querySelector('.today')) return;
+  const followToday = view.date === view.today;
+  view.today = today;
+  load(panelRef, ctxRef, followToday ? today : view.date);
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') refreshAfterMidnight();
+});
+window.addEventListener('focus', refreshAfterMidnight);
+setInterval(refreshAfterMidnight, 60 * 1000);
 
 async function load(panel, ctx, date) {
   const request = ++view.request;

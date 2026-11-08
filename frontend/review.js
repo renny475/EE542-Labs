@@ -1,5 +1,5 @@
 // Instructions tab: upload, review (pending_review) and read-only (confirmed) views.
-import {api, confirmDialog, escapeHtml, registerTab} from '/static/api.js';
+import {api, confirmDialog, escapeHtml, localIsoDate, registerTab} from '/static/api.js';
 
 const CATEGORIES = [
   ['medication', 'Medications'],
@@ -425,7 +425,10 @@ function renderReview(panel, ctx, doc) {
       confirmLabel: 'Confirm',
     });
     if (!ok) return;
-    act(panel, ctx, 'confirm', 'actions', () => api('/api/documents/active/confirm', {method: 'POST'}));
+    // Without a discharge date in the document, the checklist starts on the
+    // patient's own date, not the server's UTC date.
+    act(panel, ctx, 'confirm', 'actions', () =>
+      api('/api/documents/active/confirm', {method: 'POST', json: {local_date: localIsoDate()}}));
   });
 }
 

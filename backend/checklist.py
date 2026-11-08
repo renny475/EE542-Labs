@@ -4,6 +4,7 @@ Item details come from an LLM and are not validated upstream, so every read
 here is defensive: bad values fall back to documented defaults and nothing
 raises."""
 import math
+import re
 from dataclasses import dataclass
 from datetime import date, timedelta
 from typing import Any, Optional
@@ -12,6 +13,23 @@ SLOT_ORDER = ["morning", "midday", "evening", "bedtime", "anytime"]
 TIMED_SLOTS = SLOT_ORDER[:4]
 SCHEDULED_CATEGORIES = ("monitoring", "wound_or_device_care")
 MAX_DAYS = 3650  # ten years; anything larger is treated as garbage
+
+# Ruling R18: a diet item that states a quantified daily intake target ("drink
+# enough fluids to make at least 2.5 liters of urine a day") is something the
+# patient acts on every day, so it becomes one "any time" daily item. Diet
+# restrictions ("avoid", "limit", "under 2,300 mg a day") stay off the checklist.
+_VOLUME = re.compile(
+    r"\b\d+(?:[.,]\d+)?\s*(?:liters?|litres?|l|ml|milliliters?|millilitres?|cups?|glasses"
+    r"|ounces?|oz|quarts?)\b",
+    re.IGNORECASE,
+)
+_DAILY = re.compile(r"\b(?:a|per|each|every)\s+day\b|\bdaily\b|/\s*day\b", re.IGNORECASE)
+_RESTRICTION = re.compile(
+    r"\b(?:limit\w*|less\s+than|under|no\s+more\s+than|not\s+more\s+than|at\s+most"
+    r"|maximum|max|restrict\w*|avoid\w*|cut\s+back|reduce|fewer\s+than|below|up\s+to"
+    r"|do\s+not|don'?t|never)\b",
+    re.IGNORECASE,
+)
 
 
 @dataclass
@@ -112,6 +130,12 @@ def _add_days(anchor: date, days: int) -> Optional[date]:
         return None
 
 
+def is_daily_intake_target(item) -> bool:
+    """A diet item with a daily volume to reach, and no restriction wording."""
+    text = " ".join(t for t in (item.text, item.source_quote) if isinstance(t, str))
+    return bool(_VOLUME.search(text) and _DAILY.search(text) and not _RESTRICTION.search(text))
+
+
 def build_checklist(items: list, anchor: date) -> list[ChecklistSpec]:
     specs: list[ChecklistSpec] = []
     for item in items:
@@ -120,6 +144,10 @@ def build_checklist(items: list, anchor: date) -> list[ChecklistSpec]:
         details = item.details if isinstance(item.details, dict) else {}
         if item.category == "follow_up":
             specs.append(_follow_up(item, details, anchor))
+        elif item.category == "diet":
+            if is_daily_intake_target(item):
+                specs.append(ChecklistSpec(item.id, item.text, "anytime", anchor, None,
+                                           False, False, False))
         elif item.category == "medication" or item.category in SCHEDULED_CATEGORIES:
             if item.category == "medication":
                 if _bool(details.get("as_needed")):

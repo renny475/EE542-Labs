@@ -1,5 +1,7 @@
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
+
+import pytest
 
 from conftest import auth_headers
 
@@ -192,7 +194,16 @@ async def test_reject_after_confirm_409(client, fake_llm):
     assert (await client.post("/api/documents/active/re-extract", headers=h)).status_code == 409
 
 
-async def test_confirm_uses_document_date_else_today(client, fake_llm):
+FIXED_NOW = datetime(2026, 11, 7, 23, 30, tzinfo=timezone.utc)
+
+
+@pytest.fixture
+def fixed_clock(monkeypatch):
+    import routes_documents
+    monkeypatch.setattr(routes_documents, "utc_now", lambda: FIXED_NOW)
+
+
+async def test_confirm_uses_document_date_else_today(client, fake_llm, fixed_clock):
     h = await auth_headers(client)
     await upload_text(client, h, fake_llm)
     resp = await client.post("/api/documents/active/confirm", headers=h)
@@ -204,8 +215,46 @@ async def test_confirm_uses_document_date_else_today(client, fake_llm):
     h2 = await auth_headers(client, "bob")
     await upload_text(client, h2, fake_llm, discharge_date=None)
     body2 = (await client.post("/api/documents/active/confirm", headers=h2)).json()
-    assert body2["anchor_date"] == datetime.now(timezone.utc).date().isoformat()
+    assert body2["anchor_date"] == FIXED_NOW.date().isoformat()
     assert body2["date_source"] == "confirmation"
+
+
+async def confirm_without_date(client, fake_llm, username, **json_body):
+    h = await auth_headers(client, username)
+    await upload_text(client, h, fake_llm, discharge_date=None)
+    resp = await client.post("/api/documents/active/confirm", headers=h, **json_body)
+    assert resp.status_code == 200, resp.text
+    return resp.json()
+
+
+async def test_confirm_without_document_date_uses_patient_local_date(client, fake_llm, fixed_clock):
+    utc_today = FIXED_NOW.date()
+    for n, days in enumerate((-1, 0, 1)):
+        local = (utc_today + timedelta(days=days)).isoformat()
+        body = await confirm_without_date(client, fake_llm, f"user{n}", json={"local_date": local})
+        assert body["anchor_date"] == local
+        assert body["date_source"] == "confirmation"
+
+
+async def test_confirm_local_date_out_of_range_or_malformed_falls_back_to_utc(
+    client, fake_llm, fixed_clock
+):
+    utc_today = FIXED_NOW.date().isoformat()
+    far = (FIXED_NOW.date() + timedelta(days=2)).isoformat()
+    for n, value in enumerate((far, "2020-01-01", "not-a-date", 20261107, None)):
+        body = await confirm_without_date(client, fake_llm, f"user{n}", json={"local_date": value})
+        assert body["anchor_date"] == utc_today, value
+
+
+async def test_confirm_document_date_wins_over_local_date(client, fake_llm):
+    h = await auth_headers(client)
+    await upload_text(client, h, fake_llm)
+    local = datetime.now(timezone.utc).date().isoformat()
+    resp = await client.post("/api/documents/active/confirm", headers=h, json={"local_date": local})
+    assert resp.json()["anchor_date"] == "2026-03-02"
+    # Older clients send no body at all.
+    body = await confirm_without_date(client, fake_llm, "nobody")
+    assert body["date_source"] == "confirmation"
 
 
 async def test_re_extract_replaces_items(client, fake_llm):

@@ -1,8 +1,8 @@
 import asyncio
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import date, datetime, timedelta, timezone
+from typing import Any, Optional
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
+from fastapi import APIRouter, Body, Depends, File, Form, HTTPException, Request, UploadFile
 from sqlalchemy import delete, select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -267,15 +267,42 @@ async def re_extract(
     return document_view(doc, await load_items(session, doc))
 
 
+# The patient's own calendar date may differ from the UTC date by at most this
+# much (UTC-12 .. UTC+14 stays within one day of UTC).
+LOCAL_DATE_TOLERANCE = timedelta(days=1)
+
+
+def utc_now() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def confirmation_date(local_date: Any, utc_today: date) -> date:
+    """The patient's local date (YYYY-MM-DD from the page) when it is within one
+    day of the server's UTC date, else the UTC date."""
+    if isinstance(local_date, str):
+        try:
+            local = date.fromisoformat(local_date.strip())
+        except ValueError:
+            return utc_today
+        if abs(local - utc_today) <= LOCAL_DATE_TOLERANCE:
+            return local
+    return utc_today
+
+
 @router.post("/api/documents/active/confirm")
-async def confirm(user: User = Depends(current_user), session: AsyncSession = Depends(get_session)):
+async def confirm(
+    body: Optional[dict] = Body(None),
+    user: User = Depends(current_user),
+    session: AsyncSession = Depends(get_session),
+):
     await lock_user(session, user)
     doc = await pending_document(session, user)
-    now = datetime.now(timezone.utc)
+    now = utc_now()
     if doc.discharge_date:
         anchor, source = doc.discharge_date, "document"
     else:
-        anchor, source = now.date(), "confirmation"
+        local = body.get("local_date") if isinstance(body, dict) else None
+        anchor, source = confirmation_date(local, now.date()), "confirmation"
     # Conditional transition: exactly one concurrent confirm wins, the rest get 409.
     flipped = await session.execute(
         update(DischargeDocument)
