@@ -1,0 +1,30 @@
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local configuration
+.env
+.env.*
+!.env.example
+
+# Generated indexes and experiment outputs
+rag_index*/
+rag_semantic*/
+retrieval_check/
+text_check/
+output/
+run_*/
+*.npy
+source_bundle*.json
+retrieval_bundle*.json
+retrieval_result*.json
+
+# Local input data; retain only the explicitly fictional fixture
+uploads/
+private_data/
+*.pdf
+!sample/gout.pdf
+*.zip
